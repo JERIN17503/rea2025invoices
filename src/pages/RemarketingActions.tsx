@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { getCategoryStats, premiumClients, normalClients, oneTimeClients, getSalesPersonStats } from "@/data/clientData";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { exportToCSV } from "@/lib/csvExport";
 import { 
   Crown, 
   User, 
@@ -17,7 +19,8 @@ import {
   CheckCircle2,
   Clock,
   DollarSign,
-  Zap
+  Zap,
+  Download
 } from "lucide-react";
 import reaLogo from "@/assets/rea_logo.jpg";
 
@@ -56,6 +59,60 @@ const RemarketingActions = () => {
   const oneTimeConversionPotential = highValueOneTime.reduce((sum, c) => sum + c.totalAmount, 0) * 2;
   const normalUpgradePotential = upgradeCandidates.reduce((sum, c) => sum + c.totalAmount, 0) * 1.5;
 
+  // Export functions
+  const exportHighValueOneTime = () => {
+    const data = highValueOneTime.map(c => ({
+      'Client Name': c.name,
+      'Amount Spent (AED)': c.totalAmount,
+      'Sales Person': c.salesPersons[0],
+      'Priority': 'High-Value One-Time',
+      'Action': 'Call this week'
+    }));
+    exportToCSV(data, 'high-value-one-time-clients');
+  };
+
+  const exportUpgradeCandidates = () => {
+    const data = upgradeCandidates.map(c => ({
+      'Client Name': c.name,
+      'Invoice Count': c.invoiceCount,
+      'Total Spend (AED)': c.totalAmount,
+      'Sales Person': c.salesPersons[0],
+      'Status': '1 away from Premium'
+    }));
+    exportToCSV(data, 'upgrade-candidates');
+  };
+
+  const exportPremiumClients = () => {
+    const data = premiumClients.map(c => ({
+      'Client Name': c.name,
+      'Invoice Count': c.invoiceCount,
+      'Lifetime Value (AED)': c.totalAmount,
+      'Sales Person': c.salesPersons[0],
+      'Priority': 'VIP Care'
+    }));
+    exportToCSV(data, 'premium-clients');
+  };
+
+  const exportQuickWins = () => {
+    const data = quickWins.map(c => ({
+      'Client Name': c.name,
+      'Amount Spent (AED)': c.totalAmount,
+      'Sales Person': c.salesPersons[0],
+      'Category': 'Mid-Value One-Time'
+    }));
+    exportToCSV(data, 'quick-wins');
+  };
+
+  const exportAll = () => {
+    const allData = [
+      ...highValueOneTime.map(c => ({ 'Client Name': c.name, 'Invoice Count': c.invoiceCount, 'Total Amount (AED)': c.totalAmount, 'Sales Person': c.salesPersons[0], 'Category': 'High-Value One-Time', 'Priority': 'Urgent' })),
+      ...upgradeCandidates.map(c => ({ 'Client Name': c.name, 'Invoice Count': c.invoiceCount, 'Total Amount (AED)': c.totalAmount, 'Sales Person': c.salesPersons[0], 'Category': 'Upgrade Candidate', 'Priority': 'High Potential' })),
+      ...premiumClients.map(c => ({ 'Client Name': c.name, 'Invoice Count': c.invoiceCount, 'Total Amount (AED)': c.totalAmount, 'Sales Person': c.salesPersons[0], 'Category': 'Premium', 'Priority': 'VIP Care' })),
+      ...quickWins.map(c => ({ 'Client Name': c.name, 'Invoice Count': c.invoiceCount, 'Total Amount (AED)': c.totalAmount, 'Sales Person': c.salesPersons[0], 'Category': 'Quick Win', 'Priority': 'Easy Target' }))
+    ];
+    exportToCSV(allData, 'all-remarketing-actions');
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -69,13 +126,19 @@ const RemarketingActions = () => {
                 <p className="text-sm text-muted-foreground">Prioritized strategies for client growth</p>
               </div>
             </div>
-            <Link 
-              to="/" 
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Dashboard
-            </Link>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" onClick={exportAll} className="flex items-center gap-2">
+                <Download className="h-4 w-4" />
+                Export All
+              </Button>
+              <Link 
+                to="/" 
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Dashboard
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -145,9 +208,15 @@ const RemarketingActions = () => {
                     </CardDescription>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-2xl font-bold text-one-time">{highValueOneTime.length}</p>
-                  <p className="text-xs text-muted-foreground">clients</p>
+                <div className="flex items-center gap-3">
+                  <Button variant="ghost" size="sm" onClick={exportHighValueOneTime} className="flex items-center gap-1">
+                    <Download className="h-4 w-4" />
+                    Export
+                  </Button>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-one-time">{highValueOneTime.length}</p>
+                    <p className="text-xs text-muted-foreground">clients</p>
+                  </div>
                 </div>
               </div>
             </CardHeader>
@@ -216,9 +285,15 @@ const RemarketingActions = () => {
                     </CardDescription>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-2xl font-bold text-normal">{upgradeCandidates.length}</p>
-                  <p className="text-xs text-muted-foreground">clients</p>
+                <div className="flex items-center gap-3">
+                  <Button variant="ghost" size="sm" onClick={exportUpgradeCandidates} className="flex items-center gap-1">
+                    <Download className="h-4 w-4" />
+                    Export
+                  </Button>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-normal">{upgradeCandidates.length}</p>
+                    <p className="text-xs text-muted-foreground">clients</p>
+                  </div>
                 </div>
               </div>
             </CardHeader>
@@ -286,9 +361,15 @@ const RemarketingActions = () => {
                     </CardDescription>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-2xl font-bold text-premium">{premiumClients.length}</p>
-                  <p className="text-xs text-muted-foreground">clients</p>
+                <div className="flex items-center gap-3">
+                  <Button variant="ghost" size="sm" onClick={exportPremiumClients} className="flex items-center gap-1">
+                    <Download className="h-4 w-4" />
+                    Export
+                  </Button>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-premium">{premiumClients.length}</p>
+                    <p className="text-xs text-muted-foreground">clients</p>
+                  </div>
                 </div>
               </div>
             </CardHeader>
@@ -356,9 +437,15 @@ const RemarketingActions = () => {
                     </CardDescription>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-2xl font-bold text-primary">{quickWins.length}</p>
-                  <p className="text-xs text-muted-foreground">clients</p>
+                <div className="flex items-center gap-3">
+                  <Button variant="ghost" size="sm" onClick={exportQuickWins} className="flex items-center gap-1">
+                    <Download className="h-4 w-4" />
+                    Export
+                  </Button>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-primary">{quickWins.length}</p>
+                    <p className="text-xs text-muted-foreground">clients</p>
+                  </div>
                 </div>
               </div>
             </CardHeader>
