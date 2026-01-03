@@ -42,6 +42,13 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-4">
               <Link 
+                to="/2024" 
+                className="flex items-center gap-2 px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors text-sm font-medium"
+              >
+                <Calendar className="h-4 w-4" />
+                View 2024
+              </Link>
+              <Link 
                 to="/remarketing" 
                 className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
               >
