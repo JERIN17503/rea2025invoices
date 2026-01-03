@@ -1,4 +1,4 @@
-import { getMonthlyData, MonthlyData, MONTHS, getDetailedMonthlyClientData, ClientMonthlyBreakdown } from "@/data/clientData";
+import { getMonthlyData, MonthlyData, MONTHS, getDetailedMonthlyClientData, ClientMonthlyBreakdown, getAccurateTotals } from "@/data/clientData";
 import { 
   LineChart, 
   Line, 
@@ -37,6 +37,9 @@ export function MonthlyTrendsChart({
   showDetailedTable = true
 }: MonthlyTrendsChartProps) {
   const monthlyData = data || getMonthlyData();
+  
+  // Use accurate totals from actual client data (not distributed estimates)
+  const accurateTotals = getAccurateTotals();
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -68,14 +71,6 @@ export function MonthlyTrendsChart({
     return null;
   };
 
-  // Calculate totals - no rounding
-  const totals = monthlyData.reduce((acc, month) => ({
-    revenue: acc.revenue + month.revenue,
-    invoices: acc.invoices + month.invoices,
-    avgInvoiceValue: 0
-  }), { revenue: 0, invoices: 0, avgInvoiceValue: 0 });
-  totals.avgInvoiceValue = totals.invoices > 0 ? totals.revenue / totals.invoices : 0;
-
   const getCategoryBadge = (category: string) => {
     switch (category) {
       case 'premium':
@@ -91,7 +86,7 @@ export function MonthlyTrendsChart({
 
   return (
     <div className="space-y-6">
-      {/* Summary Cards */}
+      {/* Summary Cards - Using accurate totals from actual client data */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-4">
@@ -99,8 +94,8 @@ export function MonthlyTrendsChart({
               <DollarSign className="h-4 w-4 text-primary" />
               <p className="text-xs text-muted-foreground">Total Revenue</p>
             </div>
-            <p className="text-lg font-bold mt-1">{formatCurrency(totals.revenue)}</p>
-            <p className="text-xs text-muted-foreground">Jan - Dec 2025</p>
+            <p className="text-lg font-bold mt-1">{formatCurrency(accurateTotals.totalRevenue)}</p>
+            <p className="text-xs text-muted-foreground">Jan - Dec 2025 (Actual)</p>
           </CardContent>
         </Card>
         <Card>
@@ -109,7 +104,7 @@ export function MonthlyTrendsChart({
               <FileText className="h-4 w-4 text-primary" />
               <p className="text-xs text-muted-foreground">Total Invoices</p>
             </div>
-            <p className="text-lg font-bold mt-1">{formatInteger(totals.invoices)}</p>
+            <p className="text-lg font-bold mt-1">{formatInteger(accurateTotals.totalInvoices)}</p>
             <p className="text-xs text-muted-foreground">Across all clients</p>
           </CardContent>
         </Card>
@@ -119,7 +114,7 @@ export function MonthlyTrendsChart({
               <TrendingUp className="h-4 w-4 text-primary" />
               <p className="text-xs text-muted-foreground">Avg Invoice Value</p>
             </div>
-            <p className="text-lg font-bold mt-1">{formatCurrency(totals.avgInvoiceValue)}</p>
+            <p className="text-lg font-bold mt-1">{formatCurrency(accurateTotals.avgInvoiceValue)}</p>
             <p className="text-xs text-muted-foreground">Per invoice</p>
           </CardContent>
         </Card>
@@ -127,10 +122,10 @@ export function MonthlyTrendsChart({
           <CardContent className="pt-4">
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-primary" />
-              <p className="text-xs text-muted-foreground">Active Clients</p>
+              <p className="text-xs text-muted-foreground">Total Clients</p>
             </div>
-            <p className="text-lg font-bold mt-1">{formatInteger(Math.max(...monthlyData.map(m => m.clients)))}</p>
-            <p className="text-xs text-muted-foreground">Peak month</p>
+            <p className="text-lg font-bold mt-1">{formatInteger(accurateTotals.totalClients)}</p>
+            <p className="text-xs text-muted-foreground">All categories</p>
           </CardContent>
         </Card>
       </div>
@@ -294,13 +289,13 @@ export function MonthlyTrendsChart({
                     ))}
                     <TableRow className="bg-muted/50 font-semibold">
                       <TableCell>Total</TableCell>
-                      <TableCell className="text-right">{formatInteger(totals.invoices)}</TableCell>
-                      <TableCell className="text-right">{formatCurrency(totals.revenue)}</TableCell>
-                      <TableCell className="text-right">-</TableCell>
-                      <TableCell className="text-right">{formatCurrency(totals.avgInvoiceValue)}</TableCell>
-                      <TableCell className="text-right text-premium">{formatCurrency(monthlyData.reduce((s, m) => s + m.premiumRevenue, 0))}</TableCell>
-                      <TableCell className="text-right text-normal">{formatCurrency(monthlyData.reduce((s, m) => s + m.normalRevenue, 0))}</TableCell>
-                      <TableCell className="text-right text-one-time">{formatCurrency(monthlyData.reduce((s, m) => s + m.oneTimeRevenue, 0))}</TableCell>
+                      <TableCell className="text-right">{formatInteger(accurateTotals.totalInvoices)}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(accurateTotals.totalRevenue)}</TableCell>
+                      <TableCell className="text-right">{formatInteger(accurateTotals.totalClients)}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(accurateTotals.avgInvoiceValue)}</TableCell>
+                      <TableCell className="text-right text-premium">{formatCurrency(accurateTotals.premiumTotal)}</TableCell>
+                      <TableCell className="text-right text-normal">{formatCurrency(accurateTotals.normalTotal)}</TableCell>
+                      <TableCell className="text-right text-one-time">{formatCurrency(accurateTotals.oneTimeTotal)}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
