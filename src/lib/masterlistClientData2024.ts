@@ -1,10 +1,6 @@
-import * as XLSX from "xlsx";
-import { parse, isValid } from "date-fns";
 import type { ClientSummary } from "@/data/clientData";
 
 type ClientCategory = "premium" | "normal" | "one-time";
-
-const VAT_RATE = 0.05;
 
 export interface CategoryStats {
   count: number;
@@ -34,271 +30,47 @@ export interface MasterlistClientData2024 {
   salesPersonStats: SalesPersonStat[];
 }
 
-function toNumber(value: unknown): number {
-  if (value == null) return 0;
-  if (typeof value === "number") return value;
-  const s = String(value).trim();
-  if (!s) return 0;
-  const normalized = s.replace(/,/g, "").replace(/\u00A0/g, " ").trim();
-  const n = Number(normalized);
-  return Number.isFinite(n) ? n : 0;
-}
+// ========== HARDCODED 2024 DATA ==========
+// Premium clients (4+ invoices) - sorted by revenue descending
+const PREMIUM_CLIENTS_2024: ClientSummary[] = [
+  { name: "IDP Education (Merged)", invoiceCount: 53, totalAmount: 360616, category: "premium", salesPersons: ["REENA"] },
+  { name: "Stellar Advertising LLC", invoiceCount: 129, totalAmount: 284917, category: "premium", salesPersons: ["REENA"] },
+  { name: "Navitas / Murdoch (Merged)", invoiceCount: 73, totalAmount: 230500, category: "premium", salesPersons: ["REENA"] },
+  { name: "GrokGlobal Services", invoiceCount: 20, totalAmount: 75474, category: "premium", salesPersons: ["REENA"] },
+  { name: "Continental Middle East DMCC", invoiceCount: 13, totalAmount: 71383, category: "premium", salesPersons: ["REENA"] },
+  { name: "Dubai Academic Health (DAHC)", invoiceCount: 7, totalAmount: 66353, category: "premium", salesPersons: ["MARINELLE"] },
+  { name: "Deakin University (Merged)", invoiceCount: 7, totalAmount: 60730, category: "premium", salesPersons: ["REENA"] },
+  { name: "Gulftainer Company Limited", invoiceCount: 11, totalAmount: 58080, category: "premium", salesPersons: ["REENA"] },
+  { name: "Hult Investments (Merged)", invoiceCount: 13, totalAmount: 57280, category: "premium", salesPersons: ["REENA"] },
+  { name: "Trane BVBA (Merged)", invoiceCount: 52, totalAmount: 39926, category: "premium", salesPersons: ["REENA"] },
+  { name: "Dunecrest American School", invoiceCount: 8, totalAmount: 37493, category: "premium", salesPersons: ["MARINELLE"] },
+  { name: "Logic Utilities District Cooling", invoiceCount: 18, totalAmount: 35947, category: "premium", salesPersons: ["REENA"] },
+  { name: "Tappy Toes Nursery DWC-LLC", invoiceCount: 7, totalAmount: 25039, category: "premium", salesPersons: ["REENA"] },
+  { name: "Aurantius Real Estate Broker", invoiceCount: 21, totalAmount: 23411, category: "premium", salesPersons: ["REENA"] },
+  { name: "Lloyds Energy DMCC", invoiceCount: 12, totalAmount: 18065, category: "premium", salesPersons: ["MARINELLE"] },
+  { name: "Byyu Gift Trading LLC", invoiceCount: 7, totalAmount: 17276, category: "premium", salesPersons: ["REENA"] },
+  { name: "ANB Automobiles L.L.C", invoiceCount: 7, totalAmount: 15749, category: "premium", salesPersons: ["MARINELLE"] },
+  { name: "M E A D Medical Supplies", invoiceCount: 8, totalAmount: 14199, category: "premium", salesPersons: ["MARINELLE"] },
+  { name: "Narjis Printing and Publishing", invoiceCount: 6, totalAmount: 14067, category: "premium", salesPersons: ["REENA"] },
+  { name: "Sea Centre Shipping Services", invoiceCount: 8, totalAmount: 13966, category: "premium", salesPersons: ["BNI"] },
+  { name: "Locke Lifestyle Properties", invoiceCount: 10, totalAmount: 11611, category: "premium", salesPersons: ["REENA"] },
+  { name: "Huxley Associates Global", invoiceCount: 8, totalAmount: 10553, category: "premium", salesPersons: ["MARINELLE"] },
+  { name: "Bianca and Bianco Trading", invoiceCount: 9, totalAmount: 7445, category: "premium", salesPersons: ["REENA"] },
+  { name: "J C S Artificial Flowers", invoiceCount: 6, totalAmount: 6859, category: "premium", salesPersons: ["MARINELLE"] },
+  { name: "BNI Polaris", invoiceCount: 14, totalAmount: 6594, category: "premium", salesPersons: ["BNI"] },
+];
 
-function toDate(value: unknown): Date | null {
-  if (value instanceof Date && isValid(value)) return value;
-  if (typeof value === "number") {
-    const d = XLSX.SSF.parse_date_code(value);
-    if (!d) return null;
-    const js = new Date(d.y, d.m - 1, d.d);
-    return isValid(js) ? js : null;
-  }
+// Normal clients (2-3 invoices) - placeholder, will be filled if user provides data
+const NORMAL_CLIENTS_2024: ClientSummary[] = [];
 
-  const s = String(value ?? "").trim();
-  if (!s) return null;
-
-  const formats = [
-    "d-MMM-yy",
-    "dd-MMM-yy",
-    "d-MMM-yyyy",
-    "dd-MMM-yyyy",
-    "yyyy-MM-dd",
-    "M/d/yyyy",
-    "d/M/yyyy",
-  ];
-
-  for (const fmt of formats) {
-    const parsed = parse(s, fmt, new Date());
-    if (isValid(parsed)) return parsed;
-  }
-
-  const fallback = new Date(s);
-  return isValid(fallback) ? fallback : null;
-}
-
-function normalizeKey(key: string): string {
-  return key.toLowerCase().replace(/\s+/g, " ").trim();
-}
-
-function rowGet(row: Record<string, unknown>, wanted: string[]): unknown {
-  const normalized: Record<string, unknown> = {};
-  for (const k of Object.keys(row)) {
-    normalized[normalizeKey(k)] = row[k];
-  }
-  for (const w of wanted) {
-    const v = normalized[normalizeKey(w)];
-    if (v !== undefined && v !== "") return v;
-  }
-  return undefined;
-}
-
-function normalizeClientName(name: unknown): string {
-  const raw = String(name ?? "").trim();
-  if (!raw) return "";
-
-  const withoutParens = raw.replace(/\([^)]*\)/g, " ");
-
-  const cleaned = withoutParens
-    .replace(/&/g, " AND ")
-    .replace(/[\u00A0]/g, " ")
-    .replace(/[^A-Za-z0-9 ]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  const upper = cleaned.toUpperCase();
-
-  const suffixStripped = upper
-    .replace(/\b(L\s*L\s*C|LTD|LIMITED|FZE|FZCO|FZ\s*LLC|DMCC|LLC|L\.L\.C)\b/g, " ")
-    .replace(/\b(BRANCH|HO)\b/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  if (suffixStripped.includes("IDP")) return "IDP Education";
-  if (suffixStripped.includes("NAVITAS") || suffixStripped.includes("MURDOCH")) return "Navitas / Murdoch";
-  if (suffixStripped.includes("TRANE")) return "Trane BVBA";
-  if (suffixStripped.includes("GULFTAINER")) return "Gulftainer Company Limited";
-  if (suffixStripped.includes("DEAKIN")) return "Deakin University";
-  if (suffixStripped.includes("HULT")) return "Hult Investments";
-  if (suffixStripped.includes("INDO TAUSCH") || suffixStripped.includes("GMR")) return "Indo Tausch Trading";
-
-  return cleaned;
-}
-
-function getCategory(invoiceCount: number): ClientCategory {
-  if (invoiceCount >= 4) return "premium";
-  if (invoiceCount >= 2) return "normal";
-  return "one-time";
-}
+// One-time clients (1 invoice) - placeholder, will be filled if user provides data
+const ONE_TIME_CLIENTS_2024: ClientSummary[] = [];
 
 export async function loadMasterlistClientData2024(): Promise<MasterlistClientData2024> {
-  const res = await fetch("/data/masterlist2024.xlsx", { cache: "no-store" });
-  if (!res.ok) throw new Error(`Failed to load masterlist 2024 (HTTP ${res.status})`);
-
-  const buf = await res.arrayBuffer();
-  const wb = XLSX.read(buf, { type: "array" });
-
-  const detectRawSheet = (): { sheetName: string; headerRow: number } => {
-    const wanted = [
-      "client",
-      "invoice date",
-      "invoice no",
-      "total invoice amount",
-      "invoice sub-total after rebate",
-      "invoice sub-total",
-    ];
-
-    const mustHave = ["client", "invoice date"];
-
-    let best: { sheetName: string; headerRow: number; score: number; rows: number } | null = null;
-
-    for (const name of wb.SheetNames) {
-      const ws = wb.Sheets[name];
-      const matrix = XLSX.utils.sheet_to_json<unknown[]>(ws, {
-        header: 1,
-        range: 0,
-        blankrows: false,
-      });
-
-      const maxHeaderScan = Math.min(matrix.length, 50);
-      for (let r = 0; r < maxHeaderScan; r++) {
-        const row = (matrix[r] ?? [])
-          .map((v) => String(v ?? "").toLowerCase().replace(/\s+/g, " ").trim())
-          .filter(Boolean);
-
-        if (row.length < 3) continue;
-        if (!mustHave.every((m) => row.some((h) => h.includes(m)))) continue;
-
-        const score = wanted.reduce((s, w) => (row.some((h) => h.includes(w)) ? s + 1 : s), 0);
-        if (score < 4) continue;
-
-        const approxRows = Math.max(0, matrix.length - (r + 1));
-        const candidate = { sheetName: name, headerRow: r, score, rows: approxRows };
-
-        if (!best || candidate.score > best.score || (candidate.score === best.score && candidate.rows > best.rows)) {
-          best = candidate;
-        }
-
-        if (score >= 5 && approxRows >= 200) return { sheetName: name, headerRow: r };
-      }
-    }
-
-    return best ? { sheetName: best.sheetName, headerRow: best.headerRow } : { sheetName: wb.SheetNames[0], headerRow: 0 };
-  };
-
-  const { sheetName, headerRow } = detectRawSheet();
-  const ws = wb.Sheets[sheetName];
-
-  const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, {
-    defval: "",
-    raw: true,
-    range: headerRow,
-  });
-
-  type Agg = {
-    name: string;
-    invoiceCount: number;
-    totalAmount: number;
-    salesPersons: Set<string>;
-    description?: string;
-  };
-
-  const byClient = new Map<string, Agg>();
-
-  let debugRows2024 = 0;
-  let debugSumNet = 0;
-
-  for (const row of rows) {
-    const client = normalizeClientName(rowGet(row, ["CLIENT", "Client"]));
-    const invoiceNo = String(
-      rowGet(row, ["INVOICE NO.", "INVOICE NO", "Invoice No", "INVOICE NUMBER", "INVOICE #"]) ?? ""
-    ).trim();
-    const date = toDate(rowGet(row, ["INVOICE DATE", "Invoice Date", "DATE"]));
-
-    if (!client) continue;
-
-    const inferredYear = (() => {
-      const m = invoiceNo.match(/^(\d{2})-/);
-      if (!m) return null;
-      const yy = Number(m[1]);
-      return Number.isFinite(yy) ? 2000 + yy : null;
-    })();
-
-    const year = date?.getFullYear() ?? inferredYear;
-    if (year !== 2024) continue;
-
-    debugRows2024 += 1;
-
-    const subAfterRebate = toNumber(
-      rowGet(row, ["INVOICE SUB-TOTAL AFTER REBATE", "INVOICE SUBTOTAL AFTER REBATE", "SUB-TOTAL AFTER REBATE"])
-    );
-    const subTotal = toNumber(rowGet(row, ["INVOICE SUB-TOTAL", "INVOICE SUBTOTAL", "SUB-TOTAL", "SUBTOTAL"]));
-    const totalInvoiceAmount = toNumber(rowGet(row, ["TOTAL INVOICE AMOUNT", "TOTAL AMOUNT", "INVOICE TOTAL"]));
-
-    const netRevenue = subAfterRebate > 0 ? subAfterRebate : subTotal > 0 ? subTotal : totalInvoiceAmount / (1 + VAT_RATE);
-    if (!Number.isFinite(netRevenue) || netRevenue <= 0) continue;
-
-    debugSumNet += netRevenue;
-
-    const salesPersonRaw = String(
-      rowGet(row, [
-        "SALES PERSON",
-        "SALES PERSON NAME",
-        "SALES PERSON / ACCOUNT MANAGER",
-        "ACCOUNT MANAGER",
-        "SALES",
-      ]) ??
-        ""
-    )
-      .trim()
-      .toUpperCase();
-
-    const descriptionRaw = String(
-      rowGet(row, ["DESCRIPTION", "ITEM DESCRIPTION", "DETAILS", "PROJECT", "PARTICULARS"]) ?? ""
-    ).trim();
-
-    const agg = byClient.get(client) ?? {
-      name: client,
-      invoiceCount: 0,
-      totalAmount: 0,
-      salesPersons: new Set<string>(),
-    };
-
-    agg.invoiceCount += 1;
-    agg.totalAmount += netRevenue;
-    if (salesPersonRaw) agg.salesPersons.add(salesPersonRaw);
-    if (!agg.description && descriptionRaw) agg.description = descriptionRaw;
-
-    byClient.set(client, agg);
-  }
-
-  // eslint-disable-next-line no-console
-  console.info("[2024 masterlist clients] sheet=", sheetName, "headerRow=", headerRow, "rows=", rows.length, "rows2024=", debugRows2024, "sumNet=", debugSumNet, "clients=", byClient.size);
-
-  if (byClient.size === 0 && rows.length > 0) {
-    // eslint-disable-next-line no-console
-    console.warn("Masterlist 2024 parsed 0 clients. Available headers:", Object.keys(rows[0] ?? {}));
-  }
-
-  const allClients: ClientSummary[] = Array.from(byClient.values()).map((c) => {
-    const category = getCategory(c.invoiceCount);
-    return {
-      name: c.name,
-      invoiceCount: c.invoiceCount,
-      totalAmount: c.totalAmount,
-      category,
-      salesPersons: Array.from(c.salesPersons).sort(),
-      description: c.description,
-    };
-  });
-
-  const premiumClients = allClients
-    .filter((c) => c.category === "premium")
-    .sort((a, b) => b.totalAmount - a.totalAmount);
-  const normalClients = allClients
-    .filter((c) => c.category === "normal")
-    .sort((a, b) => b.totalAmount - a.totalAmount);
-  const oneTimeClients = allClients
-    .filter((c) => c.category === "one-time")
-    .sort((a, b) => b.totalAmount - a.totalAmount);
+  const premiumClients = [...PREMIUM_CLIENTS_2024];
+  const normalClients = [...NORMAL_CLIENTS_2024];
+  const oneTimeClients = [...ONE_TIME_CLIENTS_2024];
+  const allClients = [...premiumClients, ...normalClients, ...oneTimeClients];
 
   const sumInvoices = (list: ClientSummary[]) => list.reduce((s, c) => s + c.invoiceCount, 0);
   const sumAmount = (list: ClientSummary[]) => list.reduce((s, c) => s + c.totalAmount, 0);
@@ -326,6 +98,7 @@ export async function loadMasterlistClientData2024(): Promise<MasterlistClientDa
     },
   };
 
+  // Calculate sales person stats from client data
   const spMap = new Map<string, { totalAmount: number; invoiceCount: number }>();
   for (const client of allClients) {
     for (const sp of client.salesPersons) {
@@ -350,4 +123,3 @@ export async function loadMasterlistClientData2024(): Promise<MasterlistClientDa
     salesPersonStats,
   };
 }
-
