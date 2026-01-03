@@ -759,6 +759,248 @@ export const invoiceData: ClientInvoice[] = [
   { client: "Five Building Materials Trading LLC", invoiceNo: "25-0745", invoiceDate: "31-Dec-25", totalAmount: 7546.88, salesPerson: "BNI", description: "Bamboo Pen, Stylus, Desk Calendar" },
 ];
 
+// Client name consolidation mapping - group similar client names together
+const clientNameMapping: Record<string, string> = {
+  // IDP variations
+  "IDP EDUCATION L.L.C": "IDP Education",
+  "IDP Education LLC - Abu Dhabi Branch": "IDP Education",
+  "IDP Education LLC Abu Dhabi": "IDP Education",
+  "IDP Abu Dhabi": "IDP Education",
+  
+  // Trane variations
+  "Trane BVBA (Dubai Branch)": "Trane BVBA",
+  "Trane BVBA (Abu Dhabi)": "Trane BVBA",
+  "Trane Technologies": "Trane BVBA",
+  
+  // Navitas variations
+  "Navitas Middle East FZ - LLC": "Navitas Middle East",
+  "Navitas Middle East FZ-LLC": "Navitas Middle East",
+  
+  // Unique World Business Centre variations
+  "Unique World Business Centre LLC -(Br.)": "Unique World Business Centre",
+  "Unique World Business Centre LLC -(HO)": "Unique World Business Centre",
+  "Unique World Business Centre LLC -(BR)": "Unique World Business Centre",
+  
+  // Gulftainer variations
+  "Gulftainer Company Limited": "Gulftainer",
+  
+  // Thermo Fisher variations
+  "Thermo Fisher Scientific Middle East": "Thermo Fisher Scientific",
+  
+  // BNI variations
+  "BNI Polaris": "BNI Polaris",
+  
+  // Dubai Academic Health Corporation
+  "Dubai Academic Health Corporation (DAHC)": "Dubai Academic Health Corporation",
+  
+  // Locke Lifestyle
+  "Locke Lifestyle Properties": "Locke Lifestyle Properties",
+  
+  // Aurantius
+  "Aurantius Real Estate Broker": "Aurantius Real Estate",
+  
+  // Continental
+  "Continental Middle East DMCC": "Continental Middle East",
+  
+  // Sea Centre
+  "Sea Centre Shipping Services LLC": "Sea Centre Shipping Services",
+  
+  // GrokGlobal
+  "GrokGlobal Services": "GrokGlobal Services",
+  
+  // Al Tayer
+  "Al Tayer Insignia LLC": "Al Tayer Insignia",
+  
+  // Regent Institute
+  "Regent Institute Middle East FZ-LLC": "Regent Institute Middle East",
+  
+  // Hult
+  "Hult Investments FZ-LLC": "Hult Investments",
+  
+  // JCS
+  "J C S ARTIFICIAL FLOWERS & PLANTS TRADING L.L.C": "JCS Artificial Flowers & Plants",
+  
+  // Beckman Coulter
+  "Beckman Coulter International S A (Dubai Br)": "Beckman Coulter International",
+  
+  // DHR
+  "DHR MENA FZ-LLC": "DHR MENA",
+};
+
+// Normalize client name - consolidate similar names
+function normalizeClientName(name: string): string {
+  // Check direct mapping first
+  if (clientNameMapping[name]) {
+    return clientNameMapping[name];
+  }
+  
+  // Fuzzy matching for similar names
+  const lowerName = name.toLowerCase();
+  
+  // IDP variations
+  if (lowerName.includes('idp')) {
+    return "IDP Education";
+  }
+  
+  // Trane variations
+  if (lowerName.includes('trane')) {
+    return "Trane BVBA";
+  }
+  
+  // Navitas variations
+  if (lowerName.includes('navitas')) {
+    return "Navitas Middle East";
+  }
+  
+  // Unique World Business Centre
+  if (lowerName.includes('unique world business')) {
+    return "Unique World Business Centre";
+  }
+  
+  // Gulftainer
+  if (lowerName.includes('gulftainer')) {
+    return "Gulftainer";
+  }
+  
+  // Thermo Fisher
+  if (lowerName.includes('thermo fisher')) {
+    return "Thermo Fisher Scientific";
+  }
+  
+  // Dubai Academic Health
+  if (lowerName.includes('dubai academic health') || lowerName.includes('dahc')) {
+    return "Dubai Academic Health Corporation";
+  }
+  
+  // Continental Middle East
+  if (lowerName.includes('continental middle east') || lowerName.includes('contitech')) {
+    return "Continental Middle East";
+  }
+  
+  // Sea Centre
+  if (lowerName.includes('sea centre')) {
+    return "Sea Centre Shipping Services";
+  }
+  
+  // GrokGlobal
+  if (lowerName.includes('grokglobal') || lowerName.includes('grok global')) {
+    return "GrokGlobal Services";
+  }
+  
+  // Beckman Coulter
+  if (lowerName.includes('beckman coulter')) {
+    return "Beckman Coulter International";
+  }
+  
+  // Al Tayer
+  if (lowerName.includes('al tayer')) {
+    return "Al Tayer Insignia";
+  }
+  
+  // Hult
+  if (lowerName.includes('hult')) {
+    return "Hult Investments";
+  }
+  
+  // Regent Institute
+  if (lowerName.includes('regent institute')) {
+    return "Regent Institute Middle East";
+  }
+  
+  // JCS
+  if (lowerName.includes('j c s') || lowerName.includes('jcs')) {
+    return "JCS Artificial Flowers & Plants";
+  }
+  
+  // Aurantius
+  if (lowerName.includes('aurantius')) {
+    return "Aurantius Real Estate";
+  }
+  
+  // Locke Lifestyle
+  if (lowerName.includes('locke lifestyle')) {
+    return "Locke Lifestyle Properties";
+  }
+  
+  // Al Suhail
+  if (lowerName.includes('al suhail')) {
+    return "Al Suhail Ship Maintenance Services";
+  }
+  
+  // Taz Rajabali
+  if (lowerName.includes('taz rajabali')) {
+    return "Taz Rajabali";
+  }
+  
+  // Radiometer
+  if (lowerName.includes('radiometer')) {
+    return "Radiometer Medical";
+  }
+  
+  // Paragon Properties
+  if (lowerName.includes('paragon properties') || lowerName.includes('paragon prime')) {
+    return "Paragon Properties";
+  }
+  
+  // DHR
+  if (lowerName.includes('dhr mena')) {
+    return "DHR MENA";
+  }
+  
+  // GMR Indo Tausch
+  if (lowerName.includes('gmr') && lowerName.includes('tausch')) {
+    return "GMR-Indo Tausch Trading";
+  }
+  
+  // Buildmate
+  if (lowerName.includes('buildmate')) {
+    return "Buildmate Technical Services";
+  }
+  
+  // Momentum Logistics
+  if (lowerName.includes('momentum logistics')) {
+    return "Momentum Logistics";
+  }
+  
+  // North Telecom
+  if (lowerName.includes('north telecom')) {
+    return "North Telecom";
+  }
+  
+  // Gardner Denver
+  if (lowerName.includes('gardner denver')) {
+    return "Gardner Denver";
+  }
+  
+  // Logic Utilities
+  if (lowerName.includes('logic utilities')) {
+    return "Logic Utilities District Cooling";
+  }
+  
+  // Duplast
+  if (lowerName.includes('duplast')) {
+    return "Duplast Building Materials";
+  }
+  
+  // FMC
+  if (lowerName.includes('fmc corporation')) {
+    return "FMC Corporation";
+  }
+  
+  // Secured Medical
+  if (lowerName.includes('secured medical')) {
+    return "Secured Medical Direction MEA";
+  }
+  
+  // IBM
+  if (lowerName.includes('ibm global')) {
+    return "IBM Global Middle East";
+  }
+  
+  // Default: return as-is
+  return name;
+}
+
 // Process and categorize clients
 export function processClientData(): ClientSummary[] {
   const clientMap = new Map<string, {
@@ -766,22 +1008,26 @@ export function processClientData(): ClientSummary[] {
     totalAmount: number;
     salesPersons: Set<string>;
     dates: string[];
+    originalNames: Set<string>;
   }>();
 
-  // Aggregate data by client
+  // Aggregate data by normalized client name
   invoiceData.forEach(invoice => {
-    const existing = clientMap.get(invoice.client);
+    const normalizedName = normalizeClientName(invoice.client);
+    const existing = clientMap.get(normalizedName);
     if (existing) {
       existing.invoiceCount++;
       existing.totalAmount += invoice.totalAmount;
       existing.salesPersons.add(invoice.salesPerson);
       existing.dates.push(invoice.invoiceDate);
+      existing.originalNames.add(invoice.client);
     } else {
-      clientMap.set(invoice.client, {
+      clientMap.set(normalizedName, {
         invoiceCount: 1,
         totalAmount: invoice.totalAmount,
         salesPersons: new Set([invoice.salesPerson]),
         dates: [invoice.invoiceDate],
+        originalNames: new Set([invoice.client]),
       });
     }
   });
@@ -789,8 +1035,7 @@ export function processClientData(): ClientSummary[] {
   // Convert to array and categorize
   const summaries: ClientSummary[] = [];
   clientMap.forEach((data, name) => {
-    // Categorize: Premium (2+ invoices), One-time (1 invoice), Normal (middle ground - handled differently)
-    // Based on provided info: 44 premium, 110 one-time, rest are normal
+    // Categorize: Premium (4+ invoices), One-time (1 invoice), Normal (2-3 invoices)
     let category: 'premium' | 'one-time' | 'normal';
     
     if (data.invoiceCount >= 4) {
