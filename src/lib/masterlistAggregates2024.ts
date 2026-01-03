@@ -111,7 +111,113 @@ const NORMAL_CLIENTS_MONTHLY = [
   { name: "LAYAN TRADING", monthly: [200, 0, 0, 0, 85, 0, 0, 0, 0, 0, 0, 0], total: 285 },
 ];
 
-// Generate topClients for each month (all premium clients with revenue > 0)
+// One-time clients monthly revenue breakdown (from user spreadsheet)
+// Format: { name, monthIndex (0=Jan), revenue }
+const ONE_TIME_CLIENTS_2024 = [
+  { name: "SWISS BUSINESS COUNCIL", monthIndex: 5, revenue: 39130 },
+  { name: "Golden Tower Technologies", monthIndex: 1, revenue: 8850 },
+  { name: "Momentum Logistics (OT)", monthIndex: 2, revenue: 8463.75 },
+  { name: "Unique Pathfinders", monthIndex: 8, revenue: 7500 },
+  { name: "Liquid Telecommunications", monthIndex: 1, revenue: 6775 },
+  { name: "Beekeepers Foundation", monthIndex: 11, revenue: 6590 },
+  { name: "Technological Univ. Shannon", monthIndex: 8, revenue: 5975 },
+  { name: "GULFTAINER COMPANY (OT)", monthIndex: 7, revenue: 5250 },
+  { name: "Ms. Karine Leonian", monthIndex: 0, revenue: 4687.5 },
+  { name: "GREENFIELD INTERNATIONAL", monthIndex: 11, revenue: 4550 },
+  { name: "BLUE TANGERINE MARKETING", monthIndex: 6, revenue: 3750 },
+  { name: "Thermo Fisher Scientific S.P.A.", monthIndex: 1, revenue: 3335 },
+  { name: "APPLUS RTD GULF DMCC", monthIndex: 9, revenue: 3187.5 },
+  { name: "HULT INVESTMENTS", monthIndex: 7, revenue: 3150 },
+  { name: "CJ ICM FZCO", monthIndex: 0, revenue: 3150 },
+  { name: "Contitech Fluids", monthIndex: 10, revenue: 3035 },
+  { name: "Saint Vincent Group GT", monthIndex: 6, revenue: 2800 },
+  { name: "Abdos Lamitubes Mfg", monthIndex: 9, revenue: 2760 },
+  { name: "Ali Salim Ali Salim Alqaydi", monthIndex: 1, revenue: 2715 },
+  { name: "Technological Univ. TUS", monthIndex: 9, revenue: 2557.5 },
+  { name: "Al Suhail Ship Maintenance", monthIndex: 10, revenue: 2525 },
+  { name: "Momentum Company Ltd", monthIndex: 2, revenue: 2497.72 },
+  { name: "AUT International Group", monthIndex: 9, revenue: 2475 },
+  { name: "Finhub Middle East", monthIndex: 4, revenue: 2225 },
+  { name: "Right Fit Tailoring", monthIndex: 4, revenue: 2000 },
+  { name: "TUS - Ireland", monthIndex: 1, revenue: 1925 },
+  { name: "Event Lab", monthIndex: 7, revenue: 1885 },
+  { name: "Event Lab FZ LLC", monthIndex: 8, revenue: 1885 },
+  { name: "World Data Feasibility", monthIndex: 0, revenue: 1780 },
+  { name: "Mayer Brown LLP", monthIndex: 7, revenue: 1755 },
+  { name: "Thermo Fisher Middle East", monthIndex: 3, revenue: 1750.5 },
+  { name: "BinGhatti", monthIndex: 2, revenue: 1725 },
+  { name: "Binghatti Developers FZE", monthIndex: 9, revenue: 1725 },
+  { name: "FAD Institute of Luxury", monthIndex: 0, revenue: 1690 },
+  { name: "TAM TRADING FZ-LLC", monthIndex: 8, revenue: 1665 },
+  { name: "ONESTEP GLOBAL INGRESS", monthIndex: 8, revenue: 1610 },
+  { name: "J C S ARTIFICIAL FLOWERS (OT)", monthIndex: 10, revenue: 1550 },
+  { name: "George Brown College", monthIndex: 8, revenue: 1535 },
+  { name: "Miss Connie", monthIndex: 7, revenue: 1500 },
+  { name: "Menlo Electric FZE", monthIndex: 2, revenue: 1440 },
+  { name: "KHF Automotive Trading", monthIndex: 11, revenue: 1428.57 },
+  { name: "Blu Orbit", monthIndex: 0, revenue: 1250 },
+  { name: "MEINHARDT (SINGAPORE)", monthIndex: 3, revenue: 1249.5 },
+  { name: "Genenis Digital Assets", monthIndex: 6, revenue: 1243.75 },
+  { name: "Griffith College", monthIndex: 1, revenue: 1225 },
+  { name: "VOXTEL COMMUNICATIONS", monthIndex: 6, revenue: 1175 },
+  { name: "HOLO MORTGAGE CONSULTANT", monthIndex: 0, revenue: 1060 },
+  { name: "Damco Solutions", monthIndex: 11, revenue: 1025 },
+  { name: "Kumon Dubai Knowledge Park", monthIndex: 11, revenue: 1025 },
+  { name: "AMANI INVESTMENTS L.L.C", monthIndex: 0, revenue: 995 },
+  { name: "GOOD VIBES TRANSPORT", monthIndex: 2, revenue: 925 },
+  { name: "Mr. Waiz (Amity)", monthIndex: 3, revenue: 900 },
+  { name: "DYNAMIC EMPLOYMENT", monthIndex: 1, revenue: 892.5 },
+  { name: "Oilmar Shipping", monthIndex: 10, revenue: 850 },
+  { name: "Miss. Tamara Devenport", monthIndex: 7, revenue: 843.75 },
+  { name: "Royex Technologies", monthIndex: 9, revenue: 835 },
+  { name: "Jerin Jersey", monthIndex: 9, revenue: 762 },
+  { name: "Healy Consultants", monthIndex: 9, revenue: 750 },
+  { name: "EMA Lubricants Company", monthIndex: 9, revenue: 750 },
+  { name: "Nanjing Stationery", monthIndex: 2, revenue: 750 },
+  { name: "At Your Service Productions", monthIndex: 7, revenue: 675 },
+  { name: "Mobile Business Company", monthIndex: 9, revenue: 650 },
+  { name: "Medical Regulations Gate", monthIndex: 6, revenue: 625 },
+  { name: "Ms. Ghenwa", monthIndex: 7, revenue: 585 },
+  { name: "Beyond Infinity Technical", monthIndex: 6, revenue: 565 },
+  { name: "M Y WORLD TRADING", monthIndex: 0, revenue: 530 },
+  { name: "Mr. Helmi Abdullah", monthIndex: 8, revenue: 510 },
+  { name: "Buildmate Technical Services", monthIndex: 10, revenue: 480 },
+  { name: "Merit Freight Systems", monthIndex: 10, revenue: 435 },
+  { name: "POWER LEASE VEHICLE", monthIndex: 2, revenue: 435 },
+  { name: "RIMO Pharmaceuticals", monthIndex: 5, revenue: 425 },
+  { name: "Ms. Eunice Lara Rosete", monthIndex: 0, revenue: 400 },
+  { name: "FAST PLANET FREIGHT", monthIndex: 6, revenue: 380.95 },
+  { name: "AL WASEEF INDUSTRIES", monthIndex: 3, revenue: 380 },
+  { name: "Blackswan business center", monthIndex: 5, revenue: 367.5 },
+  { name: "BLACKSWAN BUSINESS CENTER", monthIndex: 8, revenue: 367.5 },
+  { name: "JNT Car Rentals", monthIndex: 8, revenue: 360 },
+  { name: "AMK International DMCC", monthIndex: 10, revenue: 350 },
+  { name: "AL SHEMAIL GAR.", monthIndex: 4, revenue: 350 },
+  { name: "UNIVERSITY OF MANCHESTER", monthIndex: 9, revenue: 335 },
+  { name: "St Mary's Konkani Community", monthIndex: 10, revenue: 333.34 },
+  { name: "Warriors Cricket", monthIndex: 9, revenue: 304 },
+  { name: "E and S Luxury Car Rental", monthIndex: 0, revenue: 300 },
+  { name: "BLACK SWAN BUSINESS SETUP", monthIndex: 3, revenue: 285.5 },
+  { name: "Grandmatic", monthIndex: 2, revenue: 285 },
+  { name: "Sunbeam homes", monthIndex: 8, revenue: 275 },
+  { name: "AL NASER INTERNATIONAL (OT)", monthIndex: 4, revenue: 260 },
+  { name: "Austral International FZE", monthIndex: 0, revenue: 250 },
+  { name: "Gemmabel Padilla", monthIndex: 11, revenue: 229.35 },
+  { name: "Interdev Technology", monthIndex: 7, revenue: 225 },
+  { name: "Four Corners Printing Press", monthIndex: 6, revenue: 200 },
+  { name: "Zoom Me Global", monthIndex: 9, revenue: 190 },
+  { name: "Gamayun Consultancy", monthIndex: 4, revenue: 175 },
+  { name: "Applus", monthIndex: 9, revenue: 150 },
+  { name: "Excelsior Escapes", monthIndex: 10, revenue: 125 },
+  { name: "EDGE Technical Solution", monthIndex: 11, revenue: 125 },
+  { name: "Onboard Sky Freight", monthIndex: 5, revenue: 90 },
+  { name: "JNT Car Rental L.L.C", monthIndex: 11, revenue: 90 },
+  { name: "ORIGA GENERAL CONTRACTING", monthIndex: 6, revenue: 80 },
+  { name: "ADIRONDACK ARCHITECTURAL", monthIndex: 1, revenue: 47.62 },
+  { name: "UKCBC", monthIndex: 8, revenue: 47.62 },
+];
+
+// Generate topClients for each month (all clients with revenue > 0)
 function getTopClientsForMonth(monthIndex: number) {
   const premiumClients = PREMIUM_CLIENTS_MONTHLY
     .filter(c => c.monthly[monthIndex] > 0)
@@ -131,7 +237,16 @@ function getTopClientsForMonth(monthIndex: number) {
       category: "normal" as const,
     }));
 
-  return [...premiumClients, ...normalClients].sort((a, b) => b.revenue - a.revenue);
+  const oneTimeClients = ONE_TIME_CLIENTS_2024
+    .filter(c => c.monthIndex === monthIndex)
+    .map(c => ({
+      name: c.name,
+      revenue: c.revenue,
+      invoices: 1,
+      category: "one-time" as const,
+    }));
+
+  return [...premiumClients, ...normalClients, ...oneTimeClients].sort((a, b) => b.revenue - a.revenue);
 }
 
 // ========== EXACT 2024 MONTHLY DATA (from user-provided spreadsheets) ==========
@@ -367,6 +482,7 @@ const TOTAL_CLIENTS_2024 = 193;
 // Export clients monthly data for use in other components
 export const PREMIUM_CLIENTS_MONTHLY_2024 = PREMIUM_CLIENTS_MONTHLY;
 export const NORMAL_CLIENTS_MONTHLY_2024 = NORMAL_CLIENTS_MONTHLY;
+export const ONE_TIME_CLIENTS_2024_DATA = ONE_TIME_CLIENTS_2024;
 
 export async function loadMasterlistAggregates2024(): Promise<MasterlistAggregates2024> {
   return {
