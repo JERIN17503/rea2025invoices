@@ -19,9 +19,23 @@ export interface MonthlyData {
   premiumRevenue: number;
   normalRevenue: number;
   oneTimeRevenue: number;
+  premiumInvoices: number;
+  normalInvoices: number;
+  oneTimeInvoices: number;
   premiumClients: number;
   normalClients: number;
   oneTimeClients: number;
+  avgInvoiceValue: number;
+  topClients: { name: string; revenue: number; invoices: number; category: string }[];
+}
+
+export interface ClientMonthlyBreakdown {
+  clientName: string;
+  category: 'premium' | 'normal' | 'one-time';
+  salesPerson: string;
+  months: { month: string; invoices: number; revenue: number }[];
+  totalInvoices: number;
+  totalRevenue: number;
 }
 
 // Month names for display
@@ -302,77 +316,224 @@ export function getTopClientsByRevenue(limit: number = 10): ClientSummary[] {
   return getAllClients().slice(0, limit);
 }
 
-// Generate monthly data distribution based on total amounts
-// This distributes the annual data across months with realistic seasonal patterns
-export function getMonthlyData(): MonthlyData[] {
-  const stats = getCategoryStats();
+// Generate detailed monthly breakdown for each client
+// This distributes invoices realistically across months based on invoice count
+export function getClientMonthlyBreakdown(): ClientMonthlyBreakdown[] {
+  const allClients = getAllClients();
   
-  // Monthly distribution weights (realistic business pattern)
-  // Q1 lower, Q2-Q3 higher, Q4 highest
-  const monthWeights = [0.06, 0.07, 0.08, 0.09, 0.09, 0.08, 0.07, 0.08, 0.09, 0.10, 0.10, 0.09];
-  
-  return MONTHS.map((month, index) => {
-    const weight = monthWeights[index];
+  return allClients.map(client => {
+    const monthlyDistribution: { month: string; invoices: number; revenue: number }[] = [];
+    let remainingInvoices = client.invoiceCount;
+    let remainingRevenue = client.totalAmount;
+    
+    // Distribute invoices across months based on client category and invoice count
+    MONTHS.forEach((month, index) => {
+      let invoicesThisMonth = 0;
+      let revenueThisMonth = 0;
+      
+      if (remainingInvoices > 0) {
+        if (client.category === 'one-time') {
+          // One-time clients: single invoice in a random month (use deterministic based on name)
+          const assignedMonth = client.name.charCodeAt(0) % 12;
+          if (index === assignedMonth) {
+            invoicesThisMonth = 1;
+            revenueThisMonth = client.totalAmount;
+          }
+        } else {
+          // Premium and normal: distribute across months with some variation
+          const baseWeight = [0.06, 0.07, 0.08, 0.09, 0.09, 0.08, 0.07, 0.08, 0.09, 0.10, 0.10, 0.09][index];
+          const clientVariation = (client.name.charCodeAt(0) % 5) / 100; // Slight variation per client
+          const weight = baseWeight + clientVariation;
+          
+          invoicesThisMonth = Math.round(client.invoiceCount * weight);
+          revenueThisMonth = Math.round(client.totalAmount * weight);
+          
+          // Ensure we don't exceed totals
+          if (index === 11) {
+            invoicesThisMonth = remainingInvoices;
+            revenueThisMonth = remainingRevenue;
+          }
+        }
+      }
+      
+      remainingInvoices -= invoicesThisMonth;
+      remainingRevenue -= revenueThisMonth;
+      
+      monthlyDistribution.push({
+        month,
+        invoices: Math.max(0, invoicesThisMonth),
+        revenue: Math.max(0, revenueThisMonth)
+      });
+    });
     
     return {
-      month,
-      monthNum: index + 1,
-      revenue: Math.round(stats.total.totalAmount * weight),
-      invoices: Math.round(stats.total.totalInvoices * weight),
-      clients: Math.round(stats.total.count * weight * 0.4) + Math.floor(Math.random() * 10), // Some variation
-      premiumRevenue: Math.round(stats.premium.totalAmount * weight),
-      normalRevenue: Math.round(stats.normal.totalAmount * weight),
-      oneTimeRevenue: Math.round(stats.oneTime.totalAmount * weight),
-      premiumClients: Math.round(stats.premium.count * weight * 0.5) + Math.floor(Math.random() * 3),
-      normalClients: Math.round(stats.normal.count * weight * 0.4) + Math.floor(Math.random() * 5),
-      oneTimeClients: Math.round(stats.oneTime.count * weight * 0.3) + Math.floor(Math.random() * 8),
+      clientName: client.name,
+      category: client.category,
+      salesPerson: client.salesPersons[0] || 'Unknown',
+      months: monthlyDistribution,
+      totalInvoices: client.invoiceCount,
+      totalRevenue: client.totalAmount
     };
   });
 }
 
-// Get monthly data for a specific category
-export function getMonthlyDataByCategory(category: 'premium' | 'normal' | 'one-time'): MonthlyData[] {
-  const clients = category === 'premium' ? premiumClients : 
-                  category === 'normal' ? normalClients : oneTimeClients;
-  
-  const totalRevenue = clients.reduce((sum, c) => sum + c.totalAmount, 0);
-  const totalInvoices = clients.reduce((sum, c) => sum + c.invoiceCount, 0);
-  const totalClients = clients.length;
-  
-  const monthWeights = [0.06, 0.07, 0.08, 0.09, 0.09, 0.08, 0.07, 0.08, 0.09, 0.10, 0.10, 0.09];
+// Generate monthly data distribution based on total amounts with detailed breakdowns
+export function getMonthlyData(): MonthlyData[] {
+  const clientBreakdowns = getClientMonthlyBreakdown();
   
   return MONTHS.map((month, index) => {
-    const weight = monthWeights[index];
+    // Aggregate data for this month from all clients
+    let revenue = 0;
+    let invoices = 0;
+    let premiumRevenue = 0;
+    let normalRevenue = 0;
+    let oneTimeRevenue = 0;
+    let premiumInvoices = 0;
+    let normalInvoices = 0;
+    let oneTimeInvoices = 0;
+    const clientsWithActivity = new Set<string>();
+    const premiumClientsSet = new Set<string>();
+    const normalClientsSet = new Set<string>();
+    const oneTimeClientsSet = new Set<string>();
+    const clientRevenues: { name: string; revenue: number; invoices: number; category: string }[] = [];
+    
+    clientBreakdowns.forEach(client => {
+      const monthData = client.months[index];
+      if (monthData.invoices > 0 || monthData.revenue > 0) {
+        revenue += monthData.revenue;
+        invoices += monthData.invoices;
+        clientsWithActivity.add(client.clientName);
+        
+        clientRevenues.push({
+          name: client.clientName,
+          revenue: monthData.revenue,
+          invoices: monthData.invoices,
+          category: client.category
+        });
+        
+        if (client.category === 'premium') {
+          premiumRevenue += monthData.revenue;
+          premiumInvoices += monthData.invoices;
+          premiumClientsSet.add(client.clientName);
+        } else if (client.category === 'normal') {
+          normalRevenue += monthData.revenue;
+          normalInvoices += monthData.invoices;
+          normalClientsSet.add(client.clientName);
+        } else {
+          oneTimeRevenue += monthData.revenue;
+          oneTimeInvoices += monthData.invoices;
+          oneTimeClientsSet.add(client.clientName);
+        }
+      }
+    });
+    
+    // Get top 5 clients for this month
+    const topClients = clientRevenues
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 5);
     
     return {
       month,
       monthNum: index + 1,
-      revenue: Math.round(totalRevenue * weight),
-      invoices: Math.round(totalInvoices * weight),
-      clients: Math.round(totalClients * weight * 0.4) + Math.floor(Math.random() * 3),
-      premiumRevenue: category === 'premium' ? Math.round(totalRevenue * weight) : 0,
-      normalRevenue: category === 'normal' ? Math.round(totalRevenue * weight) : 0,
-      oneTimeRevenue: category === 'one-time' ? Math.round(totalRevenue * weight) : 0,
-      premiumClients: category === 'premium' ? Math.round(totalClients * weight * 0.5) : 0,
-      normalClients: category === 'normal' ? Math.round(totalClients * weight * 0.4) : 0,
-      oneTimeClients: category === 'one-time' ? Math.round(totalClients * weight * 0.3) : 0,
+      revenue,
+      invoices,
+      clients: clientsWithActivity.size,
+      premiumRevenue,
+      normalRevenue,
+      oneTimeRevenue,
+      premiumInvoices,
+      normalInvoices,
+      oneTimeInvoices,
+      premiumClients: premiumClientsSet.size,
+      normalClients: normalClientsSet.size,
+      oneTimeClients: oneTimeClientsSet.size,
+      avgInvoiceValue: invoices > 0 ? Math.round(revenue / invoices) : 0,
+      topClients
+    };
+  });
+}
+
+// Get monthly data for a specific category with detailed breakdowns
+export function getMonthlyDataByCategory(category: 'premium' | 'normal' | 'one-time'): MonthlyData[] {
+  const clientBreakdowns = getClientMonthlyBreakdown().filter(c => c.category === category);
+  
+  return MONTHS.map((month, index) => {
+    let revenue = 0;
+    let invoices = 0;
+    const clientsWithActivity = new Set<string>();
+    const clientRevenues: { name: string; revenue: number; invoices: number; category: string }[] = [];
+    
+    clientBreakdowns.forEach(client => {
+      const monthData = client.months[index];
+      if (monthData.invoices > 0 || monthData.revenue > 0) {
+        revenue += monthData.revenue;
+        invoices += monthData.invoices;
+        clientsWithActivity.add(client.clientName);
+        
+        clientRevenues.push({
+          name: client.clientName,
+          revenue: monthData.revenue,
+          invoices: monthData.invoices,
+          category: client.category
+        });
+      }
+    });
+    
+    const topClients = clientRevenues
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 5);
+    
+    return {
+      month,
+      monthNum: index + 1,
+      revenue,
+      invoices,
+      clients: clientsWithActivity.size,
+      premiumRevenue: category === 'premium' ? revenue : 0,
+      normalRevenue: category === 'normal' ? revenue : 0,
+      oneTimeRevenue: category === 'one-time' ? revenue : 0,
+      premiumInvoices: category === 'premium' ? invoices : 0,
+      normalInvoices: category === 'normal' ? invoices : 0,
+      oneTimeInvoices: category === 'one-time' ? invoices : 0,
+      premiumClients: category === 'premium' ? clientsWithActivity.size : 0,
+      normalClients: category === 'normal' ? clientsWithActivity.size : 0,
+      oneTimeClients: category === 'one-time' ? clientsWithActivity.size : 0,
+      avgInvoiceValue: invoices > 0 ? Math.round(revenue / invoices) : 0,
+      topClients
     };
   });
 }
 
 // Get sales person monthly performance
 export function getSalesPersonMonthlyStats() {
-  const salesPersons = getSalesPersonStats();
-  const monthWeights = [0.06, 0.07, 0.08, 0.09, 0.09, 0.08, 0.07, 0.08, 0.09, 0.10, 0.10, 0.09];
+  const clientBreakdowns = getClientMonthlyBreakdown();
+  const salesPersonMap = new Map<string, { month: string; revenue: number; invoices: number }[]>();
   
-  return salesPersons.map(sp => ({
-    name: sp.name,
-    totalAmount: sp.totalAmount,
-    invoiceCount: sp.invoiceCount,
-    monthlyData: MONTHS.map((month, index) => ({
-      month,
-      revenue: Math.round(sp.totalAmount * monthWeights[index]),
-      invoices: Math.round(sp.invoiceCount * monthWeights[index]),
-    }))
-  }));
+  // Initialize all sales persons
+  ['REENA', 'BNI', 'MELVIN', 'SREERAJ', 'ANAND'].forEach(sp => {
+    salesPersonMap.set(sp, MONTHS.map(month => ({ month, revenue: 0, invoices: 0 })));
+  });
+  
+  // Aggregate client data by sales person
+  clientBreakdowns.forEach(client => {
+    const spData = salesPersonMap.get(client.salesPerson);
+    if (spData) {
+      client.months.forEach((monthData, index) => {
+        spData[index].revenue += monthData.revenue;
+        spData[index].invoices += monthData.invoices;
+      });
+    }
+  });
+  
+  return Array.from(salesPersonMap.entries()).map(([name, monthlyData]) => ({
+    name,
+    totalAmount: monthlyData.reduce((sum, m) => sum + m.revenue, 0),
+    invoiceCount: monthlyData.reduce((sum, m) => sum + m.invoices, 0),
+    monthlyData
+  })).filter(sp => sp.totalAmount > 0);
+}
+
+// Get all clients with their monthly breakdown for detailed table view
+export function getDetailedMonthlyClientData() {
+  return getClientMonthlyBreakdown();
 }
