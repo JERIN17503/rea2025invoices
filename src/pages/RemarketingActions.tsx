@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { exportToCSV } from "@/lib/csvExport";
 import { MonthlyTrendsChart } from "@/components/MonthlyTrendsChart";
+import { formatCurrency, formatInteger } from "@/lib/formatters";
 import { 
   Crown, 
   User, 
@@ -29,15 +30,6 @@ import reaLogo from "@/assets/rea_logo.jpg";
 const RemarketingActions = () => {
   const stats = getCategoryStats();
   const salesStats = getSalesPersonStats();
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-AE', {
-      style: 'currency',
-      currency: 'AED',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   // Priority calculations
   const highValueOneTime = oneTimeClients

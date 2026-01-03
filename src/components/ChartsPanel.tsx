@@ -25,6 +25,7 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { TrendingUp, Users, DollarSign, FileText, Target, Award } from "lucide-react";
+import { formatCurrency, formatInteger, formatAxisValue } from "@/lib/formatters";
 
 export function ChartsPanel() {
   const stats = getCategoryStats();
@@ -68,23 +69,23 @@ export function ChartsPanel() {
     invoices: c.invoiceCount,
   }));
 
-  // Average revenue per client by category
+  // Average revenue per client by category - no rounding
   const avgRevenueData = [
     { 
       name: "Premium", 
-      avgRevenue: Math.round(stats.premium.totalAmount / stats.premium.count),
-      avgInvoices: Math.round(stats.premium.totalInvoices / stats.premium.count * 10) / 10,
+      avgRevenue: stats.premium.totalAmount / stats.premium.count,
+      avgInvoices: stats.premium.totalInvoices / stats.premium.count,
       color: "hsl(var(--premium))"
     },
     { 
       name: "Normal", 
-      avgRevenue: Math.round(stats.normal.totalAmount / stats.normal.count),
-      avgInvoices: Math.round(stats.normal.totalInvoices / stats.normal.count * 10) / 10,
+      avgRevenue: stats.normal.totalAmount / stats.normal.count,
+      avgInvoices: stats.normal.totalInvoices / stats.normal.count,
       color: "hsl(var(--normal))"
     },
     { 
       name: "One-Time", 
-      avgRevenue: Math.round(stats.oneTime.totalAmount / stats.oneTime.count),
+      avgRevenue: stats.oneTime.totalAmount / stats.oneTime.count,
       avgInvoices: 1,
       color: "hsl(var(--one-time))"
     },
@@ -147,20 +148,7 @@ export function ChartsPanel() {
     category: c.category,
   }));
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-AE', {
-      style: 'currency',
-      currency: 'AED',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
-  const formatCompact = (value: number) => {
-    if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
-    if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
-    return value.toString();
-  };
+  // Use imported formatters from @/lib/formatters
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -225,7 +213,7 @@ export function ChartsPanel() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Total Revenue</p>
-                <p className="text-xl font-bold">{formatCompact(stats.total.totalAmount)}</p>
+                <p className="text-lg font-bold">{formatCurrency(stats.total.totalAmount)}</p>
               </div>
             </div>
           </CardContent>
@@ -238,7 +226,7 @@ export function ChartsPanel() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Avg Premium Value</p>
-                <p className="text-xl font-bold">{formatCompact(stats.premium.totalAmount / stats.premium.count)}</p>
+                <p className="text-lg font-bold">{formatCurrency(stats.premium.totalAmount / stats.premium.count)}</p>
               </div>
             </div>
           </CardContent>
@@ -413,7 +401,7 @@ export function ChartsPanel() {
               <ComposedChart data={avgRevenueData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                 <XAxis dataKey="name" className="text-muted-foreground" />
-                <YAxis tickFormatter={(value) => formatCompact(value)} className="text-muted-foreground" />
+                <YAxis tickFormatter={(value) => formatAxisValue(value)} className="text-muted-foreground" />
                 <Tooltip 
                   formatter={(value: number, name: string) => [
                     name === 'avgRevenue' ? formatCurrency(value) : value,
@@ -471,7 +459,7 @@ export function ChartsPanel() {
           <ResponsiveContainer width="100%" height={400}>
             <BarChart data={topClientsData} layout="vertical" margin={{ top: 5, right: 30, left: 100, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-              <XAxis type="number" tickFormatter={(value) => formatCompact(value)} className="text-muted-foreground" />
+              <XAxis type="number" tickFormatter={(value) => formatAxisValue(value)} className="text-muted-foreground" />
               <YAxis type="category" dataKey="name" width={120} className="text-muted-foreground text-xs" />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -519,7 +507,7 @@ export function ChartsPanel() {
               <BarChart data={salesData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                 <XAxis dataKey="name" className="text-muted-foreground" />
-                <YAxis yAxisId="left" orientation="left" tickFormatter={(value) => formatCompact(value)} className="text-muted-foreground" />
+                <YAxis yAxisId="left" orientation="left" tickFormatter={(value) => formatAxisValue(value)} className="text-muted-foreground" />
                 <YAxis yAxisId="right" orientation="right" className="text-muted-foreground" />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />

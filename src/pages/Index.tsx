@@ -22,18 +22,10 @@ import {
   Calendar
 } from "lucide-react";
 import reaLogo from "@/assets/rea_logo.jpg";
+import { formatCurrency, formatInteger } from "@/lib/formatters";
 
 const Index = () => {
   const stats = getCategoryStats();
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-AE', {
-      style: 'currency',
-      currency: 'AED',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   return (
     <div className="min-h-screen bg-background">

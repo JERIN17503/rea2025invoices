@@ -3,36 +3,29 @@ import { TrendingUp, Target, AlertTriangle, Lightbulb, Users, DollarSign, Downlo
 import { Button } from "@/components/ui/button";
 import { exportToCSV } from "@/lib/csvExport";
 import { MonthlyTrendsChart } from "./MonthlyTrendsChart";
+import { formatCurrency, formatInteger } from "@/lib/formatters";
 
 export function InsightsPanel() {
   const clients = getAllClients();
   const stats = getCategoryStats();
   const salesPersonStats = getSalesPersonStats();
 
-  // Calculate insights
+  // Calculate insights - no rounding
   const topPremiumClients = premiumClients.slice(0, 5);
-  const avgPremiumValue = stats.premium.totalAmount / stats.premium.count;
-  const avgOneTimeValue = stats.oneTime.totalAmount / stats.oneTime.count;
+  const avgPremiumValue = stats.premium.count > 0 ? stats.premium.totalAmount / stats.premium.count : 0;
+  const avgOneTimeValue = stats.oneTime.count > 0 ? stats.oneTime.totalAmount / stats.oneTime.count : 0;
   
   // One-time clients with high value (potential for conversion)
   const highValueOneTime = oneTimeClients
     .filter(c => c.totalAmount > avgOneTimeValue * 2)
     .slice(0, 10);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-AE', {
-      style: 'currency',
-      currency: 'AED',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
-
   const exportInsightsReport = () => {
+    const avgNormalValue = stats.normal.count > 0 ? stats.normal.totalAmount / stats.normal.count : 0;
     const data = [
-      { 'Metric': 'Premium Client Average Value', 'Value (AED)': Math.round(avgPremiumValue), 'Count': stats.premium.count },
-      { 'Metric': 'Normal Client Average Value', 'Value (AED)': Math.round(stats.normal.totalAmount / stats.normal.count), 'Count': stats.normal.count },
-      { 'Metric': 'One-Time Client Average Value', 'Value (AED)': Math.round(avgOneTimeValue), 'Count': stats.oneTime.count },
+      { 'Metric': 'Premium Client Average Value', 'Value (AED)': avgPremiumValue, 'Count': stats.premium.count },
+      { 'Metric': 'Normal Client Average Value', 'Value (AED)': avgNormalValue, 'Count': stats.normal.count },
+      { 'Metric': 'One-Time Client Average Value', 'Value (AED)': avgOneTimeValue, 'Count': stats.oneTime.count },
       { 'Metric': 'Total Revenue', 'Value (AED)': stats.total.totalAmount, 'Count': stats.total.count },
     ];
     exportToCSV(data, 'insights-summary');
