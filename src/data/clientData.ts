@@ -447,10 +447,39 @@ export function getMonthlyData(): MonthlyData[] {
       premiumClients: premiumClientsSet.size,
       normalClients: normalClientsSet.size,
       oneTimeClients: oneTimeClientsSet.size,
-      avgInvoiceValue: invoices > 0 ? Math.round(revenue / invoices) : 0,
+      avgInvoiceValue: invoices > 0 ? revenue / invoices : 0,
       topClients
     };
   });
+}
+
+// Get accurate totals from the actual client data (not distributed estimates)
+export function getAccurateTotals() {
+  const allClients = getAllClients();
+  const totalRevenue = allClients.reduce((sum, c) => sum + c.totalAmount, 0);
+  const totalInvoices = allClients.reduce((sum, c) => sum + c.invoiceCount, 0);
+  const premiumTotal = premiumClients.reduce((sum, c) => sum + c.totalAmount, 0);
+  const premiumInvoiceCount = premiumClients.reduce((sum, c) => sum + c.invoiceCount, 0);
+  const normalTotal = normalClients.reduce((sum, c) => sum + c.totalAmount, 0);
+  const normalInvoiceCount = normalClients.reduce((sum, c) => sum + c.invoiceCount, 0);
+  const oneTimeTotal = oneTimeClients.reduce((sum, c) => sum + c.totalAmount, 0);
+  const oneTimeInvoiceCount = oneTimeClients.reduce((sum, c) => sum + c.invoiceCount, 0);
+  
+  return {
+    totalRevenue,
+    totalInvoices,
+    avgInvoiceValue: totalInvoices > 0 ? totalRevenue / totalInvoices : 0,
+    premiumTotal,
+    premiumInvoiceCount,
+    premiumClients: premiumClients.length,
+    normalTotal,
+    normalInvoiceCount,
+    normalClients: normalClients.length,
+    oneTimeTotal,
+    oneTimeInvoiceCount,
+    oneTimeClients: oneTimeClients.length,
+    totalClients: allClients.length
+  };
 }
 
 // Get monthly data for a specific category with detailed breakdowns
@@ -498,7 +527,7 @@ export function getMonthlyDataByCategory(category: 'premium' | 'normal' | 'one-t
       premiumClients: category === 'premium' ? clientsWithActivity.size : 0,
       normalClients: category === 'normal' ? clientsWithActivity.size : 0,
       oneTimeClients: category === 'one-time' ? clientsWithActivity.size : 0,
-      avgInvoiceValue: invoices > 0 ? Math.round(revenue / invoices) : 0,
+      avgInvoiceValue: invoices > 0 ? revenue / invoices : 0,
       topClients
     };
   });
