@@ -24,12 +24,17 @@ import { formatCurrency, formatInteger, formatAxisValue } from "@/lib/formatters
 import { FileText, DollarSign, Users, TrendingUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { loadMasterlistAggregates } from "@/lib/masterlistAggregates";
+import { loadMasterlistAggregates2024 } from "@/lib/masterlistAggregates2024";
 
 interface MonthlyTrendsChartProps {
   data?: MonthlyData[];
   title?: string;
   description?: string;
   showDetailedTable?: boolean;
+  year?: number;
+  queryKey?: any[];
+  // optional override (defaults to 2025 masterlist loader)
+  loadFn?: () => Promise<any>;
 }
 
 export function MonthlyTrendsChart({
@@ -37,14 +42,19 @@ export function MonthlyTrendsChart({
   title = "Monthly Performance Analysis",
   description = "Detailed monthly breakdown of invoices, revenue, and clients",
   showDetailedTable = true,
+  year = 2025,
+  queryKey,
+  loadFn,
 }: MonthlyTrendsChartProps) {
+  const defaultLoadFn = year === 2024 ? loadMasterlistAggregates2024 : loadMasterlistAggregates;
+
   const {
     data: masterlist,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["masterlist-2025-aggregates"],
-    queryFn: loadMasterlistAggregates,
+    queryKey: queryKey ?? [year === 2024 ? "masterlist-2024-aggregates" : "masterlist-2025-aggregates"],
+    queryFn: loadFn ?? defaultLoadFn,
   });
 
   const monthlyData: MonthlyData[] = masterlist?.monthlyData ?? data ?? getMonthlyData();
@@ -66,7 +76,7 @@ export function MonthlyTrendsChart({
       const monthData = monthlyData.find((m) => m.month === label);
       return (
         <div ref={ref} className="bg-card border border-border rounded-lg p-4 shadow-lg min-w-[280px]">
-          <p className="font-semibold text-card-foreground mb-3 text-lg border-b border-border pb-2">{label} 2025</p>
+          <p className="font-semibold text-card-foreground mb-3 text-lg border-b border-border pb-2">{label} {year}</p>
           <div className="space-y-2">
             {payload.map((entry: any, index: number) => (
               <p key={index} style={{ color: entry.color }} className="text-sm flex justify-between">
@@ -130,7 +140,7 @@ export function MonthlyTrendsChart({
           <CardDescription>Could not load the masterlist file.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-sm text-muted-foreground">The monthly trends need the masterlist at /public/data/masterlist2025.xlsx.</div>
+          <div className="text-sm text-muted-foreground">The monthly trends need the masterlist at /public/data/masterlist{year}.xlsx.</div>
         </CardContent>
       </Card>
     );
@@ -147,7 +157,7 @@ export function MonthlyTrendsChart({
               <p className="text-xs text-muted-foreground">Total Revenue</p>
             </div>
             <p className="text-lg font-bold mt-1">{formatCurrency(accurateTotals.totalRevenue)}</p>
-            <p className="text-xs text-muted-foreground">Jan - Dec 2025 (Actual)</p>
+            <p className="text-xs text-muted-foreground">Jan - Dec {year} (Actual)</p>
           </CardContent>
         </Card>
         <Card>
