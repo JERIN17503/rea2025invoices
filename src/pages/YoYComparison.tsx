@@ -145,133 +145,133 @@ const YoYComparison = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b border-border sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <img src={reaLogo} alt="REA Advertising" className="h-12 w-auto" />
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <img src={reaLogo} alt="REA Advertising" className="h-10 sm:h-12 w-auto" />
               <div>
-                <h1 className="text-2xl font-bold text-foreground">Year-over-Year Comparison</h1>
-                <p className="text-sm text-muted-foreground">2024 vs 2025 Performance Analysis</p>
+                <h1 className="text-lg sm:text-2xl font-bold text-foreground">Year-over-Year</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground">2024 vs 2025 Analysis</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <Link
                 to="/2024"
-                className="flex items-center gap-2 px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors text-sm font-medium"
+                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors text-xs sm:text-sm font-medium"
               >
-                <Calendar className="h-4 w-4" />
-                View 2024
+                <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                2024
               </Link>
               <Link
                 to="/"
-                className="flex items-center gap-2 px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors text-sm font-medium"
+                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors text-xs sm:text-sm font-medium"
               >
-                <Calendar className="h-4 w-4" />
-                View 2025
+                <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                2025
               </Link>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Key Metrics Comparison */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-8">
           <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <DollarSign className="h-5 w-5 text-primary" />
-                  <span className="text-sm font-medium text-muted-foreground">Total Revenue</span>
+            <CardContent className="p-3 sm:pt-6 sm:px-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-1">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                  <span className="text-xs sm:text-sm font-medium text-muted-foreground">Revenue</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <TrendIcon change={revenueChange} />
-                  <span className={`text-sm font-semibold ${getChangeColor(revenueChange)}`}>{formatChange(revenueChange)}</span>
+                  <span className={`text-xs sm:text-sm font-semibold ${getChangeColor(revenueChange)}`}>{formatChange(revenueChange)}</span>
                 </div>
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-muted-foreground">2024</span>
-                  <span className="text-lg font-bold">{formatCurrency(t2024.totalRevenue)}</span>
+                  <span className="text-sm sm:text-lg font-bold">{formatCurrency(t2024.totalRevenue)}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-muted-foreground">2025</span>
-                  <span className="text-lg font-bold text-primary">{formatCurrency(t2025.totalRevenue)}</span>
+                  <span className="text-sm sm:text-lg font-bold text-primary">{formatCurrency(t2025.totalRevenue)}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-primary" />
-                  <span className="text-sm font-medium text-muted-foreground">Total Invoices</span>
+            <CardContent className="p-3 sm:pt-6 sm:px-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-1">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                  <span className="text-xs sm:text-sm font-medium text-muted-foreground">Invoices</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <TrendIcon change={invoicesChange} />
-                  <span className={`text-sm font-semibold ${getChangeColor(invoicesChange)}`}>{formatChange(invoicesChange)}</span>
+                  <span className={`text-xs sm:text-sm font-semibold ${getChangeColor(invoicesChange)}`}>{formatChange(invoicesChange)}</span>
                 </div>
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-muted-foreground">2024</span>
-                  <span className="text-lg font-bold">{t2024.totalInvoices}</span>
+                  <span className="text-sm sm:text-lg font-bold">{t2024.totalInvoices}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-muted-foreground">2025</span>
-                  <span className="text-lg font-bold text-primary">{t2025.totalInvoices}</span>
+                  <span className="text-sm sm:text-lg font-bold text-primary">{t2025.totalInvoices}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-primary" />
-                  <span className="text-sm font-medium text-muted-foreground">Total Clients</span>
+            <CardContent className="p-3 sm:pt-6 sm:px-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-1">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                  <span className="text-xs sm:text-sm font-medium text-muted-foreground">Clients</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <TrendIcon change={clientsChange} />
-                  <span className={`text-sm font-semibold ${getChangeColor(clientsChange)}`}>{formatChange(clientsChange)}</span>
+                  <span className={`text-xs sm:text-sm font-semibold ${getChangeColor(clientsChange)}`}>{formatChange(clientsChange)}</span>
                 </div>
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-muted-foreground">2024</span>
-                  <span className="text-lg font-bold">{t2024.totalClients}</span>
+                  <span className="text-sm sm:text-lg font-bold">{t2024.totalClients}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-muted-foreground">2025</span>
-                  <span className="text-lg font-bold text-primary">{t2025.totalClients}</span>
+                  <span className="text-sm sm:text-lg font-bold text-primary">{t2025.totalClients}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5 text-primary" />
-                  <span className="text-sm font-medium text-muted-foreground">Avg Invoice Value</span>
+            <CardContent className="p-3 sm:pt-6 sm:px-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-1">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                  <span className="text-xs sm:text-sm font-medium text-muted-foreground">Avg Value</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <TrendIcon change={avgValueChange} />
-                  <span className={`text-sm font-semibold ${getChangeColor(avgValueChange)}`}>{formatChange(avgValueChange)}</span>
+                  <span className={`text-xs sm:text-sm font-semibold ${getChangeColor(avgValueChange)}`}>{formatChange(avgValueChange)}</span>
                 </div>
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-muted-foreground">2024</span>
-                  <span className="text-lg font-bold">{formatCurrency(t2024.avgInvoiceValue)}</span>
+                  <span className="text-sm sm:text-lg font-bold">{formatCurrency(t2024.avgInvoiceValue)}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-muted-foreground">2025</span>
-                  <span className="text-lg font-bold text-primary">{formatCurrency(t2025.avgInvoiceValue)}</span>
+                  <span className="text-sm sm:text-lg font-bold text-primary">{formatCurrency(t2025.avgInvoiceValue)}</span>
                 </div>
               </div>
             </CardContent>
@@ -279,31 +279,31 @@ const YoYComparison = () => {
         </div>
 
         {/* Segment Comparison */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 mb-4 sm:mb-8">
           {segmentComparison.map((segment) => (
             <Card key={segment.name} className="border-l-4" style={{ borderLeftColor: segment.color }}>
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    {segment.name === "Premium" && <Crown className="h-5 w-5" style={{ color: segment.color }} />}
-                    {segment.name === "Normal" && <Users className="h-5 w-5" style={{ color: segment.color }} />}
-                    {segment.name === "One-Time" && <User className="h-5 w-5" style={{ color: segment.color }} />}
-                    <span className="font-semibold">{segment.name} Revenue</span>
+              <CardContent className="p-3 sm:pt-6 sm:px-6">
+                <div className="flex items-center justify-between mb-2 sm:mb-4">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    {segment.name === "Premium" && <Crown className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: segment.color }} />}
+                    {segment.name === "Normal" && <Users className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: segment.color }} />}
+                    {segment.name === "One-Time" && <User className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: segment.color }} />}
+                    <span className="text-sm sm:text-base font-semibold">{segment.name}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <TrendIcon change={segment.change} />
-                    <span className={`text-sm font-semibold ${getChangeColor(segment.change)}`}>{formatChange(segment.change)}</span>
+                    <span className={`text-xs sm:text-sm font-semibold ${getChangeColor(segment.change)}`}>{formatChange(segment.change)}</span>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">2024</span>
-                    <span className="text-xl font-bold">{formatCurrency(segment.value2024)}</span>
+                <div className="flex sm:flex-col items-center sm:items-stretch justify-between gap-2 sm:space-y-2">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                    <span className="text-xs text-muted-foreground">2024</span>
+                    <span className="text-sm sm:text-xl font-bold">{formatCurrency(segment.value2024)}</span>
                   </div>
-                  <ArrowRight className="h-4 w-4 mx-auto text-muted-foreground" />
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">2025</span>
-                    <span className="text-xl font-bold" style={{ color: segment.color }}>{formatCurrency(segment.value2025)}</span>
+                  <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground hidden sm:block sm:mx-auto" />
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                    <span className="text-xs text-muted-foreground">2025</span>
+                    <span className="text-sm sm:text-xl font-bold" style={{ color: segment.color }}>{formatCurrency(segment.value2025)}</span>
                   </div>
                 </div>
               </CardContent>
@@ -312,35 +312,35 @@ const YoYComparison = () => {
         </div>
 
         {/* Monthly Revenue Comparison Chart */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Monthly Revenue Comparison</CardTitle>
-            <CardDescription>2024 vs 2025 revenue by month</CardDescription>
+        <Card className="mb-4 sm:mb-8">
+          <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-2">
+            <CardTitle className="text-base sm:text-lg">Monthly Revenue Comparison</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">2024 vs 2025 revenue by month</CardDescription>
           </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={350}>
-              <LineChart data={monthlyComparison}>
+          <CardContent className="p-2 sm:p-6 pt-0 sm:pt-0">
+            <ResponsiveContainer width="100%" height={250} className="sm:!h-[350px]">
+              <LineChart data={monthlyComparison} margin={{ left: -10, right: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} tick={{ fontSize: 12 }} />
+                <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} tick={{ fontSize: 10 }} width={35} />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend />
+                <Legend wrapperStyle={{ fontSize: '12px' }} />
                 <Line
                   type="monotone"
                   dataKey="revenue2024"
-                  name="2024 Revenue"
+                  name="2024"
                   stroke="hsl(var(--muted-foreground))"
                   strokeWidth={2}
-                  dot={{ r: 4 }}
+                  dot={{ r: 3 }}
                   strokeDasharray="5 5"
                 />
                 <Line
                   type="monotone"
                   dataKey="revenue2025"
-                  name="2025 Revenue"
+                  name="2025"
                   stroke="hsl(var(--primary))"
                   strokeWidth={2}
-                  dot={{ r: 4 }}
+                  dot={{ r: 3 }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -348,21 +348,21 @@ const YoYComparison = () => {
         </Card>
 
         {/* Segment Revenue Comparison by Month */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-6 mb-4 sm:mb-8">
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base flex items-center gap-2">
-                <Crown className="h-4 w-4 text-premium" />
-                Premium Revenue
+            <CardHeader className="p-3 sm:p-6 pb-1 sm:pb-2">
+              <CardTitle className="text-sm sm:text-base flex items-center gap-1.5 sm:gap-2">
+                <Crown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-premium" />
+                Premium
               </CardTitle>
-              <CardDescription>Monthly comparison</CardDescription>
+              <CardDescription className="text-xs">Monthly comparison</CardDescription>
             </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={monthlyComparison}>
+            <CardContent className="p-2 sm:p-6 pt-0 sm:pt-0">
+              <ResponsiveContainer width="100%" height={150} className="sm:!h-[200px]">
+                <BarChart data={monthlyComparison} margin={{ left: -15, right: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis dataKey="month" tick={{ fontSize: 10 }} />
-                  <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} tick={{ fontSize: 10 }} />
+                  <XAxis dataKey="month" tick={{ fontSize: 9 }} />
+                  <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} tick={{ fontSize: 9 }} width={30} />
                   <Tooltip content={<CustomTooltip />} />
                   <Bar dataKey="premium2024" name="2024" fill="hsl(var(--muted-foreground))" />
                   <Bar dataKey="premium2025" name="2025" fill="hsl(var(--premium))" />
@@ -372,19 +372,19 @@ const YoYComparison = () => {
           </Card>
 
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base flex items-center gap-2">
-                <Users className="h-4 w-4 text-normal" />
-                Normal Revenue
+            <CardHeader className="p-3 sm:p-6 pb-1 sm:pb-2">
+              <CardTitle className="text-sm sm:text-base flex items-center gap-1.5 sm:gap-2">
+                <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-normal" />
+                Normal
               </CardTitle>
-              <CardDescription>Monthly comparison</CardDescription>
+              <CardDescription className="text-xs">Monthly comparison</CardDescription>
             </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={monthlyComparison}>
+            <CardContent className="p-2 sm:p-6 pt-0 sm:pt-0">
+              <ResponsiveContainer width="100%" height={150} className="sm:!h-[200px]">
+                <BarChart data={monthlyComparison} margin={{ left: -15, right: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis dataKey="month" tick={{ fontSize: 10 }} />
-                  <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} tick={{ fontSize: 10 }} />
+                  <XAxis dataKey="month" tick={{ fontSize: 9 }} />
+                  <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} tick={{ fontSize: 9 }} width={30} />
                   <Tooltip content={<CustomTooltip />} />
                   <Bar dataKey="normal2024" name="2024" fill="hsl(var(--muted-foreground))" />
                   <Bar dataKey="normal2025" name="2025" fill="hsl(var(--normal))" />
@@ -394,19 +394,19 @@ const YoYComparison = () => {
           </Card>
 
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base flex items-center gap-2">
-                <User className="h-4 w-4 text-one-time" />
-                One-Time Revenue
+            <CardHeader className="p-3 sm:p-6 pb-1 sm:pb-2">
+              <CardTitle className="text-sm sm:text-base flex items-center gap-1.5 sm:gap-2">
+                <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-one-time" />
+                One-Time
               </CardTitle>
-              <CardDescription>Monthly comparison</CardDescription>
+              <CardDescription className="text-xs">Monthly comparison</CardDescription>
             </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={monthlyComparison}>
+            <CardContent className="p-2 sm:p-6 pt-0 sm:pt-0">
+              <ResponsiveContainer width="100%" height={150} className="sm:!h-[200px]">
+                <BarChart data={monthlyComparison} margin={{ left: -15, right: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis dataKey="month" tick={{ fontSize: 10 }} />
-                  <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} tick={{ fontSize: 10 }} />
+                  <XAxis dataKey="month" tick={{ fontSize: 9 }} />
+                  <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} tick={{ fontSize: 9 }} width={30} />
                   <Tooltip content={<CustomTooltip />} />
                   <Bar dataKey="oneTime2024" name="2024" fill="hsl(var(--muted-foreground))" />
                   <Bar dataKey="oneTime2025" name="2025" fill="hsl(var(--one-time))" />
@@ -418,69 +418,75 @@ const YoYComparison = () => {
 
         {/* Summary Table */}
         <Card>
-          <CardHeader>
-            <CardTitle>Full Year Summary</CardTitle>
-            <CardDescription>Complete breakdown of 2024 vs 2025 metrics</CardDescription>
+          <CardHeader className="p-3 sm:p-6">
+            <CardTitle className="text-base sm:text-lg">Full Year Summary</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">Complete breakdown of 2024 vs 2025 metrics</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0 sm:p-6 sm:pt-0">
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-xs sm:text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="text-left py-3 px-4 font-semibold">Metric</th>
-                    <th className="text-right py-3 px-4 font-semibold">2024</th>
-                    <th className="text-right py-3 px-4 font-semibold">2025</th>
-                    <th className="text-right py-3 px-4 font-semibold">Change</th>
+                    <th className="text-left py-2 sm:py-3 px-2 sm:px-4 font-semibold">Metric</th>
+                    <th className="text-right py-2 sm:py-3 px-2 sm:px-4 font-semibold">2024</th>
+                    <th className="text-right py-2 sm:py-3 px-2 sm:px-4 font-semibold">2025</th>
+                    <th className="text-right py-2 sm:py-3 px-2 sm:px-4 font-semibold">Δ</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-b border-border/50">
-                    <td className="py-3 px-4 font-medium">Total Revenue</td>
-                    <td className="py-3 px-4 text-right">{formatCurrency(t2024.totalRevenue)}</td>
-                    <td className="py-3 px-4 text-right font-semibold">{formatCurrency(t2025.totalRevenue)}</td>
-                    <td className={`py-3 px-4 text-right font-semibold ${getChangeColor(revenueChange)}`}>{formatChange(revenueChange)}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 font-medium">Revenue</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-right">{formatCurrency(t2024.totalRevenue)}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-right font-semibold">{formatCurrency(t2025.totalRevenue)}</td>
+                    <td className={`py-2 sm:py-3 px-2 sm:px-4 text-right font-semibold ${getChangeColor(revenueChange)}`}>{formatChange(revenueChange)}</td>
                   </tr>
                   <tr className="border-b border-border/50">
-                    <td className="py-3 px-4 font-medium">Total Invoices</td>
-                    <td className="py-3 px-4 text-right">{t2024.totalInvoices}</td>
-                    <td className="py-3 px-4 text-right font-semibold">{t2025.totalInvoices}</td>
-                    <td className={`py-3 px-4 text-right font-semibold ${getChangeColor(invoicesChange)}`}>{formatChange(invoicesChange)}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 font-medium">Invoices</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-right">{t2024.totalInvoices}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-right font-semibold">{t2025.totalInvoices}</td>
+                    <td className={`py-2 sm:py-3 px-2 sm:px-4 text-right font-semibold ${getChangeColor(invoicesChange)}`}>{formatChange(invoicesChange)}</td>
                   </tr>
                   <tr className="border-b border-border/50">
-                    <td className="py-3 px-4 font-medium">Total Clients</td>
-                    <td className="py-3 px-4 text-right">{t2024.totalClients}</td>
-                    <td className="py-3 px-4 text-right font-semibold">{t2025.totalClients}</td>
-                    <td className={`py-3 px-4 text-right font-semibold ${getChangeColor(clientsChange)}`}>{formatChange(clientsChange)}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 font-medium">Clients</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-right">{t2024.totalClients}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-right font-semibold">{t2025.totalClients}</td>
+                    <td className={`py-2 sm:py-3 px-2 sm:px-4 text-right font-semibold ${getChangeColor(clientsChange)}`}>{formatChange(clientsChange)}</td>
                   </tr>
                   <tr className="border-b border-border/50">
-                    <td className="py-3 px-4 font-medium">Average Invoice Value</td>
-                    <td className="py-3 px-4 text-right">{formatCurrency(t2024.avgInvoiceValue)}</td>
-                    <td className="py-3 px-4 text-right font-semibold">{formatCurrency(t2025.avgInvoiceValue)}</td>
-                    <td className={`py-3 px-4 text-right font-semibold ${getChangeColor(avgValueChange)}`}>{formatChange(avgValueChange)}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 font-medium">Avg Value</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-right">{formatCurrency(t2024.avgInvoiceValue)}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-right font-semibold">{formatCurrency(t2025.avgInvoiceValue)}</td>
+                    <td className={`py-2 sm:py-3 px-2 sm:px-4 text-right font-semibold ${getChangeColor(avgValueChange)}`}>{formatChange(avgValueChange)}</td>
                   </tr>
                   <tr className="border-b border-border/50 bg-premium/5">
-                    <td className="py-3 px-4 font-medium flex items-center gap-2">
-                      <Crown className="h-4 w-4 text-premium" /> Premium Revenue
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 font-medium">
+                      <div className="flex items-center gap-1 sm:gap-2">
+                        <Crown className="h-3 w-3 sm:h-4 sm:w-4 text-premium" /> <span className="hidden sm:inline">Premium</span><span className="sm:hidden">Prem</span>
+                      </div>
                     </td>
-                    <td className="py-3 px-4 text-right">{formatCurrency(t2024.premiumTotal)}</td>
-                    <td className="py-3 px-4 text-right font-semibold">{formatCurrency(t2025.premiumTotal)}</td>
-                    <td className={`py-3 px-4 text-right font-semibold ${getChangeColor(premiumChange)}`}>{formatChange(premiumChange)}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-right">{formatCurrency(t2024.premiumTotal)}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-right font-semibold">{formatCurrency(t2025.premiumTotal)}</td>
+                    <td className={`py-2 sm:py-3 px-2 sm:px-4 text-right font-semibold ${getChangeColor(premiumChange)}`}>{formatChange(premiumChange)}</td>
                   </tr>
                   <tr className="border-b border-border/50 bg-normal/5">
-                    <td className="py-3 px-4 font-medium flex items-center gap-2">
-                      <Users className="h-4 w-4 text-normal" /> Normal Revenue
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 font-medium">
+                      <div className="flex items-center gap-1 sm:gap-2">
+                        <Users className="h-3 w-3 sm:h-4 sm:w-4 text-normal" /> Normal
+                      </div>
                     </td>
-                    <td className="py-3 px-4 text-right">{formatCurrency(t2024.normalTotal)}</td>
-                    <td className="py-3 px-4 text-right font-semibold">{formatCurrency(t2025.normalTotal)}</td>
-                    <td className={`py-3 px-4 text-right font-semibold ${getChangeColor(normalChange)}`}>{formatChange(normalChange)}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-right">{formatCurrency(t2024.normalTotal)}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-right font-semibold">{formatCurrency(t2025.normalTotal)}</td>
+                    <td className={`py-2 sm:py-3 px-2 sm:px-4 text-right font-semibold ${getChangeColor(normalChange)}`}>{formatChange(normalChange)}</td>
                   </tr>
                   <tr className="bg-one-time/5">
-                    <td className="py-3 px-4 font-medium flex items-center gap-2">
-                      <User className="h-4 w-4 text-one-time" /> One-Time Revenue
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 font-medium">
+                      <div className="flex items-center gap-1 sm:gap-2">
+                        <User className="h-3 w-3 sm:h-4 sm:w-4 text-one-time" /> <span className="hidden sm:inline">One-Time</span><span className="sm:hidden">1-Time</span>
+                      </div>
                     </td>
-                    <td className="py-3 px-4 text-right">{formatCurrency(t2024.oneTimeTotal)}</td>
-                    <td className="py-3 px-4 text-right font-semibold">{formatCurrency(t2025.oneTimeTotal)}</td>
-                    <td className={`py-3 px-4 text-right font-semibold ${getChangeColor(oneTimeChange)}`}>{formatChange(oneTimeChange)}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-right">{formatCurrency(t2024.oneTimeTotal)}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-right font-semibold">{formatCurrency(t2025.oneTimeTotal)}</td>
+                    <td className={`py-2 sm:py-3 px-2 sm:px-4 text-right font-semibold ${getChangeColor(oneTimeChange)}`}>{formatChange(oneTimeChange)}</td>
                   </tr>
                 </tbody>
               </table>
