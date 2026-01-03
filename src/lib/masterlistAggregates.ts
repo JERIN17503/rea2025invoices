@@ -38,8 +38,35 @@ function toDate(value: unknown): Date | null {
   return isValid(fallback) ? fallback : null;
 }
 
+function normalizeKey(key: string): string {
+  return key.toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+function rowGet(row: Record<string, unknown>, wanted: string[]): unknown {
+  // build once per call (small) – robust to Excel weird headers like __EMPTY, extra spaces, etc.
+  const normalized: Record<string, unknown> = {};
+  for (const k of Object.keys(row)) {
+    normalized[normalizeKey(k)] = row[k];
+  }
+  for (const w of wanted) {
+    const v = normalized[normalizeKey(w)];
+    if (v !== undefined && v !== "") return v;
+  }
+  return undefined;
+}
+
 function normalizeClientName(name: unknown): string {
-  return String(name ?? "").trim();
+  // Basic normalization + merge common variants (can be extended as you confirm mappings)
+  const raw = String(name ?? "").trim();
+  if (!raw) return "";
+  const collapsed = raw.replace(/\s+/g, " ").trim();
+
+  // Consolidations based on your project memory (examples)
+  const upper = collapsed.toUpperCase();
+  if (upper.startsWith("IDP")) return "IDP Education";
+  if (upper.startsWith("NAVITAS")) return "Navitas Middle East";
+
+  return collapsed;
 }
 
 export interface MasterlistAggregates {
@@ -86,17 +113,30 @@ export async function loadMasterlistAggregates(): Promise<MasterlistAggregates> 
     const invoices: InvoiceRow[] = [];
 
     for (const row of rows) {
-      const client = normalizeClientName(row["CLIENT"]);
-      const date = toDate(row["INVOICE DATE"]);
+      const client = normalizeClientName(
+        rowGet(row, ["CLIENT", "Client"]) // tolerant
+      );
+      const date = toDate(rowGet(row, ["INVOICE DATE", "Invoice Date", "DATE"])) ;
       if (!client || !date) continue;
 
-      const subAfterRebate = toNumber(row["INVOICE SUB-TOTAL AFTER REBATE"]);
-      const totalInvoiceAmount = toNumber(row["TOTAL INVOICE AMOUNT"]);
+      const subAfterRebate = toNumber(
+        rowGet(row, ["INVOICE SUB-TOTAL AFTER REBATE", "INVOICE SUBTOTAL AFTER REBATE", "SUB-TOTAL AFTER REBATE"])
+      );
+      const totalInvoiceAmount = toNumber(
+        rowGet(row, ["TOTAL INVOICE AMOUNT", "TOTAL AMOUNT", "INVOICE TOTAL"])
+      );
+
       const netRevenue = subAfterRebate > 0 ? subAfterRebate : totalInvoiceAmount / (1 + VAT_RATE);
       if (!Number.isFinite(netRevenue) || netRevenue <= 0) continue;
 
       invoices.push({ client, date, netRevenue });
       clientInvoiceCounts.set(client, (clientInvoiceCounts.get(client) ?? 0) + 1);
+    }
+
+    // Debug (kept lightweight): if we parsed nothing, log the available headers to fix mapping.
+    if (invoices.length === 0 && rows.length > 0) {
+      // eslint-disable-next-line no-console
+      console.warn("Masterlist parsed 0 invoices. Available headers:", Object.keys(rows[0] ?? {}));
     }
 
     const getCategory = (clientName: string): ClientCategory => {
