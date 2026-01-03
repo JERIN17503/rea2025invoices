@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, ChevronUp, ChevronDown, Crown, User, Users } from "lucide-react";
+import { formatCurrency, formatInteger } from "@/lib/formatters";
 
 interface ClientTableProps {
   clients: ClientSummary[];
@@ -85,13 +86,7 @@ export function ClientTable({ clients, title, category }: ClientTableProps) {
     }
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-AE', {
-      style: 'currency',
-      currency: 'AED',
-      minimumFractionDigits: 2,
-    }).format(amount);
-  };
+  // Use imported formatter from @/lib/formatters
 
   return (
     <div className="bg-card rounded-xl border border-border shadow-sm">

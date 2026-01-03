@@ -17,6 +17,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { DollarSign, Users, TrendingUp, Target } from "lucide-react";
 import { SegmentMonthlyChart } from "./MonthlyTrendsChart";
+import { formatCurrency, formatInteger, formatAxisValue } from "@/lib/formatters";
 
 interface SegmentChartsProps {
   clients: ClientSummary[];
@@ -90,20 +91,7 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
     { name: "Others", value: stats.total.totalAmount - categoryStats.totalAmount, color: "hsl(var(--muted))" },
   ];
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-AE', {
-      style: 'currency',
-      currency: 'AED',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
-  const formatCompact = (value: number) => {
-    if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
-    if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
-    return value.toString();
-  };
+  // Use imported formatters from @/lib/formatters
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -146,7 +134,7 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
               <DollarSign className="h-4 w-4 text-muted-foreground" />
               <p className="text-xs text-muted-foreground">Total Revenue</p>
             </div>
-            <p className="text-xl font-bold mt-1">{formatCompact(categoryStats.totalAmount)}</p>
+            <p className="text-lg font-bold mt-1">{formatCurrency(categoryStats.totalAmount)}</p>
             <p className="text-xs text-muted-foreground">
               {((categoryStats.totalAmount / stats.total.totalAmount) * 100).toFixed(1)}% of total
             </p>
@@ -170,7 +158,7 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
               <Target className="h-4 w-4 text-muted-foreground" />
               <p className="text-xs text-muted-foreground">Avg Value</p>
             </div>
-            <p className="text-xl font-bold mt-1">{formatCompact(avgValue)}</p>
+            <p className="text-lg font-bold mt-1">{formatCurrency(avgValue)}</p>
             <p className="text-xs text-muted-foreground">per client</p>
           </CardContent>
         </Card>
@@ -263,7 +251,7 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={topClientsData} layout="vertical" margin={{ left: 0, right: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                <XAxis type="number" tickFormatter={formatCompact} tick={{ fontSize: 10 }} />
+                <XAxis type="number" tickFormatter={formatAxisValue} tick={{ fontSize: 10 }} />
                 <YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 10 }} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="revenue" name="Revenue" fill={categoryColor} radius={[0, 4, 4, 0]} />
@@ -283,7 +271,7 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
               <BarChart data={salesPersonData} margin={{ left: 0, right: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                <YAxis tickFormatter={formatCompact} tick={{ fontSize: 10 }} />
+                <YAxis tickFormatter={formatAxisValue} tick={{ fontSize: 10 }} />
                 <Tooltip 
                   formatter={(value: number, name: string) => [
                     name === 'revenue' ? formatCurrency(value) : value,

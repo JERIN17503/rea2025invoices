@@ -20,7 +20,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from "react";
-import { ChevronDown, ChevronUp, FileText, DollarSign, Users, TrendingUp } from "lucide-react";
+import { formatCurrency, formatInteger, formatAxisValue } from "@/lib/formatters";
+import { FileText, DollarSign, Users, TrendingUp } from "lucide-react";
 
 interface MonthlyTrendsChartProps {
   data?: MonthlyData[];
@@ -36,35 +37,18 @@ export function MonthlyTrendsChart({
   showDetailedTable = true
 }: MonthlyTrendsChartProps) {
   const monthlyData = data || getMonthlyData();
-  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
-  const [expandedClients, setExpandedClients] = useState<Set<string>>(new Set());
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-AE', {
-      style: 'currency',
-      currency: 'AED',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
-  const formatCompact = (value: number) => {
-    if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
-    if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
-    return value.toString();
-  };
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       const monthData = monthlyData.find(m => m.month === label);
       return (
-        <div className="bg-card border border-border rounded-lg p-4 shadow-lg min-w-[250px]">
+        <div className="bg-card border border-border rounded-lg p-4 shadow-lg min-w-[280px]">
           <p className="font-semibold text-card-foreground mb-3 text-lg border-b border-border pb-2">{label} 2025</p>
           <div className="space-y-2">
             {payload.map((entry: any, index: number) => (
               <p key={index} style={{ color: entry.color }} className="text-sm flex justify-between">
                 <span>{entry.name}:</span>
-                <span className="font-medium">{entry.name.includes('Revenue') || entry.name.includes('Value') ? formatCurrency(entry.value) : entry.value}</span>
+                <span className="font-medium">{entry.name.includes('Revenue') || entry.name.includes('Value') ? formatCurrency(entry.value) : formatInteger(entry.value)}</span>
               </p>
             ))}
           </div>
@@ -73,7 +57,7 @@ export function MonthlyTrendsChart({
               <p className="text-xs text-muted-foreground">Top clients this month:</p>
               {monthData.topClients.slice(0, 3).map((client, i) => (
                 <p key={i} className="text-xs text-muted-foreground truncate">
-                  • {client.name}: {formatCompact(client.revenue)}
+                  • {client.name}: {formatCurrency(client.revenue)}
                 </p>
               ))}
             </div>
@@ -84,13 +68,13 @@ export function MonthlyTrendsChart({
     return null;
   };
 
-  // Calculate totals
+  // Calculate totals - no rounding
   const totals = monthlyData.reduce((acc, month) => ({
     revenue: acc.revenue + month.revenue,
     invoices: acc.invoices + month.invoices,
     avgInvoiceValue: 0
   }), { revenue: 0, invoices: 0, avgInvoiceValue: 0 });
-  totals.avgInvoiceValue = totals.invoices > 0 ? Math.round(totals.revenue / totals.invoices) : 0;
+  totals.avgInvoiceValue = totals.invoices > 0 ? totals.revenue / totals.invoices : 0;
 
   const getCategoryBadge = (category: string) => {
     switch (category) {
@@ -115,7 +99,7 @@ export function MonthlyTrendsChart({
               <DollarSign className="h-4 w-4 text-primary" />
               <p className="text-xs text-muted-foreground">Total Revenue</p>
             </div>
-            <p className="text-xl font-bold mt-1">{formatCompact(totals.revenue)}</p>
+            <p className="text-lg font-bold mt-1">{formatCurrency(totals.revenue)}</p>
             <p className="text-xs text-muted-foreground">Jan - Dec 2025</p>
           </CardContent>
         </Card>
@@ -125,7 +109,7 @@ export function MonthlyTrendsChart({
               <FileText className="h-4 w-4 text-primary" />
               <p className="text-xs text-muted-foreground">Total Invoices</p>
             </div>
-            <p className="text-xl font-bold mt-1">{totals.invoices}</p>
+            <p className="text-lg font-bold mt-1">{formatInteger(totals.invoices)}</p>
             <p className="text-xs text-muted-foreground">Across all clients</p>
           </CardContent>
         </Card>
@@ -135,7 +119,7 @@ export function MonthlyTrendsChart({
               <TrendingUp className="h-4 w-4 text-primary" />
               <p className="text-xs text-muted-foreground">Avg Invoice Value</p>
             </div>
-            <p className="text-xl font-bold mt-1">{formatCompact(totals.avgInvoiceValue)}</p>
+            <p className="text-lg font-bold mt-1">{formatCurrency(totals.avgInvoiceValue)}</p>
             <p className="text-xs text-muted-foreground">Per invoice</p>
           </CardContent>
         </Card>
@@ -145,7 +129,7 @@ export function MonthlyTrendsChart({
               <Users className="h-4 w-4 text-primary" />
               <p className="text-xs text-muted-foreground">Active Clients</p>
             </div>
-            <p className="text-xl font-bold mt-1">{Math.max(...monthlyData.map(m => m.clients))}</p>
+            <p className="text-lg font-bold mt-1">{formatInteger(Math.max(...monthlyData.map(m => m.clients)))}</p>
             <p className="text-xs text-muted-foreground">Peak month</p>
           </CardContent>
         </Card>
@@ -178,7 +162,7 @@ export function MonthlyTrendsChart({
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                   <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                  <YAxis yAxisId="left" tickFormatter={formatCompact} tick={{ fontSize: 10 }} />
+                  <YAxis yAxisId="left" tickFormatter={formatAxisValue} tick={{ fontSize: 10 }} />
                   <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
@@ -225,7 +209,7 @@ export function MonthlyTrendsChart({
                 <BarChart data={monthlyData}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                   <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                  <YAxis tickFormatter={formatCompact} tick={{ fontSize: 10 }} />
+                  <YAxis tickFormatter={formatAxisValue} tick={{ fontSize: 10 }} />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
                   <Bar dataKey="premiumRevenue" name="Premium Revenue" fill="hsl(var(--premium))" stackId="a" />
@@ -299,24 +283,24 @@ export function MonthlyTrendsChart({
                     {monthlyData.map((month) => (
                       <TableRow key={month.month}>
                         <TableCell className="font-medium">{month.month}</TableCell>
-                        <TableCell className="text-right">{month.invoices}</TableCell>
-                        <TableCell className="text-right">{formatCompact(month.revenue)}</TableCell>
-                        <TableCell className="text-right">{month.clients}</TableCell>
-                        <TableCell className="text-right">{formatCompact(month.avgInvoiceValue)}</TableCell>
-                        <TableCell className="text-right text-premium">{formatCompact(month.premiumRevenue)}</TableCell>
-                        <TableCell className="text-right text-normal">{formatCompact(month.normalRevenue)}</TableCell>
-                        <TableCell className="text-right text-one-time">{formatCompact(month.oneTimeRevenue)}</TableCell>
+                        <TableCell className="text-right">{formatInteger(month.invoices)}</TableCell>
+                        <TableCell className="text-right">{formatCurrency(month.revenue)}</TableCell>
+                        <TableCell className="text-right">{formatInteger(month.clients)}</TableCell>
+                        <TableCell className="text-right">{formatCurrency(month.avgInvoiceValue)}</TableCell>
+                        <TableCell className="text-right text-premium">{formatCurrency(month.premiumRevenue)}</TableCell>
+                        <TableCell className="text-right text-normal">{formatCurrency(month.normalRevenue)}</TableCell>
+                        <TableCell className="text-right text-one-time">{formatCurrency(month.oneTimeRevenue)}</TableCell>
                       </TableRow>
                     ))}
                     <TableRow className="bg-muted/50 font-semibold">
                       <TableCell>Total</TableCell>
-                      <TableCell className="text-right">{totals.invoices}</TableCell>
-                      <TableCell className="text-right">{formatCompact(totals.revenue)}</TableCell>
+                      <TableCell className="text-right">{formatInteger(totals.invoices)}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(totals.revenue)}</TableCell>
                       <TableCell className="text-right">-</TableCell>
-                      <TableCell className="text-right">{formatCompact(totals.avgInvoiceValue)}</TableCell>
-                      <TableCell className="text-right text-premium">{formatCompact(monthlyData.reduce((s, m) => s + m.premiumRevenue, 0))}</TableCell>
-                      <TableCell className="text-right text-normal">{formatCompact(monthlyData.reduce((s, m) => s + m.normalRevenue, 0))}</TableCell>
-                      <TableCell className="text-right text-one-time">{formatCompact(monthlyData.reduce((s, m) => s + m.oneTimeRevenue, 0))}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(totals.avgInvoiceValue)}</TableCell>
+                      <TableCell className="text-right text-premium">{formatCurrency(monthlyData.reduce((s, m) => s + m.premiumRevenue, 0))}</TableCell>
+                      <TableCell className="text-right text-normal">{formatCurrency(monthlyData.reduce((s, m) => s + m.normalRevenue, 0))}</TableCell>
+                      <TableCell className="text-right text-one-time">{formatCurrency(monthlyData.reduce((s, m) => s + m.oneTimeRevenue, 0))}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -356,7 +340,7 @@ export function MonthlyTrendsChart({
                         )}
                         <TableCell className="max-w-[200px] truncate">{client.name}</TableCell>
                         <TableCell>{getCategoryBadge(client.category)}</TableCell>
-                        <TableCell className="text-right">{client.invoices}</TableCell>
+                        <TableCell className="text-right">{formatInteger(client.invoices)}</TableCell>
                         <TableCell className="text-right">{formatCurrency(client.revenue)}</TableCell>
                       </TableRow>
                     ))
@@ -379,21 +363,6 @@ interface SegmentMonthlyChartProps {
 }
 
 export function SegmentMonthlyChart({ category, categoryColor, categoryLabel, data }: SegmentMonthlyChartProps) {
-  const formatCompact = (value: number) => {
-    if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
-    if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
-    return value.toString();
-  };
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-AE', {
-      style: 'currency',
-      currency: 'AED',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
   // Calculate totals for this category
   const totals = data.reduce((acc, month) => ({
     revenue: acc.revenue + month.revenue,
@@ -409,13 +378,13 @@ export function SegmentMonthlyChart({ category, categoryColor, categoryLabel, da
           <p className="font-semibold text-card-foreground mb-2">{label} 2025</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} style={{ color: entry.color }} className="text-sm">
-              {entry.name}: {entry.name.includes('Revenue') ? formatCurrency(entry.value) : entry.value}
+              {entry.name}: {entry.name.includes('Revenue') ? formatCurrency(entry.value) : formatInteger(entry.value)}
             </p>
           ))}
           {monthData && (
             <>
-              <p className="text-sm text-muted-foreground mt-1">Invoices: {monthData.invoices}</p>
-              <p className="text-sm text-muted-foreground">Clients: {monthData.clients}</p>
+              <p className="text-sm text-muted-foreground mt-1">Invoices: {formatInteger(monthData.invoices)}</p>
+              <p className="text-sm text-muted-foreground">Clients: {formatInteger(monthData.clients)}</p>
             </>
           )}
         </div>
@@ -429,7 +398,7 @@ export function SegmentMonthlyChart({ category, categoryColor, categoryLabel, da
       <CardHeader className="pb-2">
         <CardTitle className="text-base">{categoryLabel} Monthly Performance</CardTitle>
         <CardDescription>
-          Total: {formatCompact(totals.revenue)} revenue, {totals.invoices} invoices across {totals.clients} clients
+          Total: {formatCurrency(totals.revenue)} revenue, {formatInteger(totals.invoices)} invoices across {formatInteger(totals.clients)} clients
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -451,7 +420,7 @@ export function SegmentMonthlyChart({ category, categoryColor, categoryLabel, da
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                 <XAxis dataKey="month" tick={{ fontSize: 10 }} />
-                <YAxis tickFormatter={formatCompact} tick={{ fontSize: 10 }} />
+                <YAxis tickFormatter={formatAxisValue} tick={{ fontSize: 10 }} />
                 <Tooltip content={<CustomTooltip />} />
                 <Area 
                   type="monotone" 
@@ -498,9 +467,9 @@ export function SegmentMonthlyChart({ category, categoryColor, categoryLabel, da
                   {data.map((month) => (
                     <TableRow key={month.month}>
                       <TableCell className="font-medium">{month.month}</TableCell>
-                      <TableCell className="text-right">{month.invoices}</TableCell>
-                      <TableCell className="text-right">{formatCompact(month.revenue)}</TableCell>
-                      <TableCell className="text-right">{month.clients}</TableCell>
+                      <TableCell className="text-right">{formatInteger(month.invoices)}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(month.revenue)}</TableCell>
+                      <TableCell className="text-right">{formatInteger(month.clients)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
