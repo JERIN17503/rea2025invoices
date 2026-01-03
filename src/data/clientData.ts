@@ -1,12 +1,4 @@
-// Complete client invoice data extracted from the masterlist
-export interface ClientInvoice {
-  client: string;
-  invoiceNo: string;
-  invoiceDate: string;
-  totalAmount: number;
-  salesPerson: string;
-  description: string;
-}
+// Complete client invoice data extracted from the masterlist (2025 Insights)
 
 export interface ClientSummary {
   name: string;
@@ -14,1100 +6,269 @@ export interface ClientSummary {
   totalAmount: number;
   category: 'premium' | 'one-time' | 'normal';
   salesPersons: string[];
-  firstInvoiceDate: string;
-  lastInvoiceDate: string;
+  description?: string;
 }
 
-// Raw invoice data
-export const invoiceData: ClientInvoice[] = [
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0001", invoiceDate: "2-Jan-25", totalAmount: 839.48, salesPerson: "REENA", description: "Name Badge" },
-  { client: "Regent Institute Middle East FZ-LLC", invoiceNo: "25-0002", invoiceDate: "4-Jan-25", totalAmount: 3730.13, salesPerson: "REENA", description: "Bag, Bottle, Pen, Notebook, Welcome card" },
-  { client: "J C S ARTIFICIAL FLOWERS & PLANTS TRADING L.L.C", invoiceNo: "25-0003", invoiceDate: "8-Jan-25", totalAmount: 2448.65, salesPerson: "REENA", description: "Polo Shirt, Vest" },
-  { client: "DHR MENA FZ-LLC", invoiceNo: "25-0004", invoiceDate: "4-Jan-25", totalAmount: 244.23, salesPerson: "REENA", description: "Recycled Stainless Steel Vacuum Bottle" },
-  { client: "Sea Centre Shipping Services LLC", invoiceNo: "25-0005", invoiceDate: "8-Jan-25", totalAmount: 1401.75, salesPerson: "BNI", description: "Wall Calendar 2025" },
-  { client: "BNI Polaris", invoiceNo: "25-0006", invoiceDate: "4-Jan-25", totalAmount: 198.45, salesPerson: "BNI", description: "Meeting Expenses 03/Jan/2025" },
-  { client: "GMR- Indo Tausch Trading DMCC", invoiceNo: "25-0007", invoiceDate: "6-Jan-25", totalAmount: 131.25, salesPerson: "REENA", description: "Business Card" },
-  { client: "DAPTAVE", invoiceNo: "25-0008", invoiceDate: "16-Jan-25", totalAmount: 4987.50, salesPerson: "ANAND", description: "Indoor Signage" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0009", invoiceDate: "9-Jan-25", totalAmount: 723.45, salesPerson: "REENA", description: "Meeting Room Glass branding" },
-  { client: "Ms. Karine Leonian", invoiceNo: "25-0010", invoiceDate: "15-Jan-25", totalAmount: 4921.88, salesPerson: "ANAND", description: "Wall Calendar" },
-  { client: "Secured Medical Direction MEA FZE", invoiceNo: "25-0011", invoiceDate: "7-Jan-25", totalAmount: 5002.41, salesPerson: "REENA", description: "Poster, Flyers, Business Card" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0012", invoiceDate: "8-Jan-25", totalAmount: 393.75, salesPerson: "REENA", description: "Business cards" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0013", invoiceDate: "8-Jan-25", totalAmount: 661.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0014", invoiceDate: "8-Jan-25", totalAmount: 1016.92, salesPerson: "REENA", description: "Posters, Glass branding" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0015", invoiceDate: "9-Jan-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "North Telecom LLC", invoiceNo: "25-0016", invoiceDate: "10-Jan-25", totalAmount: 3063.38, salesPerson: "REENA", description: "Gift Hampers" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0017", invoiceDate: "9-Jan-25", totalAmount: 100.80, salesPerson: "REENA", description: "Access cards printing" },
-  { client: "Sea Centre Shipping Services LLC", invoiceNo: "25-0018", invoiceDate: "13-Jan-25", totalAmount: 1601.25, salesPerson: "BNI", description: "Desk Calendar 2025" },
-  { client: "Paragon Properties", invoiceNo: "25-0019", invoiceDate: "15-Jan-25", totalAmount: 7560.00, salesPerson: "MELVIN", description: "Signage with frames" },
-  { client: "BNI Polaris", invoiceNo: "25-0020", invoiceDate: "11-Jan-25", totalAmount: 681.45, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0021", invoiceDate: "13-Jan-25", totalAmount: 336.00, salesPerson: "REENA", description: "Rollup Banner" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0022", invoiceDate: "15-Jan-25", totalAmount: 199.50, salesPerson: "REENA", description: "Trophy" },
-  { client: "Huxley Associates Global Limited", invoiceNo: "25-0023", invoiceDate: "15-Jan-25", totalAmount: 189.00, salesPerson: "REENA", description: "Dummy Cheque" },
-  { client: "Aishwarya Searing", invoiceNo: "25-0024", invoiceDate: "16-Jan-25", totalAmount: 3412.50, salesPerson: "REENA", description: "Backdrop and Invitation Card" },
-  { client: "Thermo Fisher Scientific Middle East", invoiceNo: "25-0025", invoiceDate: "15-Jan-25", totalAmount: 1918.88, salesPerson: "REENA", description: "6-in-1 Charging Cable and Bamboo Pen" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0026", invoiceDate: "15-Jan-25", totalAmount: 8439.38, salesPerson: "REENA", description: "Desk calendar, Test Date cards" },
-  { client: "Lloyds Energy DMCC", invoiceNo: "25-0027", invoiceDate: "16-Jan-25", totalAmount: 593.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0028", invoiceDate: "16-Jan-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Gardner Denver FZE", invoiceNo: "25-0029", invoiceDate: "16-Jan-25", totalAmount: 493.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0030", invoiceDate: "30-Jan-25", totalAmount: 2362.50, salesPerson: "REENA", description: "Flags L Shape" },
-  { client: "ADIRONDACK ARCHITECTURAL MODELS INDUSTRY L.L.C", invoiceNo: "25-0031", invoiceDate: "20-Jan-25", totalAmount: 10158.75, salesPerson: "REENA", description: "Vehicle branding" },
-  { client: "BNI Polaris", invoiceNo: "25-0032", invoiceDate: "17-Jan-25", totalAmount: 183.75, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Gloace Fintax Consultants FZCO", invoiceNo: "25-0033", invoiceDate: "20-Jan-25", totalAmount: 152.25, salesPerson: "REENA", description: "Rollup Banner" },
-  { client: "Beckman Coulter International S A (Dubai Br)", invoiceNo: "25-0034", invoiceDate: "23-Jan-25", totalAmount: 1454.25, salesPerson: "REENA", description: "Customized Lanyard" },
-  { client: "Onboard Sky Freight Services L.L.C", invoiceNo: "25-0035", invoiceDate: "20-Jan-25", totalAmount: 157.50, salesPerson: "REENA", description: "Business Card" },
-  { client: "Linea Strong", invoiceNo: "25-0036", invoiceDate: "22-Jan-25", totalAmount: 2168.25, salesPerson: "REENA", description: "Brochure" },
-  { client: "Continental Middle East DMCC", invoiceNo: "25-0037", invoiceDate: "23-Jan-25", totalAmount: 493.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "Enara Properties", invoiceNo: "25-0038", invoiceDate: "22-Jan-25", totalAmount: 294.00, salesPerson: "REENA", description: "Business card, Poster" },
-  { client: "Mr. Graham", invoiceNo: "25-0039", invoiceDate: "22-Jan-25", totalAmount: 220.50, salesPerson: "REENA", description: "Birthday banner" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0040", invoiceDate: "22-Jan-25", totalAmount: 984.38, salesPerson: "REENA", description: "Carbon Copy Book" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0041", invoiceDate: "23-Jan-25", totalAmount: 493.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "George Brown College", invoiceNo: "25-0042", invoiceDate: "23-Jan-25", totalAmount: 2478.00, salesPerson: "REENA", description: "Brochure and Flyer" },
-  { client: "Locke Lifestyle Properties", invoiceNo: "25-0043", invoiceDate: "23-Jan-25", totalAmount: 1107.22, salesPerson: "REENA", description: "Metal badge" },
-  { client: "Al Tayer Insignia LLC", invoiceNo: "25-0044", invoiceDate: "31-Jan-25", totalAmount: 1512.00, salesPerson: "REENA", description: "Trophy" },
-  { client: "BNI Polaris", invoiceNo: "25-0045", invoiceDate: "24-Jan-25", totalAmount: 161.70, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Buildmate Technical Services LLC", invoiceNo: "25-0046", invoiceDate: "30-Jan-25", totalAmount: 588.00, salesPerson: "REENA", description: "Polo Shirt" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0047", invoiceDate: "27-Jan-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0048", invoiceDate: "27-Jan-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0049", invoiceDate: "28-Jan-25", totalAmount: 451.50, salesPerson: "REENA", description: "Trophy" },
-  { client: "Thermo Fisher Scientific Middle East", invoiceNo: "25-0050", invoiceDate: "29-Jan-25", totalAmount: 4599.00, salesPerson: "ANAND", description: "Brochure" },
-  { client: "IBM Global Middle East FZCO", invoiceNo: "25-0051", invoiceDate: "29-Jan-25", totalAmount: 1722.00, salesPerson: "REENA", description: "Notepad and World Map" },
-  { client: "AL RASHED UNITED DMCC", invoiceNo: "25-0052", invoiceDate: "29-Jan-25", totalAmount: 1464.75, salesPerson: "REENA", description: "Paper bags" },
-  { client: "Taz Rajabali", invoiceNo: "25-0053", invoiceDate: "29-Jan-25", totalAmount: 866.77, salesPerson: "REENA", description: "Polo Shirt" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0054", invoiceDate: "30-Jan-25", totalAmount: 341.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0055", invoiceDate: "31-Jan-25", totalAmount: 39277.09, salesPerson: "REENA", description: "ROADSHOW ABU DHABI" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0056", invoiceDate: "31-Jan-25", totalAmount: 61406.63, salesPerson: "REENA", description: "ROADSHOW GRAND HYATT DUBAI" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0057", invoiceDate: "31-Jan-25", totalAmount: 1543.50, salesPerson: "REENA", description: "ROADSHOW DUBAI & ABU DHABI" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0058", invoiceDate: "31-Jan-25", totalAmount: 1449.00, salesPerson: "REENA", description: "Conference Room Names" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0059", invoiceDate: "31-Jan-25", totalAmount: 346.50, salesPerson: "REENA", description: "Rubber Stamp" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0060", invoiceDate: "31-Jan-25", totalAmount: 4200.00, salesPerson: "REENA", description: "Tents and Backdrop" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0061", invoiceDate: "31-Jan-25", totalAmount: 199.50, salesPerson: "REENA", description: "Trophy" },
-  { client: "BLS LAD CHARTERED ACCOUNTANTS LLC", invoiceNo: "25-0062", invoiceDate: "31-Jan-25", totalAmount: 220.50, salesPerson: "BNI", description: "Business cards" },
-  { client: "BNI Polaris", invoiceNo: "25-0063", invoiceDate: "31-Jan-25", totalAmount: 987.00, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Al Suhail Ship Maintenance Services", invoiceNo: "25-0064", invoiceDate: "31-Jan-25", totalAmount: 798.00, salesPerson: "REENA", description: "Business cards and brochure" },
-  { client: "Mini Royal Creative Metal Coating L.L.C", invoiceNo: "25-0065", invoiceDate: "31-Jan-25", totalAmount: 325.50, salesPerson: "REENA", description: "Delivery Note and Receipt voucher" },
-  { client: "Locke Lifestyle Properties", invoiceNo: "25-0066", invoiceDate: "31-Jan-25", totalAmount: 199.50, salesPerson: "REENA", description: "Voucher Book" },
-  { client: "Azalee Flower Boutique Limited", invoiceNo: "25-0067", invoiceDate: "12-Feb-25", totalAmount: 5040.00, salesPerson: "MELVIN", description: "Flower Box" },
-  { client: "Union Church", invoiceNo: "25-0068", invoiceDate: "31-Jan-25", totalAmount: 945.00, salesPerson: "REENA", description: "Decoration in the Hall" },
-  { client: "Prazi Medical and Surgical Devices Manufacturing L.L.C", invoiceNo: "25-0069", invoiceDate: "3-Feb-25", totalAmount: 4016.25, salesPerson: "BNI", description: "Booth branding" },
-  { client: "Unique World Business Centre LLC -(Br.)", invoiceNo: "25-0070", invoiceDate: "31-Jan-25", totalAmount: 94.50, salesPerson: "REENA", description: "Supplies" },
-  { client: "Unique World Business Centre LLC -(HO)", invoiceNo: "25-0071", invoiceDate: "31-Jan-25", totalAmount: 141.75, salesPerson: "REENA", description: "Supplies" },
-  { client: "Contitech Fluids Oil & Marine", invoiceNo: "25-0072", invoiceDate: "12-Feb-25", totalAmount: 299.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Trane BVBA (Abu Dhabi)", invoiceNo: "25-0073", invoiceDate: "13-Feb-25", totalAmount: 850.50, salesPerson: "REENA", description: "Business Cards" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0074", invoiceDate: "12-Feb-25", totalAmount: 1606.50, salesPerson: "REENA", description: "Business Cards" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0075", invoiceDate: "11-Feb-25", totalAmount: 999.18, salesPerson: "REENA", description: "Name Badge" },
-  { client: "Dubai Academic Health Corporation (DAHC)", invoiceNo: "25-0076", invoiceDate: "6-Mar-25", totalAmount: 3622.50, salesPerson: "REENA", description: "Twin Note Book" },
-  { client: "Dubai Academic Health Corporation (DAHC)", invoiceNo: "25-0077", invoiceDate: "18-Mar-25", totalAmount: 2702.70, salesPerson: "REENA", description: "Twin Note Book" },
-  { client: "RIMO Pharmaceuticals DMCC", invoiceNo: "25-0078", invoiceDate: "7-Feb-25", totalAmount: 178.50, salesPerson: "REENA", description: "Rollup Banner" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0079", invoiceDate: "11-Feb-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0080", invoiceDate: "8-Feb-25", totalAmount: 8599.50, salesPerson: "REENA", description: "Crystal Trophy MIP Award" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0081", invoiceDate: "8-Feb-25", totalAmount: 430.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "GrokGlobal Services", invoiceNo: "25-0082", invoiceDate: "5-Feb-25", totalAmount: 20947.50, salesPerson: "REENA", description: "Mc Master Gift Box and Bag" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0083", invoiceDate: "10-Feb-25", totalAmount: 341.25, salesPerson: "REENA", description: "Poster with frame" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0084", invoiceDate: "10-Feb-25", totalAmount: 341.25, salesPerson: "REENA", description: "Instagram Frame" },
-  { client: "BNI Polaris", invoiceNo: "25-0085", invoiceDate: "8-Feb-25", totalAmount: 352.80, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Hult Investments FZ-LLC", invoiceNo: "25-0086", invoiceDate: "10-Feb-25", totalAmount: 990.36, salesPerson: "REENA", description: "T shirts and Crystal Awards" },
-  { client: "Dandidor", invoiceNo: "25-0087", invoiceDate: "10-Feb-25", totalAmount: 1443.75, salesPerson: "REENA", description: "Stress ball" },
-  { client: "Al Tayer Insignia LLC", invoiceNo: "25-0088", invoiceDate: "10-Feb-25", totalAmount: 849.87, salesPerson: "REENA", description: "Winner Card with Envelope" },
-  { client: "Taz Rajabali", invoiceNo: "25-0089", invoiceDate: "17-Feb-25", totalAmount: 942.95, salesPerson: "REENA", description: "Polo Shirt and Balloon" },
-  { client: "M E A D Medical Supplies & Equipment L.L.C", invoiceNo: "25-0090", invoiceDate: "12-Feb-25", totalAmount: 913.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "Excelsior Escapes and Events", invoiceNo: "25-0091", invoiceDate: "11-Feb-25", totalAmount: 126.00, salesPerson: "REENA", description: "Stamp" },
-  { client: "Al Suhail Ship Maintenance Services", invoiceNo: "25-0092", invoiceDate: "17-Feb-25", totalAmount: 2593.50, salesPerson: "REENA", description: "Booth Branding Boat Show" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0093", invoiceDate: "17-Feb-25", totalAmount: 682.50, salesPerson: "REENA", description: "Flyer Russian info" },
-  { client: "SUPERCAD TRADING L.L.C", invoiceNo: "25-0094", invoiceDate: "14-Feb-25", totalAmount: 94.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "Radiometer Medical ApS", invoiceNo: "25-0095", invoiceDate: "13-Feb-25", totalAmount: 9429.00, salesPerson: "ANAND", description: "Gift Box, Trophy, Lanyards" },
-  { client: "GrokGlobal Services", invoiceNo: "25-0096", invoiceDate: "13-Feb-25", totalAmount: 8300.25, salesPerson: "REENA", description: "Mc Master Teddy Bear" },
-  { client: "Unique Pathfinders General Trading LLC", invoiceNo: "25-0097", invoiceDate: "13-Feb-25", totalAmount: 329.70, salesPerson: "REENA", description: "Draw String Bag" },
-  { client: "JNT Car Rental L.L.C", invoiceNo: "25-0098", invoiceDate: "13-Feb-25", totalAmount: 341.25, salesPerson: "BNI", description: "Business Card" },
-  { client: "Momentum Logistics LLC", invoiceNo: "25-0099", invoiceDate: "13-Feb-25", totalAmount: 246.75, salesPerson: "REENA", description: "NCR Book" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0100", invoiceDate: "20-Feb-25", totalAmount: 5250.00, salesPerson: "REENA", description: "Logo and Brand Re-design" },
-  { client: "BNI Polaris", invoiceNo: "25-0101", invoiceDate: "15-Feb-25", totalAmount: 161.70, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "J C S ARTIFICIAL FLOWERS & PLANTS TRADING L.L.C", invoiceNo: "25-0102", invoiceDate: "17-Feb-25", totalAmount: 1293.08, salesPerson: "REENA", description: "Hoodie" },
-  { client: "World Data Feasibility Studies Consultancies", invoiceNo: "25-0103", invoiceDate: "20-Feb-25", totalAmount: 1165.50, salesPerson: "REENA", description: "Business Card and Letterhead" },
-  { client: "Taz Rajabali", invoiceNo: "25-0104", invoiceDate: "17-Feb-25", totalAmount: 1401.75, salesPerson: "REENA", description: "Rollup Banner" },
-  { client: "Ario Arteh Design Services Co. LLC", invoiceNo: "25-0105", invoiceDate: "19-Feb-25", totalAmount: 588.00, salesPerson: "BNI", description: "3 fold flyer" },
-  { client: "Duplast Building Materials Trading L.L.C", invoiceNo: "25-0106", invoiceDate: "18-Feb-25", totalAmount: 1375.50, salesPerson: "BNI", description: "PU NoteBook" },
-  { client: "ANB AUTOMOBILES L.L.C", invoiceNo: "25-0107", invoiceDate: "19-Feb-25", totalAmount: 2094.75, salesPerson: "REENA", description: "Kraft Paper Bag" },
-  { client: "Continental Middle East DMCC", invoiceNo: "25-0108", invoiceDate: "25-Feb-25", totalAmount: 2231.25, salesPerson: "REENA", description: "Desk Calendar 2025" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0109", invoiceDate: "18-Feb-25", totalAmount: 1631.70, salesPerson: "REENA", description: "Round neck Tshirt" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0110", invoiceDate: "19-Feb-25", totalAmount: 3541.13, salesPerson: "REENA", description: "Pennant flags" },
-  { client: "Trane BVBA (Abu Dhabi)", invoiceNo: "25-0111", invoiceDate: "19-Feb-25", totalAmount: 1958.25, salesPerson: "REENA", description: "A4 and A5 Envelopes" },
-  { client: "GrokGlobal Services", invoiceNo: "25-0112", invoiceDate: "19-Feb-25", totalAmount: 3087.00, salesPerson: "REENA", description: "Mc Master Brochure" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0113", invoiceDate: "19-Feb-25", totalAmount: 714.00, salesPerson: "REENA", description: "UV Stickers" },
-  { client: "Hult Investments FZ-LLC", invoiceNo: "25-0114", invoiceDate: "20-Feb-25", totalAmount: 378.00, salesPerson: "REENA", description: "Rubber stamp" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0115", invoiceDate: "21-Feb-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "BNI Polaris", invoiceNo: "25-0116", invoiceDate: "21-Feb-25", totalAmount: 184.80, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Black Swan Business Setup Services L.L.C", invoiceNo: "25-0117", invoiceDate: "22-Feb-25", totalAmount: 1517.25, salesPerson: "REENA", description: "Backdrop Banner and Red Carpet" },
-  { client: "Al Suhail Ship Maintenance Services", invoiceNo: "25-0118", invoiceDate: "21-Feb-25", totalAmount: 270.38, salesPerson: "REENA", description: "Business cards" },
-  { client: "DEAKIN University", invoiceNo: "25-0119", invoiceDate: "10-Feb-25", totalAmount: 19960.50, salesPerson: "REENA", description: "RPET Laptop Backpack, Plaque, Brochure" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0120", invoiceDate: "24-Feb-25", totalAmount: 299.25, salesPerson: "REENA", description: "Business Card" },
-  { client: "Woolwich Institute FZ-LLC", invoiceNo: "25-0121", invoiceDate: "24-Feb-25", totalAmount: 220.50, salesPerson: "REENA", description: "Receipt Voucher Book" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0123", invoiceDate: "27-Feb-25", totalAmount: 9371.25, salesPerson: "REENA", description: "Students Course Guide" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0124", invoiceDate: "27-Feb-25", totalAmount: 4081.35, salesPerson: "REENA", description: "Crystal Trophy, Skin Change" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0125", invoiceDate: "27-Feb-25", totalAmount: 3426.15, salesPerson: "REENA", description: "Flyer" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0126", invoiceDate: "28-Feb-25", totalAmount: 378.00, salesPerson: "REENA", description: "Trophy" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0127", invoiceDate: "28-Feb-25", totalAmount: 598.50, salesPerson: "REENA", description: "Business Card" },
-  { client: "M E A D Medical Supplies & Equipment L.L.C", invoiceNo: "25-0128", invoiceDate: "28-Feb-25", totalAmount: 766.50, salesPerson: "REENA", description: "Business Card" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0129", invoiceDate: "22-Mar-25", totalAmount: 590.63, salesPerson: "REENA", description: "English AlQalmoun" },
-  { client: "J C S ARTIFICIAL FLOWERS & PLANTS TRADING L.L.C", invoiceNo: "25-0130", invoiceDate: "28-Feb-25", totalAmount: 787.50, salesPerson: "REENA", description: "Designing charges" },
-  { client: "Unique World Business Centre LLC -(Br.)", invoiceNo: "25-0131", invoiceDate: "28-Feb-25", totalAmount: 47.25, salesPerson: "REENA", description: "Supplies" },
-  { client: "Unique World Business Centre LLC -(HO.)", invoiceNo: "25-0132", invoiceDate: "28-Feb-25", totalAmount: 78.75, salesPerson: "REENA", description: "Supplies" },
-  { client: "BNI Polaris", invoiceNo: "25-0133", invoiceDate: "28-Feb-25", totalAmount: 161.70, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "BNI Polaris", invoiceNo: "25-0134", invoiceDate: "28-Feb-25", totalAmount: 157.50, salesPerson: "BNI", description: "BNI Conclave" },
-  { client: "Ms. Latika Vieira", invoiceNo: "25-0135", invoiceDate: "1-Mar-25", totalAmount: 918.75, salesPerson: "BNI", description: "Customised Cake and Balloon" },
-  { client: "GrokGlobal Services", invoiceNo: "25-0136", invoiceDate: "28-Feb-25", totalAmount: 1299.38, salesPerson: "REENA", description: "McMaster Tedy Bear" },
-  { client: "GrokGlobal Services", invoiceNo: "25-0137", invoiceDate: "28-Feb-25", totalAmount: 3638.25, salesPerson: "REENA", description: "3 fold Flyer" },
-  { client: "Lloyds Energy DMCC", invoiceNo: "25-0138", invoiceDate: "4-Mar-25", totalAmount: 383.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "ECOFUTURE GENERAL TRADING L.L.C", invoiceNo: "25-0139", invoiceDate: "4-Mar-25", totalAmount: 183.75, salesPerson: "BNI", description: "Rollup Banner" },
-  { client: "Ingersoll-Rand Technical and Services S A R L (Dubai Branch)", invoiceNo: "25-0140", invoiceDate: "6-Mar-25", totalAmount: 246.75, salesPerson: "REENA", description: "Business cards" },
-  { client: "Huxley Associates Global Limited", invoiceNo: "25-0141", invoiceDate: "6-Mar-25", totalAmount: 378.00, salesPerson: "REENA", description: "Dummy Cheque" },
-  { client: "DEAKIN University", invoiceNo: "25-0142", invoiceDate: "1-May-25", totalAmount: 2520.00, salesPerson: "REENA", description: "Mult-Charging cable set" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0143", invoiceDate: "6-Mar-25", totalAmount: 1575.00, salesPerson: "REENA", description: "Designing charges" },
-  { client: "BNI Polaris", invoiceNo: "25-0144", invoiceDate: "7-Mar-25", totalAmount: 463.05, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0145", invoiceDate: "7-Mar-25", totalAmount: 2992.50, salesPerson: "REENA", description: "Notebook" },
-  { client: "Divi Digital Co LLC", invoiceNo: "25-0146", invoiceDate: "10-Mar-25", totalAmount: 563.85, salesPerson: "BNI", description: "Polo Shirt" },
-  { client: "Hult Investments FZ-LLC", invoiceNo: "25-0147", invoiceDate: "10-Mar-25", totalAmount: 210.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "GrokGlobal Services", invoiceNo: "25-0148", invoiceDate: "10-Mar-25", totalAmount: 779.63, salesPerson: "REENA", description: "Teddy bear" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0149", invoiceDate: "10-Mar-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "BLS LAD CHARTERED ACCOUNTANTS LLC", invoiceNo: "25-0150", invoiceDate: "11-Mar-25", totalAmount: 110.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Azalee Flower Boutique Limited", invoiceNo: "25-0151", invoiceDate: "27-Mar-25", totalAmount: 16485.00, salesPerson: "MELVIN", description: "Flower Box" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0152", invoiceDate: "17-Mar-25", totalAmount: 591.67, salesPerson: "REENA", description: "Round neck Tshirt" },
-  { client: "DEAKIN University", invoiceNo: "25-0153", invoiceDate: "1-May-25", totalAmount: 1205.66, salesPerson: "REENA", description: "Certificates, Name card" },
-  { client: "Hult Investments FZ-LLC (Enrollment)", invoiceNo: "25-0154", invoiceDate: "14-Mar-25", totalAmount: 10962.00, salesPerson: "REENA", description: "Round neck-T shirts" },
-  { client: "Hult Investments FZ-LLC (Campus)", invoiceNo: "25-0155", invoiceDate: "14-Mar-25", totalAmount: 19813.50, salesPerson: "REENA", description: "Round neck T-shirts, Hoodies" },
-  { client: "BNI Polaris", invoiceNo: "25-0156", invoiceDate: "15-Mar-25", totalAmount: 695.63, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Lloyds Energy DMCC", invoiceNo: "25-0157", invoiceDate: "19-Mar-25", totalAmount: 383.25, salesPerson: "DINEL", description: "Business cards" },
-  { client: "Huxley Associates Global Limited", invoiceNo: "25-0158", invoiceDate: "19-Mar-25", totalAmount: 189.00, salesPerson: "REENA", description: "Dummy Cheque" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0160", invoiceDate: "18-Mar-25", totalAmount: 3848.67, salesPerson: "REENA", description: "Safety Shoes and cargo pant" },
-  { client: "POWER LEASE VEHICLE RENTAL DMCC", invoiceNo: "25-0161", invoiceDate: "26-Mar-25", totalAmount: 1000.00, salesPerson: "REENA", description: "Backdrop Banner" },
-  { client: "One World One Network", invoiceNo: "25-0162", invoiceDate: "18-Mar-25", totalAmount: 6204.45, salesPerson: "BNI", description: "Teddy Bear, Notebook, Mugs" },
-  { client: "Ms. Lisa Brown", invoiceNo: "25-0163", invoiceDate: "19-Mar-25", totalAmount: 304.50, salesPerson: "REENA", description: "Business Cards" },
-  { client: "J C S ARTIFICIAL FLOWERS & PLANTS TRADING L.L.C", invoiceNo: "25-0164", invoiceDate: "19-Mar-25", totalAmount: 1417.50, salesPerson: "REENA", description: "Formal Executive Shirts" },
-  { client: "EMIRATES FOR UNIVERSAL TYRES L.L.C.", invoiceNo: "25-0165", invoiceDate: "20-Mar-25", totalAmount: 199.50, salesPerson: "REENA", description: "Key on foamboard" },
-  { client: "Huxley Associates Global Limited", invoiceNo: "25-0166", invoiceDate: "22-Mar-25", totalAmount: 4538.63, salesPerson: "REENA", description: "Balloons, Dates Box" },
-  { client: "Marafek Electromechanical Works LLC", invoiceNo: "25-0167", invoiceDate: "20-Mar-25", totalAmount: 3822.00, salesPerson: "REENA", description: "Vehicle Branding" },
-  { client: "EMIRATES FOR UNIVERSAL TYRES L.L.C.", invoiceNo: "25-0168", invoiceDate: "24-Mar-25", totalAmount: 10202.33, salesPerson: "REENA", description: "Tent Cards, Leaflet, NCR Books" },
-  { client: "BNI Polaris", invoiceNo: "25-0169", invoiceDate: "22-Mar-25", totalAmount: 273.00, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "FMCG FZCO", invoiceNo: "25-0170", invoiceDate: "22-Mar-25", totalAmount: 199.50, salesPerson: "BNI", description: "Rollup banner" },
-  { client: "Paragon Properties", invoiceNo: "25-0171", invoiceDate: "26-Mar-25", totalAmount: 3465.00, salesPerson: "MELVIN", description: "Signage with frames" },
-  { client: "Hult Investments FZ-LLC", invoiceNo: "25-0172", invoiceDate: "28-Mar-25", totalAmount: 6780.38, salesPerson: "REENA", description: "Ceramic mug" },
-  { client: "Bianca and Bianco Trading LLC", invoiceNo: "25-0173", invoiceDate: "31-Mar-25", totalAmount: 3423.00, salesPerson: "REENA", description: "Non woven bag" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0174", invoiceDate: "28-Mar-25", totalAmount: 8216.25, salesPerson: "REENA", description: "Vehicle Branding" },
-  { client: "Hult Investments FZ-LLC", invoiceNo: "25-0175", invoiceDate: "28-Mar-25", totalAmount: 5477.22, salesPerson: "REENA", description: "Trophy" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0176", invoiceDate: "28-Mar-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "ENH MARKETING L.L.C", invoiceNo: "25-0177", invoiceDate: "29-Mar-25", totalAmount: 918.75, salesPerson: "BNI", description: "Lanyard" },
-  { client: "BNI Polaris", invoiceNo: "25-0178", invoiceDate: "29-Mar-25", totalAmount: 857.33, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Momentum Logistics LLC", invoiceNo: "25-0179", invoiceDate: "29-Mar-25", totalAmount: 262.50, salesPerson: "REENA", description: "Nameplate" },
-  { client: "MEGA COM MEDIA LLC", invoiceNo: "25-0180", invoiceDate: "29-Mar-25", totalAmount: 1149.75, salesPerson: "BNI", description: "Spiral Notebook" },
-  { client: "ARKA Ventures", invoiceNo: "25-0181", invoiceDate: "29-Mar-25", totalAmount: 393.75, salesPerson: "BNI", description: "Business card" },
-  { client: "Unique World Business Centre LLC -(Br.)", invoiceNo: "25-0182", invoiceDate: "29-Mar-25", totalAmount: 126.00, salesPerson: "REENA", description: "Supplies" },
-  { client: "Unique World Business Centre LLC -(HO)", invoiceNo: "25-0183", invoiceDate: "29-Mar-25", totalAmount: 267.75, salesPerson: "REENA", description: "Supplies" },
-  { client: "Trane BVBA (Abu Dhabi)", invoiceNo: "25-0185", invoiceDate: "23-Apr-25", totalAmount: 850.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "EMIRATES FOR UNIVERSAL TYRES L.L.C.", invoiceNo: "25-0186", invoiceDate: "29-Mar-25", totalAmount: 204.75, salesPerson: "REENA", description: "Sticker" },
-  { client: "M E A D Medical Supplies & Equipment L.L.C", invoiceNo: "25-0187", invoiceDate: "3-Apr-25", totalAmount: 542.85, salesPerson: "REENA", description: "NCR Book" },
-  { client: "SPH Global Holdings LLC", invoiceNo: "25-0188", invoiceDate: "5-Apr-25", totalAmount: 519.54, salesPerson: "REENA", description: "Business cards" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0189", invoiceDate: "8-Apr-25", totalAmount: 341.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "STYFECT FURNITURES TRADING LLC", invoiceNo: "25-0190", invoiceDate: "8-Apr-25", totalAmount: 1055.09, salesPerson: "BNI", description: "Polo Shirt" },
-  { client: "J C S ARTIFICIAL FLOWERS & PLANTS TRADING L.L.C", invoiceNo: "25-0191", invoiceDate: "8-Apr-25", totalAmount: 383.25, salesPerson: "REENA", description: "A4 Envelope" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0192", invoiceDate: "8-Apr-25", totalAmount: 341.25, salesPerson: "REENA", description: "Business card" },
-  { client: "ENH MARKETING L.L.C", invoiceNo: "25-0193", invoiceDate: "10-Apr-25", totalAmount: 1758.75, salesPerson: "BNI", description: "Cable Kit" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0194", invoiceDate: "9-Apr-25", totalAmount: 2058.53, salesPerson: "REENA", description: "Stainless Steel Bottle" },
-  { client: "Tappy Toes Nursery DWC-LLC", invoiceNo: "25-0195", invoiceDate: "10-Apr-25", totalAmount: 5197.50, salesPerson: "REENA", description: "Polo Shirts Kids" },
-  { client: "Excelsior Escapes and Events", invoiceNo: "25-0196", invoiceDate: "9-Apr-25", totalAmount: 918.75, salesPerson: "REENA", description: "Business cards" },
-  { client: "MEGA COM MEDIA LLC", invoiceNo: "25-0197", invoiceDate: "10-Apr-25", totalAmount: 4987.50, salesPerson: "BNI", description: "Wooden Backdrop" },
-  { client: "Career Tree", invoiceNo: "25-0198", invoiceDate: "9-Apr-25", totalAmount: 115.50, salesPerson: "BNI", description: "Certificate" },
-  { client: "BNI Visit Host team", invoiceNo: "25-0199", invoiceDate: "9-Apr-25", totalAmount: 220.50, salesPerson: "BNI", description: "Sash" },
-  { client: "SUPERCAD TRADING L.L.C", invoiceNo: "25-0200", invoiceDate: "12-Apr-25", totalAmount: 336.00, salesPerson: "BNI", description: "NCR Books" },
-  { client: "Expert United Marine Services LLC", invoiceNo: "25-0201", invoiceDate: "9-Apr-25", totalAmount: 4844.07, salesPerson: "REENA", description: "Anniversary Trophy and Certificates" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0202", invoiceDate: "10-Apr-25", totalAmount: 3837.75, salesPerson: "REENA", description: "Customized trophy" },
-  { client: "VAM International FZE", invoiceNo: "25-0203", invoiceDate: "10-Apr-25", totalAmount: 131.25, salesPerson: "BNI", description: "Flyers" },
-  { client: "EMBOSS - FZCO", invoiceNo: "25-0204", invoiceDate: "11-Apr-25", totalAmount: 934.50, salesPerson: "REENA", description: "Hats" },
-  { client: "Bianca and Bianco Trading LLC", invoiceNo: "25-0205", invoiceDate: "14-Apr-25", totalAmount: 630.00, salesPerson: "REENA", description: "Envelope" },
-  { client: "BNI Polaris", invoiceNo: "25-0206", invoiceDate: "11-Apr-25", totalAmount: 1915.20, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "VISIONARY FURNITURE TRADING L.L.C", invoiceNo: "25-0207", invoiceDate: "14-Apr-25", totalAmount: 194.25, salesPerson: "REENA", description: "Business Cards" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0208", invoiceDate: "15-Apr-25", totalAmount: 493.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0209", invoiceDate: "15-Apr-25", totalAmount: 1968.75, salesPerson: "REENA", description: "Metal USB" },
-  { client: "Tappy Toes Nursery DWC-LLC", invoiceNo: "25-0210", invoiceDate: "15-Apr-25", totalAmount: 199.50, salesPerson: "REENA", description: "Polo shirt Adult" },
-  { client: "Expert United Marine Services LLC", invoiceNo: "25-0211", invoiceDate: "16-Apr-25", totalAmount: 220.19, salesPerson: "REENA", description: "Anniversary Trophy" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0212", invoiceDate: "15-Apr-25", totalAmount: 9213.75, salesPerson: "REENA", description: "Vehicle branding" },
-  { client: "Indo Tausch Trading DMCC", invoiceNo: "25-0213", invoiceDate: "16-Apr-25", totalAmount: 131.25, salesPerson: "REENA", description: "Business Card" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0214", invoiceDate: "28-Apr-25", totalAmount: 5028.34, salesPerson: "REENA", description: "Polo Shirts and T-shirts" },
-  { client: "Mr. Raad Almobark", invoiceNo: "25-0215", invoiceDate: "19-Apr-25", totalAmount: 194.25, salesPerson: "REENA", description: "Business card" },
-  { client: "Career Tree", invoiceNo: "25-0216", invoiceDate: "17-Apr-25", totalAmount: 36.75, salesPerson: "BNI", description: "Certificate" },
-  { client: "Thermo Fisher Scientific Middle East", invoiceNo: "25-0217", invoiceDate: "19-Apr-25", totalAmount: 4231.50, salesPerson: "REENA", description: "Cotton Drawstring Bags" },
-  { client: "STYFECT FURNITURES TRADING LLC", invoiceNo: "25-0218", invoiceDate: "21-Apr-25", totalAmount: 2656.50, salesPerson: "BNI", description: "Clear Sticker" },
-  { client: "ANB AUTOMOBILES L.L.C", invoiceNo: "25-0219", invoiceDate: "19-Apr-25", totalAmount: 4410.00, salesPerson: "REENA", description: "Kraft Paper Bag" },
-  { client: "BNI Polaris", invoiceNo: "25-0220", invoiceDate: "19-Apr-25", totalAmount: 346.50, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0221", invoiceDate: "21-Apr-25", totalAmount: 7140.00, salesPerson: "REENA", description: "cap, Bag, Water Bottle" },
-  { client: "Stanford Marine Group", invoiceNo: "25-0222", invoiceDate: "19-Apr-25", totalAmount: 210.00, salesPerson: "REENA", description: "Customized lapel pins" },
-  { client: "Jerin Jersey", invoiceNo: "25-0223", invoiceDate: "21-Apr-25", totalAmount: 2310.00, salesPerson: "REENA", description: "Tshirt sets" },
-  { client: "Axis Workshop", invoiceNo: "25-0224", invoiceDate: "21-Apr-25", totalAmount: 500.00, salesPerson: "BNI", description: "Designing charges" },
-  { client: "Netision Global Technologies LLC", invoiceNo: "25-0225", invoiceDate: "21-Apr-25", totalAmount: 131.25, salesPerson: "REENA", description: "Business Card" },
-  { client: "Guardian International Trading LLC", invoiceNo: "25-0226", invoiceDate: "23-Apr-25", totalAmount: 1050.00, salesPerson: "ANAND", description: "Layout and Designing" },
-  { client: "Ingersoll-Rand Technical and Services S A R L (Dubai Branch)", invoiceNo: "25-0227", invoiceDate: "23-Apr-25", totalAmount: 493.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "World Data Feasibility Studies Consultancies", invoiceNo: "25-0228", invoiceDate: "25-Apr-25", totalAmount: 3150.00, salesPerson: "REENA", description: "A4 Notepad and Pocket Folder" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0229", invoiceDate: "28-Apr-25", totalAmount: 7493.85, salesPerson: "REENA", description: "Students Course Guide" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0230", invoiceDate: "24-Apr-25", totalAmount: 393.75, salesPerson: "REENA", description: "Letterhead" },
-  { client: "BNI Polaris", invoiceNo: "25-0231", invoiceDate: "25-Apr-25", totalAmount: 633.15, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0232", invoiceDate: "26-Apr-25", totalAmount: 4765.95, salesPerson: "REENA", description: "TESOL Arabia Exhibition" },
-  { client: "Mohamed Farouk Osman", invoiceNo: "25-0233", invoiceDate: "26-Apr-25", totalAmount: 200.00, salesPerson: "REENA", description: "Poster" },
-  { client: "Sea Centre Shipping Services LLC", invoiceNo: "25-0234", invoiceDate: "28-Apr-25", totalAmount: 893.81, salesPerson: "BNI", description: "Poster" },
-  { client: "Thermo Fisher Scientific Middle East", invoiceNo: "25-0235", invoiceDate: "29-Apr-25", totalAmount: 3782.63, salesPerson: "REENA", description: "Brochure and Table Top" },
-  { client: "Axis Workshop", invoiceNo: "25-0236", invoiceDate: "25-Apr-25", totalAmount: 813.75, salesPerson: "BNI", description: "Office Branding" },
-  { client: "Onboard Sky Freight Services L.L.C", invoiceNo: "25-0237", invoiceDate: "29-Apr-25", totalAmount: 299.25, salesPerson: "REENA", description: "NCR Books" },
-  { client: "Green Pasture Technical Services LLC", invoiceNo: "25-0238", invoiceDate: "27-May-25", totalAmount: 150.00, salesPerson: "REENA", description: "Polo Shirts" },
-  { client: "Bloomsbury Lane", invoiceNo: "25-0239", invoiceDate: "5-May-25", totalAmount: 2173.50, salesPerson: "BNI", description: "Rollup Banner and Catalogue" },
-  { client: "Alef Education Consultancy L.L.C.", invoiceNo: "25-0240", invoiceDate: "5-May-25", totalAmount: 8820.00, salesPerson: "REENA", description: "School Uniforms" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0241", invoiceDate: "30-Apr-25", totalAmount: 819.00, salesPerson: "REENA", description: "Trophy" },
-  { client: "JNT Car Rental L.L.C", invoiceNo: "25-0242", invoiceDate: "30-Apr-25", totalAmount: 378.00, salesPerson: "BNI", description: "Rental Contract NCR Books" },
-  { client: "Sea Centre Shipping Services LLC", invoiceNo: "25-0243", invoiceDate: "30-Apr-25", totalAmount: 3979.50, salesPerson: "BNI", description: "Sleeve for chocolate, Metal Pens" },
-  { client: "Four Corners Printing Press LLC", invoiceNo: "25-0244", invoiceDate: "30-Apr-25", totalAmount: 19687.50, salesPerson: "REENA", description: "Ribbon with printing" },
-  { client: "EMIRATES FOR UNIVERSAL TYRES L.L.C.", invoiceNo: "25-0245", invoiceDate: "30-Apr-25", totalAmount: 2241.75, salesPerson: "REENA", description: "NCR Books and stamp" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0246", invoiceDate: "30-Apr-25", totalAmount: 409.50, salesPerson: "REENA", description: "Med Flyers" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0247", invoiceDate: "30-Apr-25", totalAmount: 13952.92, salesPerson: "REENA", description: "Tote Bag, Flyer, Lanyards" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0248", invoiceDate: "30-Apr-25", totalAmount: 393.75, salesPerson: "REENA", description: "Business cards" },
-  { client: "Al Jalila Foundation in support of Medical Education and Research", invoiceNo: "25-0249", invoiceDate: "7-May-25", totalAmount: 2063.25, salesPerson: "REENA", description: "Paper Bag" },
-  { client: "Huxley Associates Global Limited", invoiceNo: "25-0251", invoiceDate: "2-May-25", totalAmount: 189.00, salesPerson: "REENA", description: "Dummy Cheque" },
-  { client: "Unique World Business Centre LLC -(HO)", invoiceNo: "25-0252", invoiceDate: "30-Apr-25", totalAmount: 78.75, salesPerson: "REENA", description: "Supplies" },
-  { client: "Unique World Business Centre LLC -(Br.)", invoiceNo: "25-0253", invoiceDate: "30-Apr-25", totalAmount: 78.75, salesPerson: "REENA", description: "Supplies" },
-  { client: "BNI Polaris", invoiceNo: "25-0254", invoiceDate: "2-May-25", totalAmount: 420.00, salesPerson: "REENA", description: "Meeting Expenses" },
-  { client: "Al Suhail Ship Maintenance Services", invoiceNo: "25-0255", invoiceDate: "3-May-25", totalAmount: 330.75, salesPerson: "REENA", description: "Brochure" },
-  { client: "Party Pals Forever Events LLC", invoiceNo: "25-0256", invoiceDate: "5-May-25", totalAmount: 9405.64, salesPerson: "BNI", description: "Top and bottom self lock box" },
-  { client: "KOTUG MIDDLE EAST DMCC", invoiceNo: "25-0257", invoiceDate: "12-May-25", totalAmount: 601.39, salesPerson: "REENA", description: "Ceramic Mug" },
-  { client: "Madhuri Narkar", invoiceNo: "25-0258", invoiceDate: "5-May-25", totalAmount: 285.00, salesPerson: "BNI", description: "Frame for Japanese Painting" },
-  { client: "Al Suhail Ship Maintenance Services", invoiceNo: "25-0259", invoiceDate: "6-May-25", totalAmount: 383.25, salesPerson: "REENA", description: "Gate fold brochure" },
-  { client: "Radiometer Medical ApS", invoiceNo: "25-0260", invoiceDate: "1-May-25", totalAmount: 2205.00, salesPerson: "REENA", description: "Roll up Banner" },
-  { client: "Royex Technologies L.L.C", invoiceNo: "25-0261", invoiceDate: "5-May-25", totalAmount: 2866.50, salesPerson: "REENA", description: "Booth branding Dubai" },
-  { client: "M E A D Medical Supplies & Equipment L.L.C", invoiceNo: "25-0262", invoiceDate: "6-May-25", totalAmount: 404.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "VOXTEL COMMUNICATIONS DMCC", invoiceNo: "25-0263", invoiceDate: "30-Apr-25", totalAmount: 1260.00, salesPerson: "REENA", description: "Business Cards" },
-  { client: "Gamayun Consultancy Services FZE", invoiceNo: "25-0264", invoiceDate: "6-May-25", totalAmount: 236.25, salesPerson: "REENA", description: "Business card" },
-  { client: "Black Swan Business Setup Services LLC", invoiceNo: "25-0265", invoiceDate: "8-May-25", totalAmount: 288.23, salesPerson: "REENA", description: "Round pin badges" },
-  { client: "Excelsior Escapes and Events", invoiceNo: "25-0266", invoiceDate: "7-May-25", totalAmount: 390.00, salesPerson: "REENA", description: "PVC clear sticker" },
-  { client: "Mr. Sahendra Jaiswar", invoiceNo: "25-0267", invoiceDate: "7-May-25", totalAmount: 99.75, salesPerson: "BNI", description: "Photo Frame" },
-  { client: "Stanford Marine Group", invoiceNo: "25-0268", invoiceDate: "19-May-25", totalAmount: 7339.50, salesPerson: "REENA", description: "Customized lapel pins" },
-  { client: "Marafek Electromechanical Works LLC", invoiceNo: "25-0269", invoiceDate: "8-May-25", totalAmount: 3255.00, salesPerson: "BNI", description: "Booth branding BNI EXPO" },
-  { client: "Mawarid Finance (P J S C )", invoiceNo: "25-0270", invoiceDate: "8-May-25", totalAmount: 1338.75, salesPerson: "REENA", description: "Glass branding" },
-  { client: "North Telecom LLC", invoiceNo: "25-0271", invoiceDate: "12-May-25", totalAmount: 8977.50, salesPerson: "REENA", description: "Cable Kit and Gift Box" },
-  { client: "Olympus MEA FZ-LLC", invoiceNo: "25-0272", invoiceDate: "15-May-25", totalAmount: 18123.00, salesPerson: "ANAND", description: "Table Cloth, Notepad, Lanyard" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0273", invoiceDate: "12-May-25", totalAmount: 183.75, salesPerson: "REENA", description: "Rollup Banner" },
-  { client: "North Telecom LLC", invoiceNo: "25-0274", invoiceDate: "12-May-25", totalAmount: 945.00, salesPerson: "REENA", description: "Metal Pen" },
-  { client: "M E A D Medical Supplies & Equipment L.L.C", invoiceNo: "25-0275", invoiceDate: "12-May-25", totalAmount: 542.85, salesPerson: "REENA", description: "NCR Book" },
-  { client: "SUPERCAD TRADING L.L.C", invoiceNo: "25-0276", invoiceDate: "12-May-25", totalAmount: 94.50, salesPerson: "BNI", description: "Business cards" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0277", invoiceDate: "10-May-25", totalAmount: 709.54, salesPerson: "REENA", description: "Epoxy Badges and Business Card" },
-  { client: "DEAKIN University", invoiceNo: "25-0278", invoiceDate: "1-May-25", totalAmount: 2866.50, salesPerson: "REENA", description: "PU wallet" },
-  { client: "Finhub Middle East", invoiceNo: "25-0279", invoiceDate: "12-May-25", totalAmount: 1391.25, salesPerson: "REENA", description: "Vinyl sticker on glass" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0280", invoiceDate: "13-May-25", totalAmount: 1023.75, salesPerson: "REENA", description: "Business card" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0281", invoiceDate: "13-May-25", totalAmount: 374.06, salesPerson: "REENA", description: "Epoxy Badges" },
-  { client: "IDP Education Ltd (Abu Dhabi)", invoiceNo: "25-0282", invoiceDate: "13-May-25", totalAmount: 2157.75, salesPerson: "REENA", description: "Business cards" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0283", invoiceDate: "13-May-25", totalAmount: 50.00, salesPerson: "REENA", description: "Vinyl Sticker" },
-  { client: "Sea Centre Shipping Services LLC", invoiceNo: "25-0284", invoiceDate: "13-May-25", totalAmount: 404.25, salesPerson: "BNI", description: "Sleeve for chocolate" },
-  { client: "Party Pals Forever Events LLC", invoiceNo: "25-0285", invoiceDate: "7-May-25", totalAmount: 78.75, salesPerson: "BNI", description: "Stickers for Box" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0286", invoiceDate: "15-May-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Perfect Tools Moulds Factory L.L.C", invoiceNo: "25-0287", invoiceDate: "16-May-25", totalAmount: 630.00, salesPerson: "REENA", description: "NCR Book" },
-  { client: "Dhyana Digital Marketing L.L.C", invoiceNo: "25-0288", invoiceDate: "15-May-25", totalAmount: 288.75, salesPerson: "REENA", description: "Business Card" },
-  { client: "Advantage Printing Services", invoiceNo: "25-0289", invoiceDate: "16-May-25", totalAmount: 1008.00, salesPerson: "REENA", description: "Polo shirts" },
-  { client: "Finhub Middle East", invoiceNo: "25-0290", invoiceDate: "16-May-25", totalAmount: 341.25, salesPerson: "REENA", description: "Designing cost Box" },
-  { client: "BNI Polaris", invoiceNo: "25-0291", invoiceDate: "16-May-25", totalAmount: 420.00, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "RIMO Pharmaceuticals DMCC", invoiceNo: "25-0292", invoiceDate: "31-May-25", totalAmount: 210.00, salesPerson: "REENA", description: "Designing Charges" },
-  { client: "Trica Technical Works LLC", invoiceNo: "25-0293", invoiceDate: "20-May-25", totalAmount: 367.50, salesPerson: "REENA", description: "Designing Charges" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0294", invoiceDate: "20-May-25", totalAmount: 1338.75, salesPerson: "REENA", description: "Warehouse Delivery Note" },
-  { client: "Quattro Capital Investment Consultant LLC", invoiceNo: "25-0295", invoiceDate: "30-May-25", totalAmount: 1998.67, salesPerson: "SREERAJ", description: "Table Flags and Notebook" },
-  { client: "Locke Lifestyle Properties", invoiceNo: "25-0296", invoiceDate: "23-May-25", totalAmount: 2214.45, salesPerson: "REENA", description: "Metal badge" },
-  { client: "Umesh C K", invoiceNo: "25-0297", invoiceDate: "23-May-25", totalAmount: 907.31, salesPerson: "BNI", description: "Wooden Plaque and trophies" },
-  { client: "Lloyds Energy DMCC", invoiceNo: "25-0298", invoiceDate: "23-May-25", totalAmount: 246.75, salesPerson: "REENA", description: "Business cards" },
-  { client: "BNI Polaris", invoiceNo: "25-0299", invoiceDate: "23-May-25", totalAmount: 346.50, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0300", invoiceDate: "23-May-25", totalAmount: 393.75, salesPerson: "REENA", description: "Letterhead" },
-  { client: "Cambridge Education Group", invoiceNo: "25-0301", invoiceDate: "28-May-25", totalAmount: 287.70, salesPerson: "REENA", description: "Certificate" },
-  { client: "Netision Global Technologies LLC", invoiceNo: "25-0302", invoiceDate: "30-May-25", totalAmount: 131.25, salesPerson: "REENA", description: "Business Card" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0303", invoiceDate: "30-May-25", totalAmount: 976.50, salesPerson: "REENA", description: "Crystal Trophy" },
-  { client: "Five Building Materials Trading LLC", invoiceNo: "25-0304", invoiceDate: "28-May-25", totalAmount: 525.00, salesPerson: "BNI", description: "Logo Designing" },
-  { client: "Five Building Materials Trading LLC", invoiceNo: "25-0305", invoiceDate: "28-May-25", totalAmount: 1422.75, salesPerson: "BNI", description: "Rollup and cork pen" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0306", invoiceDate: "29-May-25", totalAmount: 525.00, salesPerson: "REENA", description: "Designing charges" },
-  { client: "EDGE Technical Solution L.L.C", invoiceNo: "25-0307", invoiceDate: "29-May-25", totalAmount: 105.00, salesPerson: "BNI", description: "Safety Vest Samples" },
-  { client: "EDGE Technical Solution L.L.C", invoiceNo: "25-0308", invoiceDate: "29-May-25", totalAmount: 173.25, salesPerson: "BNI", description: "Rollup Banner" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0309", invoiceDate: "31-May-25", totalAmount: 151.20, salesPerson: "REENA", description: "Access cards printing" },
-  { client: "BNI Polaris", invoiceNo: "25-0310", invoiceDate: "30-May-25", totalAmount: 1481.03, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0311", invoiceDate: "31-May-25", totalAmount: 8773.27, salesPerson: "REENA", description: "Lanyards, Polo Shirt, Business card" },
-  { client: "Unique World Business Centre LLC -(Br.)", invoiceNo: "25-0312", invoiceDate: "31-May-25", totalAmount: 141.75, salesPerson: "REENA", description: "Supplies" },
-  { client: "Unique World Business Centre LLC -(HO)", invoiceNo: "25-0313", invoiceDate: "31-May-25", totalAmount: 157.50, salesPerson: "REENA", description: "Supplies" },
-  { client: "Kaizen Business Consultants", invoiceNo: "25-0314", invoiceDate: "31-May-25", totalAmount: 236.25, salesPerson: "REENA", description: "Business Card" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0315", invoiceDate: "31-May-25", totalAmount: 945.00, salesPerson: "REENA", description: "Crystal Trophy MIP Award" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0316", invoiceDate: "31-May-25", totalAmount: 409.50, salesPerson: "REENA", description: "Trophy" },
-  { client: "Tappy Toes Nursery DWC-LLC", invoiceNo: "25-0317", invoiceDate: "31-May-25", totalAmount: 226.80, salesPerson: "REENA", description: "Polo Shirt" },
-  { client: "Al Afnan Steel Ind. Co. LLC", invoiceNo: "25-0318", invoiceDate: "31-May-25", totalAmount: 3839.85, salesPerson: "REENA", description: "Polo shirt" },
-  { client: "NARJIS Printing and Publishing", invoiceNo: "25-0319", invoiceDate: "9-Jun-25", totalAmount: 1076.25, salesPerson: "REENA", description: "Business Card" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0320", invoiceDate: "10-Jun-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Huxley Associates Global Limited", invoiceNo: "25-0321", invoiceDate: "10-Jun-25", totalAmount: 606.38, salesPerson: "REENA", description: "A4 sheets and Frame" },
-  { client: "Radiometer Medical ApS", invoiceNo: "25-0322", invoiceDate: "11-Jun-25", totalAmount: 2677.50, salesPerson: "REENA", description: "Spiral Notebook and Metal Pen" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0323", invoiceDate: "11-Jun-25", totalAmount: 603.75, salesPerson: "REENA", description: "A5 Envelope" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0324", invoiceDate: "12-Jun-25", totalAmount: 94.50, salesPerson: "REENA", description: "Letter prints" },
-  { client: "EDGE Technical Solution L.L.C", invoiceNo: "25-0325", invoiceDate: "12-Jun-25", totalAmount: 1770.56, salesPerson: "BNI", description: "Safety Vest" },
-  { client: "Continental Middle East DMCC", invoiceNo: "25-0326", invoiceDate: "12-Jun-25", totalAmount: 26693.63, salesPerson: "REENA", description: "Luggage Tag, Card Holder, Wallet" },
-  { client: "EMBOSS - FZCO", invoiceNo: "25-0327", invoiceDate: "18-Jun-25", totalAmount: 2409.75, salesPerson: "REENA", description: "Lapel Pin" },
-  { client: "Tappy Toes Nursery DWC-LLC", invoiceNo: "25-0328", invoiceDate: "12-Jun-25", totalAmount: 340.20, salesPerson: "REENA", description: "Polo Shirt" },
-  { client: "Avant FZ LLC", invoiceNo: "25-0329", invoiceDate: "12-Jun-25", totalAmount: 341.25, salesPerson: "BNI", description: "Polo shirt" },
-  { client: "Muhammad Umer Tariq", invoiceNo: "25-0330", invoiceDate: "2-Jun-25", totalAmount: 112.35, salesPerson: "BNI", description: "Water Bottle and Certificate" },
-  { client: "Melius Consulting", invoiceNo: "25-0331", invoiceDate: "2-Jun-25", totalAmount: 149.63, salesPerson: "REENA", description: "EID Greeting Card" },
-  { client: "Alfa Tonic LLC", invoiceNo: "25-0332", invoiceDate: "12-Jun-25", totalAmount: 13807.50, salesPerson: "ANAND", description: "Box" },
-  { client: "Sea Centre Shipping Services LLC", invoiceNo: "25-0333", invoiceDate: "9-Jun-25", totalAmount: 299.25, salesPerson: "BNI", description: "Business Card" },
-  { client: "Ms. Baiba Butler", invoiceNo: "25-0334", invoiceDate: "9-Jun-25", totalAmount: 262.50, salesPerson: "REENA", description: "Birthday banner" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0335", invoiceDate: "13-Jun-25", totalAmount: 1286.25, salesPerson: "REENA", description: "Trophy, Boarding Pass" },
-  { client: "BNI Polaris", invoiceNo: "25-0336", invoiceDate: "13-Jun-25", totalAmount: 378.00, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0337", invoiceDate: "18-Jun-25", totalAmount: 892.50, salesPerson: "REENA", description: "A4 and DL envelope" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0338", invoiceDate: "16-Jun-25", totalAmount: 897.75, salesPerson: "REENA", description: "Tote Bags" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0339", invoiceDate: "16-Jun-25", totalAmount: 735.00, salesPerson: "REENA", description: "Games Flyer" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0340", invoiceDate: "16-Jun-25", totalAmount: 1425.90, salesPerson: "REENA", description: "Genz Stickers" },
-  { client: "Five Building Materials Trading LLC", invoiceNo: "25-0341", invoiceDate: "14-Jun-25", totalAmount: 643.13, salesPerson: "BNI", description: "Designing Charges" },
-  { client: "Alef Education Consultancy L.L.C.", invoiceNo: "25-0342", invoiceDate: "16-Jun-25", totalAmount: 6144.60, salesPerson: "REENA", description: "School Uniforms" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0343", invoiceDate: "16-Jun-25", totalAmount: 1126.44, salesPerson: "REENA", description: "Business Cards" },
-  { client: "CACOGES", invoiceNo: "25-0344", invoiceDate: "23-Jul-25", totalAmount: 33290.25, salesPerson: "REENA", description: "Calendar, Agenda Book, Pen" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0345", invoiceDate: "18-Jun-25", totalAmount: 1817.34, salesPerson: "REENA", description: "Plastic Pen, Mug, Brochure" },
-  { client: "Continental Middle East DMCC", invoiceNo: "25-0346", invoiceDate: "18-Jun-25", totalAmount: 9318.75, salesPerson: "REENA", description: "Caps" },
-  { client: "Trane BVBA (Abu Dhabi)", invoiceNo: "25-0347", invoiceDate: "18-Jun-25", totalAmount: 798.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Al Jalila Foundation in support of Medical Education and Research", invoiceNo: "25-0348", invoiceDate: "18-Jun-25", totalAmount: 863.63, salesPerson: "REENA", description: "PU Leather Holder" },
-  { client: "Avant FZ LLC", invoiceNo: "25-0349", invoiceDate: "19-Jun-25", totalAmount: 567.00, salesPerson: "BNI", description: "Polo shirt" },
-  { client: "Melius Consulting", invoiceNo: "25-0350", invoiceDate: "20-Jun-25", totalAmount: 1296.75, salesPerson: "REENA", description: "Hard Cover Notebook" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0351", invoiceDate: "19-Jun-25", totalAmount: 341.25, salesPerson: "REENA", description: "Business card" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0352", invoiceDate: "20-Jun-25", totalAmount: 1421.05, salesPerson: "REENA", description: "Business Card" },
-  { client: "M E A D Medical Supplies & Equipment L.L.C", invoiceNo: "25-0353", invoiceDate: "20-Jun-25", totalAmount: 367.50, salesPerson: "REENA", description: "Sample Charges" },
-  { client: "BNI Polaris", invoiceNo: "25-0354", invoiceDate: "20-Jun-25", totalAmount: 483.00, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Mr. Ajesh Mohan", invoiceNo: "25-0355", invoiceDate: "20-Jun-25", totalAmount: 289.80, salesPerson: "BNI", description: "Business cards" },
-  { client: "Radiometer Medical ApS", invoiceNo: "25-0356", invoiceDate: "24-Jun-25", totalAmount: 40.00, salesPerson: "REENA", description: "A4 Certificate with frame" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0357", invoiceDate: "23-Jun-25", totalAmount: 1337.70, salesPerson: "REENA", description: "Instagram frame, X Banner" },
-  { client: "JUBAILI BROS S.A.L.", invoiceNo: "25-0358", invoiceDate: "6-Aug-25", totalAmount: 3346.88, salesPerson: "REENA", description: "RPET Backpack" },
-  { client: "ANB AUTOMOBILES L.L.C", invoiceNo: "25-0359", invoiceDate: "26-Jun-25", totalAmount: 2094.75, salesPerson: "REENA", description: "Kraft Paper Bag" },
-  { client: "BNI Polaris", invoiceNo: "25-0360", invoiceDate: "25-Jun-25", totalAmount: 367.50, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0361", invoiceDate: "25-Jun-25", totalAmount: 2929.50, salesPerson: "REENA", description: "Post cards with Box" },
-  { client: "Stellar Advertising LLC", invoiceNo: "25-0362", invoiceDate: "28-Jun-25", totalAmount: 1968.75, salesPerson: "REENA", description: "Chocolate box" },
-  { client: "Bloomsbury Lane", invoiceNo: "25-0363", invoiceDate: "26-Jun-25", totalAmount: 204.75, salesPerson: "BNI", description: "Tshirts" },
-  { client: "Unique World Business Centre LLC -(HO)", invoiceNo: "25-0364", invoiceDate: "28-Jun-25", totalAmount: 94.50, salesPerson: "REENA", description: "Supplies" },
-  { client: "Unique World Business Centre LLC -(Br.)", invoiceNo: "25-0365", invoiceDate: "28-Jun-25", totalAmount: 47.25, salesPerson: "REENA", description: "Supplies" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0366", invoiceDate: "30-Jun-25", totalAmount: 409.50, salesPerson: "REENA", description: "Trophy" },
-  { client: "BNI Terra", invoiceNo: "25-0367", invoiceDate: "2-Jul-25", totalAmount: 1538.46, salesPerson: "BNI", description: "Handy Powerbank" },
-  { client: "STYFECT FURNITURES TRADING LLC", invoiceNo: "25-0368", invoiceDate: "28-Jun-25", totalAmount: 6032.25, salesPerson: "BNI", description: "Vehicle Branding" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0369", invoiceDate: "30-Jun-25", totalAmount: 364.88, salesPerson: "REENA", description: "Certificate, Rollup and Posters" },
-  { client: "CHURCH OF SOUTH INDIA", invoiceNo: "25-0370", invoiceDate: "30-Jun-25", totalAmount: 4000.00, salesPerson: "ANAND", description: "Consultation and Facilitation" },
-  { client: "Gardner Denver FZE", invoiceNo: "25-0371", invoiceDate: "30-Jun-25", totalAmount: 493.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "Avant FZ LLC", invoiceNo: "25-0372", invoiceDate: "2-Jul-25", totalAmount: 4651.50, salesPerson: "BNI", description: "Mousepad and Plant" },
-  { client: "STYFECT FURNITURES TRADING LLC", invoiceNo: "25-0373", invoiceDate: "2-Jul-25", totalAmount: 299.25, salesPerson: "BNI", description: "NCR books" },
-  { client: "Munich Motor Works", invoiceNo: "25-0374", invoiceDate: "4-Jul-25", totalAmount: 4200.00, salesPerson: "SREERAJ", description: "Glass branding" },
-  { client: "Al Afnan Steel Ind. Co. LLC", invoiceNo: "25-0375", invoiceDate: "4-Jul-25", totalAmount: 472.50, salesPerson: "BNI", description: "NCR Books" },
-  { client: "Accentia Consulting - FZCO", invoiceNo: "25-0376", invoiceDate: "5-Jul-25", totalAmount: 346.50, salesPerson: "BNI", description: "Business cards" },
-  { client: "BNI Polaris", invoiceNo: "25-0377", invoiceDate: "4-Jul-25", totalAmount: 453.60, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Continental Middle East DMCC", invoiceNo: "25-0378", invoiceDate: "7-Jul-25", totalAmount: 262.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0379", invoiceDate: "8-Jul-25", totalAmount: 1312.50, salesPerson: "REENA", description: "Energy Flex Project" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0380", invoiceDate: "10-Jul-25", totalAmount: 679.88, salesPerson: "REENA", description: "A4 Envelope, Parking Permit" },
-  { client: "Tappy Toes Nursery DWC-LLC", invoiceNo: "25-0381", invoiceDate: "10-Jul-25", totalAmount: 396.90, salesPerson: "REENA", description: "Polo Shirt" },
-  { client: "MAERSK LOGISTICS AND SERVICES L.L.C", invoiceNo: "25-0382", invoiceDate: "10-Jul-25", totalAmount: 5040.00, salesPerson: "SREERAJ", description: "Polo shirt Uniform" },
-  { client: "STYFECT FURNITURES TRADING LLC", invoiceNo: "25-0383", invoiceDate: "30-Aug-25", totalAmount: 5202.75, salesPerson: "BNI", description: "Vehicle Branding" },
-  { client: "Dhyana Digital Marketing L.L.C", invoiceNo: "25-0384", invoiceDate: "10-Jul-25", totalAmount: 826.88, salesPerson: "REENA", description: "PU Notebook and Name board" },
-  { client: "EMBOSS - FZCO", invoiceNo: "25-0385", invoiceDate: "14-Jul-25", totalAmount: 771.75, salesPerson: "REENA", description: "Mousepad" },
-  { client: "BNI Polaris", invoiceNo: "25-0386", invoiceDate: "14-Jul-25", totalAmount: 582.75, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "BNI Polaris", invoiceNo: "25-0387", invoiceDate: "14-Jul-25", totalAmount: 498.75, salesPerson: "BNI", description: "35 Member Celebration" },
-  { client: "Perfect Tools Moulds Factory L.L.C", invoiceNo: "25-0388", invoiceDate: "14-Jul-25", totalAmount: 1312.50, salesPerson: "REENA", description: "Brochure" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0389", invoiceDate: "15-Jul-25", totalAmount: 499.91, salesPerson: "REENA", description: "Installation of stickers" },
-  { client: "Dhyana Digital Marketing L.L.C", invoiceNo: "25-0390", invoiceDate: "15-Jul-25", totalAmount: 593.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0391", invoiceDate: "22-Jul-25", totalAmount: 9482.81, salesPerson: "REENA", description: "Computer Stationery" },
-  { client: "Oculus Middle East Contracting LLC", invoiceNo: "25-0392", invoiceDate: "16-Jul-25", totalAmount: 78.75, salesPerson: "BNI", description: "Digital Business NFC Card" },
-  { client: "V7 Electro World FZCO", invoiceNo: "25-0393", invoiceDate: "17-Jul-25", totalAmount: 456.75, salesPerson: "REENA", description: "Business card" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0394", invoiceDate: "17-Jul-25", totalAmount: 30639.79, salesPerson: "REENA", description: "Course Guide, Flyer, Bottle" },
-  { client: "BNI Polaris", invoiceNo: "25-0395", invoiceDate: "18-Jul-25", totalAmount: 526.05, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Fusion Bites", invoiceNo: "25-0396", invoiceDate: "19-Jul-25", totalAmount: 194.25, salesPerson: "REENA", description: "Discount Voucher" },
-  { client: "Ms. Ling", invoiceNo: "25-0397", invoiceDate: "22-Jul-25", totalAmount: 3937.50, salesPerson: "REENA", description: "Envelopes and Card" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0398", invoiceDate: "21-Jul-25", totalAmount: 105.00, salesPerson: "REENA", description: "Sample Charges for Brochure" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0399", invoiceDate: "22-Jul-25", totalAmount: 338.63, salesPerson: "REENA", description: "Terminal fines forms" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0400", invoiceDate: "22-Jul-25", totalAmount: 338.63, salesPerson: "REENA", description: "Terminal fines forms" },
-  { client: "Stellar Advertising LLC", invoiceNo: "25-0401", invoiceDate: "22-Jul-25", totalAmount: 15973.13, salesPerson: "REENA", description: "Year Book UIS" },
-  { client: "CACOGES", invoiceNo: "25-0402", invoiceDate: "23-Jul-25", totalAmount: 819.00, salesPerson: "REENA", description: "Business card" },
-  { client: "Daniel Ferdinandusz", invoiceNo: "25-0403", invoiceDate: "23-Jul-25", totalAmount: 299.25, salesPerson: "REENA", description: "Tote bag" },
-  { client: "Dhyana Digital Marketing L.L.C", invoiceNo: "25-0404", invoiceDate: "23-Jul-25", totalAmount: 535.50, salesPerson: "REENA", description: "Gift Box" },
-  { client: "Tappy Toes Nursery DWC-LLC", invoiceNo: "25-0405", invoiceDate: "30-Jul-25", totalAmount: 18173.40, salesPerson: "REENA", description: "Polo shirts" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0406", invoiceDate: "31-Jul-25", totalAmount: 409.50, salesPerson: "REENA", description: "Trophy" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0407", invoiceDate: "30-Jul-25", totalAmount: 3465.00, salesPerson: "REENA", description: "Roll Up banner" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0408", invoiceDate: "20-Aug-25", totalAmount: 9482.81, salesPerson: "REENA", description: "Computer Stationery" },
-  { client: "Unique World Business Centre LLC -(Br.)", invoiceNo: "25-0409", invoiceDate: "31-Jul-25", totalAmount: 31.50, salesPerson: "REENA", description: "Supplies" },
-  { client: "Unique World Business Centre LLC -(HO)", invoiceNo: "25-0410", invoiceDate: "31-Jul-25", totalAmount: 220.50, salesPerson: "REENA", description: "Supplies" },
-  { client: "Continental Middle East DMCC", invoiceNo: "25-0411", invoiceDate: "31-Jul-25", totalAmount: 246.75, salesPerson: "REENA", description: "Business cards" },
-  { client: "Belen Electronics Trading L.L.C", invoiceNo: "25-0412", invoiceDate: "31-Jul-25", totalAmount: 350.18, salesPerson: "DARSHAN", description: "Flyer, stamp, letterhead" },
-  { client: "Finhub Middle East", invoiceNo: "25-0413", invoiceDate: "31-Jul-25", totalAmount: 630.00, salesPerson: "REENA", description: "Lobby Glass Sticker" },
-  { client: "M E A D Medical Supplies & Equipment L.L.C", invoiceNo: "25-0414", invoiceDate: "31-Jul-25", totalAmount: 766.50, salesPerson: "REENA", description: "Business Cards" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0415", invoiceDate: "31-Jul-25", totalAmount: 640.50, salesPerson: "REENA", description: "Hoodie with zipper" },
-  { client: "Trane BVBA (Abu Dhabi)", invoiceNo: "25-0416", invoiceDate: "1-Aug-25", totalAmount: 798.00, salesPerson: "REENA", description: "Business cards" },
-  { client: "Bianca and Bianco Trading LLC", invoiceNo: "25-0417", invoiceDate: "8-Aug-25", totalAmount: 2913.75, salesPerson: "REENA", description: "Non woven bag" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0418", invoiceDate: "5-Aug-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0419", invoiceDate: "5-Aug-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "SECA GMBH & CO. KG MIDDLE EAST (DMCC BRANCH)", invoiceNo: "25-0420", invoiceDate: "14-Aug-25", totalAmount: 7070.70, salesPerson: "ANAND", description: "Acrylic Signage Board" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0421", invoiceDate: "7-Aug-25", totalAmount: 3307.50, salesPerson: "REENA", description: "Crystal Trophy MIP Award" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0422", invoiceDate: "7-Aug-25", totalAmount: 17556.00, salesPerson: "REENA", description: "Cotton Bags, Bottle, Notebook" },
-  { client: "Momentum Logistics LLC", invoiceNo: "25-0423", invoiceDate: "7-Aug-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "VELA ARC REAL ESTATE L.L.C", invoiceNo: "25-0424", invoiceDate: "8-Aug-25", totalAmount: 2493.75, salesPerson: "SREERAJ", description: "Receipt Voucher Book" },
-  { client: "Al Afnan Steel Ind. Co. LLC", invoiceNo: "25-0425", invoiceDate: "9-Aug-25", totalAmount: 2472.75, salesPerson: "BNI", description: "Polo shirt, Banner, Brochure" },
-  { client: "Paragon Properties", invoiceNo: "25-0426", invoiceDate: "8-Aug-25", totalAmount: 630.00, salesPerson: "REENA", description: "Vinyl stickers" },
-  { client: "BNI Polaris", invoiceNo: "25-0427", invoiceDate: "8-Aug-25", totalAmount: 752.85, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "ASK-CA Auditing of Accounts", invoiceNo: "25-0428", invoiceDate: "11-Aug-25", totalAmount: 4725.00, salesPerson: "REENA", description: "Brochure, Rubber stamp" },
-  { client: "DHR MENA FZ-LLC", invoiceNo: "25-0429", invoiceDate: "12-Aug-25", totalAmount: 10303.13, salesPerson: "SREERAJ", description: "Digital Business NFC Card" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0430", invoiceDate: "14-Aug-25", totalAmount: 27041.44, salesPerson: "REENA", description: "Printing Collaterals 2026" },
-  { client: "Counselling Point Training & Development", invoiceNo: "25-0431", invoiceDate: "14-Aug-25", totalAmount: 325.50, salesPerson: "ANAND", description: "Cards" },
-  { client: "SECA GMBH & CO. KG MIDDLE EAST (DMCC BRANCH)", invoiceNo: "25-0432", invoiceDate: "14-Aug-25", totalAmount: 189.00, salesPerson: "ANAND", description: "Rollup Banner" },
-  { client: "BNI Polaris", invoiceNo: "25-0433", invoiceDate: "16-Aug-25", totalAmount: 426.82, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Stellar Advertising LLC", invoiceNo: "25-0434", invoiceDate: "18-Aug-25", totalAmount: 1942.50, salesPerson: "REENA", description: "Year Book UIS" },
-  { client: "Sea Centre Shipping Services LLC", invoiceNo: "25-0435", invoiceDate: "19-Aug-25", totalAmount: 1023.75, salesPerson: "BNI", description: "Payment Voucher Book" },
-  { client: "Cambridge Education Group", invoiceNo: "25-0436", invoiceDate: "20-Aug-25", totalAmount: 328.13, salesPerson: "REENA", description: "Plastic Pen" },
-  { client: "Stellar Advertising LLC", invoiceNo: "25-0437", invoiceDate: "20-Aug-25", totalAmount: 1181.25, salesPerson: "REENA", description: "Chocolate box" },
-  { client: "Orience Documents Clearance Services L.L.C", invoiceNo: "25-0438", invoiceDate: "20-Aug-25", totalAmount: 1867.95, salesPerson: "SREERAJ", description: "Table Flags and Big flag" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0439", invoiceDate: "21-Aug-25", totalAmount: 14396.02, salesPerson: "REENA", description: "PU Notebook, USB, Pen" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0440", invoiceDate: "22-Aug-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0441", invoiceDate: "22-Aug-25", totalAmount: 630.00, salesPerson: "REENA", description: "Business Cards" },
-  { client: "BNI Polaris", invoiceNo: "25-0442", invoiceDate: "23-Aug-25", totalAmount: 518.55, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "SPH Global Holdings LLC", invoiceNo: "25-0443", invoiceDate: "25-Aug-25", totalAmount: 4125.00, salesPerson: "REENA", description: "Plant with Ceramic pot" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0444", invoiceDate: "25-Aug-25", totalAmount: 9976.05, salesPerson: "REENA", description: "Cotton Bags, Pens, Mugs" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0445", invoiceDate: "26-Aug-25", totalAmount: 8379.00, salesPerson: "REENA", description: "Badge, Notebook, Lanyards" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0446", invoiceDate: "26-Aug-25", totalAmount: 3118.50, salesPerson: "REENA", description: "Photobooth Props" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0447", invoiceDate: "27-Aug-25", totalAmount: 4168.50, salesPerson: "REENA", description: "Polo Shirts" },
-  { client: "Bianca and Bianco Trading LLC", invoiceNo: "25-0448", invoiceDate: "27-Aug-25", totalAmount: 840.00, salesPerson: "REENA", description: "Business cards" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0449", invoiceDate: "28-Aug-25", totalAmount: 535.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0450", invoiceDate: "28-Aug-25", totalAmount: 2520.00, salesPerson: "REENA", description: "Notebooks and Trophy" },
-  { client: "Continental Middle East DMCC", invoiceNo: "25-0451", invoiceDate: "29-Aug-25", totalAmount: 10930.50, salesPerson: "REENA", description: "Caps" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0452", invoiceDate: "29-Aug-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0453", invoiceDate: "29-Aug-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "BNI Polaris", invoiceNo: "25-0454", invoiceDate: "29-Aug-25", totalAmount: 577.50, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Five Building Materials Trading LLC", invoiceNo: "25-0455", invoiceDate: "30-Aug-25", totalAmount: 1949.63, salesPerson: "BNI", description: "Letterhead, Envelope" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0456", invoiceDate: "30-Aug-25", totalAmount: 346.50, salesPerson: "REENA", description: "Roll up Banner" },
-  { client: "Unique World Business Centre LLC -(HO)", invoiceNo: "25-0457", invoiceDate: "30-Aug-25", totalAmount: 94.50, salesPerson: "REENA", description: "Supplies" },
-  { client: "Unique World Business Centre LLC -(Br.)", invoiceNo: "25-0458", invoiceDate: "30-Aug-25", totalAmount: 47.25, salesPerson: "REENA", description: "Supplies" },
-  { client: "Datagram Network Technologies LLC", invoiceNo: "25-0459", invoiceDate: "1-Sep-25", totalAmount: 788.03, salesPerson: "REENA", description: "Crystal Trophy" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0460", invoiceDate: "1-Sep-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0461", invoiceDate: "1-Sep-25", totalAmount: 1890.00, salesPerson: "REENA", description: "Crystal Trophy" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0462", invoiceDate: "2-Sep-25", totalAmount: 1491.00, salesPerson: "REENA", description: "Flyer, X-Banner" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0463", invoiceDate: "2-Sep-25", totalAmount: 8610.00, salesPerson: "REENA", description: "Photobooth Props" },
-  { client: "Sea Centre Shipping Services LLC", invoiceNo: "25-0464", invoiceDate: "2-Sep-25", totalAmount: 1354.50, salesPerson: "BNI", description: "Digital Signage" },
-  { client: "Indo Tausch Trading DMCC", invoiceNo: "25-0465", invoiceDate: "3-Sep-25", totalAmount: 3064.50, salesPerson: "REENA", description: "Table Flags and Notebook" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0466", invoiceDate: "3-Sep-25", totalAmount: 1046.15, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0467", invoiceDate: "3-Sep-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "BNI Polaris", invoiceNo: "25-0468", invoiceDate: "5-Sep-25", totalAmount: 505.05, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "SUPERCAD TRADING L.L.C", invoiceNo: "25-0469", invoiceDate: "5-Sep-25", totalAmount: 94.50, salesPerson: "BNI", description: "Business cards" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0470", invoiceDate: "6-Sep-25", totalAmount: 7560.00, salesPerson: "REENA", description: "Flyers, Bag, Genz Sticker" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0471", invoiceDate: "6-Sep-25", totalAmount: 12369.00, salesPerson: "REENA", description: "Photobooth Props" },
-  { client: "DEAKIN University", invoiceNo: "25-0472", invoiceDate: "6-Sep-25", totalAmount: 32370.45, salesPerson: "REENA", description: "Bottle, Bagpack, Brochure" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0473", invoiceDate: "6-Sep-25", totalAmount: 409.50, salesPerson: "REENA", description: "Trophy" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0474", invoiceDate: "8-Sep-25", totalAmount: 1023.75, salesPerson: "REENA", description: "Business cards" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0475", invoiceDate: "8-Sep-25", totalAmount: 14467.05, salesPerson: "REENA", description: "Printing Collaterals 2026" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0476", invoiceDate: "8-Sep-25", totalAmount: 315.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0477", invoiceDate: "8-Sep-25", totalAmount: 8558.55, salesPerson: "REENA", description: "Photobooth Props" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0478", invoiceDate: "8-Sep-25", totalAmount: 367.50, salesPerson: "REENA", description: "Certificate" },
-  { client: "Stellar Advertising LLC", invoiceNo: "25-0479", invoiceDate: "8-Sep-25", totalAmount: 682.50, salesPerson: "REENA", description: "Chocolate box" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0480", invoiceDate: "9-Sep-25", totalAmount: 3091.88, salesPerson: "REENA", description: "Brochure" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0481", invoiceDate: "9-Sep-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0482", invoiceDate: "9-Sep-25", totalAmount: 8610.00, salesPerson: "REENA", description: "Table Cloth" },
-  { client: "Melius Consulting", invoiceNo: "25-0483", invoiceDate: "10-Sep-25", totalAmount: 2310.00, salesPerson: "REENA", description: "Gift Hampers" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0484", invoiceDate: "10-Sep-25", totalAmount: 708.75, salesPerson: "REENA", description: "Business Cards" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0485", invoiceDate: "10-Sep-25", totalAmount: 346.50, salesPerson: "REENA", description: "Rollup Banner" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0486", invoiceDate: "10-Sep-25", totalAmount: 1732.50, salesPerson: "REENA", description: "Brochure" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0487", invoiceDate: "11-Sep-25", totalAmount: 4399.50, salesPerson: "REENA", description: "Brochure" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0488", invoiceDate: "11-Sep-25", totalAmount: 9240.00, salesPerson: "REENA", description: "Certificate" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0489", invoiceDate: "11-Sep-25", totalAmount: 346.50, salesPerson: "REENA", description: "Rollup Banner" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0490", invoiceDate: "11-Sep-25", totalAmount: 840.00, salesPerson: "REENA", description: "Backdrop" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0491", invoiceDate: "12-Sep-25", totalAmount: 3927.00, salesPerson: "REENA", description: "A4 Envelope" },
-  { client: "Momentum Logistics LLC", invoiceNo: "25-0492", invoiceDate: "12-Sep-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0493", invoiceDate: "12-Sep-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0494", invoiceDate: "12-Sep-25", totalAmount: 236.25, salesPerson: "REENA", description: "Trophy" },
-  { client: "BNI Polaris", invoiceNo: "25-0495", invoiceDate: "12-Sep-25", totalAmount: 110.25, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Indo Tausch Trading DMCC", invoiceNo: "25-0496", invoiceDate: "13-Sep-25", totalAmount: 2829.75, salesPerson: "REENA", description: "Notebook" },
-  { client: "Indo Tausch Trading DMCC", invoiceNo: "25-0497", invoiceDate: "15-Sep-25", totalAmount: 131.25, salesPerson: "REENA", description: "Business card" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0498", invoiceDate: "15-Sep-25", totalAmount: 682.50, salesPerson: "REENA", description: "Business card" },
-  { client: "ANB AUTOMOBILES L.L.C", invoiceNo: "25-0499", invoiceDate: "15-Sep-25", totalAmount: 4410.00, salesPerson: "REENA", description: "Kraft Paper Bag" },
-  { client: "SUPERCAD TRADING L.L.C", invoiceNo: "25-0500", invoiceDate: "16-Sep-25", totalAmount: 420.00, salesPerson: "BNI", description: "Rollup Banner" },
-  { client: "Tappy Toes Nursery DWC-LLC", invoiceNo: "25-0501", invoiceDate: "25-Sep-25", totalAmount: 4677.75, salesPerson: "REENA", description: "Polo shirts" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0502", invoiceDate: "16-Sep-25", totalAmount: 661.50, salesPerson: "REENA", description: "IELTS Vouchers" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0503", invoiceDate: "16-Sep-25", totalAmount: 3290.44, salesPerson: "REENA", description: "Volunteer's vest" },
-  { client: "Mr. Mohamed Sinaj Sali", invoiceNo: "25-0504", invoiceDate: "20-Sep-25", totalAmount: 9591.77, salesPerson: "BNI", description: "Notebook, PVC card, Plaques" },
-  { client: "GrokGlobal Services", invoiceNo: "25-0505", invoiceDate: "17-Sep-25", totalAmount: 766.50, salesPerson: "REENA", description: "Business Cards" },
-  { client: "Counselling Point Training & Development", invoiceNo: "25-0506", invoiceDate: "18-Sep-25", totalAmount: 735.00, salesPerson: "ANAND", description: "Business Card" },
-  { client: "ARK Creators", invoiceNo: "25-0507", invoiceDate: "20-Sep-25", totalAmount: 1118.25, salesPerson: "BNI", description: "Potli Set, Bracelet, Swan Diya" },
-  { client: "BNI Polaris", invoiceNo: "25-0508", invoiceDate: "20-Sep-25", totalAmount: 546.00, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Bianca and Bianco Trading LLC", invoiceNo: "25-0509", invoiceDate: "22-Sep-25", totalAmount: 2241.75, salesPerson: "REENA", description: "Envelope, Business card" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0510", invoiceDate: "24-Sep-25", totalAmount: 98789.25, salesPerson: "REENA", description: "ROADSHOW Grand Hyatt Dubai" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0511", invoiceDate: "24-Sep-25", totalAmount: 79490.25, salesPerson: "REENA", description: "ROADSHOW Conrad Abu Dhabi" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0512", invoiceDate: "22-Sep-25", totalAmount: 441.00, salesPerson: "REENA", description: "Aprons" },
-  { client: "Excelsior Escapes and Events", invoiceNo: "25-0513", invoiceDate: "23-Sep-25", totalAmount: 126.00, salesPerson: "REENA", description: "Stamp" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0514", invoiceDate: "24-Sep-25", totalAmount: 393.75, salesPerson: "REENA", description: "A5 flyer" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0515", invoiceDate: "24-Sep-25", totalAmount: 2611.61, salesPerson: "REENA", description: "Austria 2025" },
-  { client: "GNX", invoiceNo: "25-0516", invoiceDate: "25-Sep-25", totalAmount: 7481.25, salesPerson: "SREERAJ", description: "Bio Fresh T shirt" },
-  { client: "SPH Global Holdings LLC", invoiceNo: "25-0517", invoiceDate: "25-Sep-25", totalAmount: 362.25, salesPerson: "SREERAJ", description: "Printing on Glass Bottle" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0518", invoiceDate: "24-Sep-25", totalAmount: 27988.80, salesPerson: "REENA", description: "Flyers, Pen, Bag, Brochure" },
-  { client: "ARK Creators", invoiceNo: "25-0519", invoiceDate: "26-Sep-25", totalAmount: 2583.00, salesPerson: "BNI", description: "Rental and Swan" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0520", invoiceDate: "26-Sep-25", totalAmount: 1637.50, salesPerson: "REENA", description: "Business Card" },
-  { client: "Ms Krishma Gehani", invoiceNo: "25-0521", invoiceDate: "26-Sep-25", totalAmount: 284.71, salesPerson: "BNI", description: "Ceramic mugs" },
-  { client: "Five Building Materials Trading LLC", invoiceNo: "25-0522", invoiceDate: "26-Sep-25", totalAmount: 456.75, salesPerson: "BNI", description: "Signage" },
-  { client: "KOTUG MIDDLE EAST DMCC", invoiceNo: "25-0523", invoiceDate: "27-Sep-25", totalAmount: 331.80, salesPerson: "REENA", description: "Ceramic Mug" },
-  { client: "BNI Polaris", invoiceNo: "25-0524", invoiceDate: "27-Sep-25", totalAmount: 1323.00, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Unique World Business Centre LLC -(Br.)", invoiceNo: "25-0525", invoiceDate: "29-Sep-25", totalAmount: 15.75, salesPerson: "REENA", description: "Supplies" },
-  { client: "Unique World Business Centre LLC -(HO)", invoiceNo: "25-0526", invoiceDate: "29-Sep-25", totalAmount: 141.75, salesPerson: "REENA", description: "Supplies" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0527", invoiceDate: "29-Sep-25", totalAmount: 393.75, salesPerson: "REENA", description: "Letterhead" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0528", invoiceDate: "29-Sep-25", totalAmount: 682.50, salesPerson: "REENA", description: "Business card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0529", invoiceDate: "29-Sep-25", totalAmount: 315.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0530", invoiceDate: "29-Sep-25", totalAmount: 1632.75, salesPerson: "REENA", description: "Business Cards" },
-  { client: "Tappy Toes Nursery DWC-LLC", invoiceNo: "25-0531", invoiceDate: "30-Sep-25", totalAmount: 170.10, salesPerson: "REENA", description: "Polo Shirt" },
-  { client: "Indo Tausch Trading DMCC", invoiceNo: "25-0532", invoiceDate: "30-Sep-25", totalAmount: 2712.20, salesPerson: "REENA", description: "Office Boy, Cleaner uniform" },
-  { client: "Saurabh General Trading LLC", invoiceNo: "25-0533", invoiceDate: "1-Oct-25", totalAmount: 672.00, salesPerson: "BNI", description: "Signage" },
-  { client: "Arametal Oil Field Equipment Industry LLC", invoiceNo: "25-0534", invoiceDate: "10-Oct-25", totalAmount: 756.00, salesPerson: "REENA", description: "Business card" },
-  { client: "APPLUS RTD GULF DMCC", invoiceNo: "25-0535", invoiceDate: "1-Oct-25", totalAmount: 3858.75, salesPerson: "REENA", description: "Sunshade" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0536", invoiceDate: "2-Oct-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0537", invoiceDate: "2-Oct-25", totalAmount: 246.75, salesPerson: "REENA", description: "Business card" },
-  { client: "Marafek Electromechanical Works LLC", invoiceNo: "25-0538", invoiceDate: "2-Oct-25", totalAmount: 173.25, salesPerson: "BNI", description: "Rollup Banner" },
-  { client: "Axis Workshop", invoiceNo: "25-0539", invoiceDate: "2-Oct-25", totalAmount: 708.75, salesPerson: "BNI", description: "Trophy" },
-  { client: "GrokGlobal Services", invoiceNo: "25-0540", invoiceDate: "2-Oct-25", totalAmount: 183.75, salesPerson: "REENA", description: "A5 Flyer" },
-  { client: "BNI Polaris", invoiceNo: "25-0541", invoiceDate: "3-Oct-25", totalAmount: 196.88, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Al Jalila Foundation in support of Medical Education and Research", invoiceNo: "25-0542", invoiceDate: "3-Oct-25", totalAmount: 225.75, salesPerson: "REENA", description: "Card" },
-  { client: "Al Afnan Steel Ind. Co. LLC", invoiceNo: "25-0543", invoiceDate: "3-Oct-25", totalAmount: 119.70, salesPerson: "BNI", description: "Cotton cap" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0544", invoiceDate: "6-Oct-25", totalAmount: 393.75, salesPerson: "REENA", description: "Business Card" },
-  { client: "GrokGlobal Services", invoiceNo: "25-0545", invoiceDate: "6-Oct-25", totalAmount: 9208.50, salesPerson: "REENA", description: "3 fold brochure, Sticker" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0546", invoiceDate: "6-Oct-25", totalAmount: 588.00, salesPerson: "REENA", description: "Cube branding" },
-  { client: "Datagram Network Technologies LLC", invoiceNo: "25-0547", invoiceDate: "7-Oct-25", totalAmount: 1260.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Lamsah Glass", invoiceNo: "25-0548", invoiceDate: "7-Oct-25", totalAmount: 535.50, salesPerson: "BNI", description: "Business Card" },
-  { client: "CACOGES", invoiceNo: "25-0549", invoiceDate: "15-Oct-25", totalAmount: 8620.50, salesPerson: "REENA", description: "Paper Bag and Pocket Folder" },
-  { client: "Momentum Logistics LLC", invoiceNo: "25-0550", invoiceDate: "8-Oct-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "VISIONARY FURNITURE TRADING L.L.C", invoiceNo: "25-0551", invoiceDate: "8-Oct-25", totalAmount: 189.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Mobile Business Company JSC", invoiceNo: "25-0552", invoiceDate: "8-Oct-25", totalAmount: 937.13, salesPerson: "REENA", description: "Embroidery" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0553", invoiceDate: "9-Oct-25", totalAmount: 25068.75, salesPerson: "REENA", description: "Computer Stationery" },
-  { client: "DHR MENA FZ-LLC", invoiceNo: "25-0554", invoiceDate: "9-Oct-25", totalAmount: 4617.80, salesPerson: "SREERAJ", description: "For Cepheid" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0555", invoiceDate: "9-Oct-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0556", invoiceDate: "9-Oct-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "NARJIS Printing and Publishing", invoiceNo: "25-0557", invoiceDate: "9-Oct-25", totalAmount: 399.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Atelie Ice Cream Manufacturing L.L.C", invoiceNo: "25-0558", invoiceDate: "10-Oct-25", totalAmount: 611.41, salesPerson: "REENA", description: "Embroidery" },
-  { client: "Ingersoll-Rand Technical and Services S A R L (Dubai Branch)", invoiceNo: "25-0559", invoiceDate: "10-Oct-25", totalAmount: 325.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "BNI Polaris", invoiceNo: "25-0560", invoiceDate: "10-Oct-25", totalAmount: 536.81, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Arametal Oil Field Equipment Industry LLC", invoiceNo: "25-0561", invoiceDate: "10-Oct-25", totalAmount: 2478.00, salesPerson: "REENA", description: "Business card" },
-  { client: "BC Academy International School L.L.C", invoiceNo: "25-0562", invoiceDate: "13-Oct-25", totalAmount: 5460.00, salesPerson: "REENA", description: "Paper cups" },
-  { client: "Medrich Care Dental & Medical Center L.L.C", invoiceNo: "25-0563", invoiceDate: "13-Oct-25", totalAmount: 219.87, salesPerson: "BNI", description: "Digital NFC Card" },
-  { client: "Lloyds Energy DMCC", invoiceNo: "25-0564", invoiceDate: "15-Oct-25", totalAmount: 383.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0568", invoiceDate: "15-Oct-25", totalAmount: 393.75, salesPerson: "REENA", description: "Business Card" },
-  { client: "AL RASHED UNITED DMCC", invoiceNo: "25-0569", invoiceDate: "16-Oct-25", totalAmount: 819.00, salesPerson: "REENA", description: "Flyer" },
-  { client: "Madhuri Narkar", invoiceNo: "25-0570", invoiceDate: "15-Oct-25", totalAmount: 908.25, salesPerson: "BNI", description: "Diwali Gift Hamper" },
-  { client: "Ms. Baiba Butler", invoiceNo: "25-0571", invoiceDate: "16-Oct-25", totalAmount: 262.50, salesPerson: "BNI", description: "Birthday banner" },
-  { client: "Hult Investments FZ-LLC", invoiceNo: "25-0572", invoiceDate: "15-Oct-25", totalAmount: 1023.75, salesPerson: "REENA", description: "Careers" },
-  { client: "Hult Investments FZ-LLC", invoiceNo: "25-0573", invoiceDate: "15-Oct-25", totalAmount: 1261.58, salesPerson: "REENA", description: "Academics" },
-  { client: "Hult Investments FZ-LLC", invoiceNo: "25-0574", invoiceDate: "15-Oct-25", totalAmount: 1685.25, salesPerson: "REENA", description: "Facilities" },
-  { client: "Hult Investments FZ-LLC", invoiceNo: "25-0575", invoiceDate: "2-Oct-25", totalAmount: 4007.22, salesPerson: "REENA", description: "STS" },
-  { client: "BLS LAD CHARTERED ACCOUNTANTS LLC", invoiceNo: "25-0576", invoiceDate: "15-Oct-25", totalAmount: 1753.50, salesPerson: "BNI", description: "Flyer and Rollup banner" },
-  { client: "Huxley Associates Global Limited", invoiceNo: "25-0577", invoiceDate: "16-Oct-25", totalAmount: 619.50, salesPerson: "REENA", description: "Poster with frame" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0578", invoiceDate: "16-Oct-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "BNI Polaris", invoiceNo: "25-0579", invoiceDate: "17-Oct-25", totalAmount: 255.94, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0580", invoiceDate: "18-Oct-25", totalAmount: 1181.25, salesPerson: "REENA", description: "Tote Bag" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0581", invoiceDate: "18-Oct-25", totalAmount: 1135.05, salesPerson: "REENA", description: "Roundneck T-shirt, Polo shirt" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0582", invoiceDate: "18-Oct-25", totalAmount: 368.29, salesPerson: "REENA", description: "Business card and Epoxy badge" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0583", invoiceDate: "18-Oct-25", totalAmount: 4448.59, salesPerson: "REENA", description: "Gift Bag" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0584", invoiceDate: "20-Oct-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Tappy Toes Nursery DWC-LLC", invoiceNo: "25-0585", invoiceDate: "18-Oct-25", totalAmount: 113.40, salesPerson: "REENA", description: "Polo Shirt" },
-  { client: "Ramfoam Containers Manufacturing LLC", invoiceNo: "25-0586", invoiceDate: "18-Oct-25", totalAmount: 722.40, salesPerson: "SREERAJ", description: "Safety Vest" },
-  { client: "The University of Manchester Worldwide Limited", invoiceNo: "25-0587", invoiceDate: "18-Oct-25", totalAmount: 404.25, salesPerson: "SREERAJ", description: "Tyvek Wrist band" },
-  { client: "Union Church", invoiceNo: "25-0588", invoiceDate: "18-Oct-25", totalAmount: 357.00, salesPerson: "REENA", description: "Flower decoration" },
-  { client: "Mr. P V B P Sarma", invoiceNo: "25-0589", invoiceDate: "18-Oct-25", totalAmount: 75.00, salesPerson: "BNI", description: "Coffee Maker" },
-  { client: "Waisl Digital", invoiceNo: "25-0590", invoiceDate: "20-Oct-25", totalAmount: 309.75, salesPerson: "REENA", description: "Business card" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0591", invoiceDate: "20-Oct-25", totalAmount: 199.50, salesPerson: "REENA", description: "Business card" },
-  { client: "At Your Service Productions LLC", invoiceNo: "25-0592", invoiceDate: "20-Oct-25", totalAmount: 1370.72, salesPerson: "REENA", description: "Polo Shirt" },
-  { client: "Sarah for Food and Beverages Trading Co. L.L.C", invoiceNo: "25-0593", invoiceDate: "20-Oct-25", totalAmount: 237.30, salesPerson: "SREERAJ", description: "Polo shirt and Cap" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0594", invoiceDate: "22-Oct-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "LIV Global Travel LLC", invoiceNo: "25-0595", invoiceDate: "22-Oct-25", totalAmount: 3696.00, salesPerson: "REENA", description: "Paper bag and brochure" },
-  { client: "Indo Tausch Trading DMCC", invoiceNo: "25-0596", invoiceDate: "23-Oct-25", totalAmount: 131.25, salesPerson: "REENA", description: "Business card" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0597", invoiceDate: "23-Oct-25", totalAmount: 2504.25, salesPerson: "REENA", description: "Eco-neutral Notebook" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0598", invoiceDate: "23-Oct-25", totalAmount: 13883.63, salesPerson: "REENA", description: "Desk Calendar 2026" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0599", invoiceDate: "24-Oct-25", totalAmount: 13818.00, salesPerson: "REENA", description: "A5 flyer, Rollup banner" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0600", invoiceDate: "24-Oct-25", totalAmount: 483.00, salesPerson: "REENA", description: "Business card" },
-  { client: "BNI Polaris", invoiceNo: "25-0601", invoiceDate: "24-Oct-25", totalAmount: 183.75, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "SUPERCAD TRADING L.L.C", invoiceNo: "25-0602", invoiceDate: "24-Oct-25", totalAmount: 336.00, salesPerson: "BNI", description: "NCR books" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0603", invoiceDate: "25-Oct-25", totalAmount: 2047.50, salesPerson: "REENA", description: "Desk Calendar 2026" },
-  { client: "Onestep Global Ingress - FZCO", invoiceNo: "25-0604", invoiceDate: "25-Oct-25", totalAmount: 294.00, salesPerson: "REENA", description: "Business card" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0605", invoiceDate: "27-Oct-25", totalAmount: 5943.00, salesPerson: "REENA", description: "Marketing Stock" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0606", invoiceDate: "27-Oct-25", totalAmount: 498.75, salesPerson: "REENA", description: "Agenda Card" },
-  { client: "AL RASHED UNITED DMCC", invoiceNo: "25-0607", invoiceDate: "28-Oct-25", totalAmount: 1995.00, salesPerson: "REENA", description: "Paper bags" },
-  { client: "Logic Utilities District Cooling Services LLC", invoiceNo: "25-0608", invoiceDate: "28-Oct-25", totalAmount: 393.75, salesPerson: "REENA", description: "Business Card" },
-  { client: "Keystone Consulting FZE LLC", invoiceNo: "25-0609", invoiceDate: "29-Oct-25", totalAmount: 126.00, salesPerson: "BNI", description: "Rubber Stamp" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0610", invoiceDate: "29-Oct-25", totalAmount: 3449.25, salesPerson: "REENA", description: "Double Wall Vacuum Water bottle" },
-  { client: "LIV Global Travel LLC", invoiceNo: "25-0611", invoiceDate: "31-Oct-25", totalAmount: 409.50, salesPerson: "REENA", description: "Business cards" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0612", invoiceDate: "30-Oct-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Unique World Business Centre LLC -(HO)", invoiceNo: "25-0613", invoiceDate: "30-Oct-25", totalAmount: 141.75, salesPerson: "REENA", description: "Supplies" },
-  { client: "Unique World Business Centre LLC -(Br)", invoiceNo: "25-0614", invoiceDate: "30-Oct-25", totalAmount: 78.75, salesPerson: "REENA", description: "Supplies" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0615", invoiceDate: "31-Oct-25", totalAmount: 336.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Momentum Logistics LLC", invoiceNo: "25-0616", invoiceDate: "31-Oct-25", totalAmount: 315.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Contitech Fluids Oil & Marine", invoiceNo: "25-0617", invoiceDate: "31-Oct-25", totalAmount: 2724.96, salesPerson: "REENA", description: "Cotton Tote Bag, Flyer, Brochure" },
-  { client: "Contitech Fluids Oil & Marine", invoiceNo: "25-0618", invoiceDate: "5-Nov-25", totalAmount: 1117.46, salesPerson: "REENA", description: "Business cards, Rubber Stamp" },
-  { client: "Tappy Toes Nursery DWC-LLC", invoiceNo: "25-0619", invoiceDate: "31-Oct-25", totalAmount: 226.80, salesPerson: "REENA", description: "Polo shirt Adult" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0620", invoiceDate: "11-Nov-25", totalAmount: 184.28, salesPerson: "REENA", description: "Certificate, Poster" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0621", invoiceDate: "4-Dec-25", totalAmount: 603.75, salesPerson: "REENA", description: "Business Cards" },
-  { client: "BNI Polaris", invoiceNo: "25-0622", invoiceDate: "31-Oct-25", totalAmount: 1428.00, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "ORIGA GENERAL CONTRACTING LLC", invoiceNo: "25-0623", invoiceDate: "31-Oct-25", totalAmount: 787.50, salesPerson: "BNI", description: "Business Card" },
-  { client: "Murdoch University", invoiceNo: "25-0624", invoiceDate: "4-Nov-25", totalAmount: 9051.37, salesPerson: "REENA", description: "MURDOCH Dubai Grads Print" },
-  { client: "GrokGlobal Services", invoiceNo: "25-0625", invoiceDate: "3-Nov-25", totalAmount: 766.50, salesPerson: "REENA", description: "Business Cards" },
-  { client: "ROI Management Consultancy FZCO", invoiceNo: "25-0626", invoiceDate: "4-Nov-25", totalAmount: 157.50, salesPerson: "REENA", description: "Rollup Banner" },
-  { client: "VOXTEL COMMUNICATIONS DMCC", invoiceNo: "25-0627", invoiceDate: "5-Nov-25", totalAmount: 850.50, salesPerson: "REENA", description: "Business Cards" },
-  { client: "Netision Global Technologies LLC", invoiceNo: "25-0628", invoiceDate: "6-Nov-25", totalAmount: 131.25, salesPerson: "REENA", description: "Business Card" },
-  { client: "GrokGlobal Services", invoiceNo: "25-0629", invoiceDate: "6-Nov-25", totalAmount: 472.50, salesPerson: "REENA", description: "Business Card" },
-  { client: "Alef Education Consultancy L.L.C.", invoiceNo: "25-0630", invoiceDate: "6-Nov-25", totalAmount: 3297.00, salesPerson: "REENA", description: "Polo Shirt and Pants" },
-  { client: "SWISS BUSINESS COUNCIL (DMCC BRANCH)", invoiceNo: "25-0631", invoiceDate: "6-Nov-25", totalAmount: 5197.50, salesPerson: "REENA", description: "Metal signage, Backdrop" },
-  { client: "Royex Technologies L.L.C", invoiceNo: "25-0632", invoiceDate: "7-Nov-25", totalAmount: 267.75, salesPerson: "BNI", description: "Crystal Trophy" },
-  { client: "BNI Polaris", invoiceNo: "25-0633", invoiceDate: "7-Nov-25", totalAmount: 357.00, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Ms. Yasmine Nasr", invoiceNo: "25-0634", invoiceDate: "7-Nov-25", totalAmount: 525.00, salesPerson: "BNI", description: "Birthday Balloon Prop" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0635", invoiceDate: "7-Nov-25", totalAmount: 210.00, salesPerson: "REENA", description: "Round neck Tshirt" },
-  { client: "Ms. Sarah Btaddini", invoiceNo: "25-0636", invoiceDate: "8-Nov-25", totalAmount: 525.00, salesPerson: "BNI", description: "Birthday Balloon Prop" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0637", invoiceDate: "13-Nov-25", totalAmount: 11550.00, salesPerson: "REENA", description: "Gift Box" },
-  { client: "Adverve Marketing Management Co. L.L.C", invoiceNo: "25-0638", invoiceDate: "10-Nov-25", totalAmount: 315.00, salesPerson: "BNI", description: "Sample Cost for Collapsible Box" },
-  { client: "World Data Feasibility Studies Consultancies", invoiceNo: "25-0639", invoiceDate: "11-Nov-25", totalAmount: 194.25, salesPerson: "REENA", description: "Business card" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0640", invoiceDate: "14-Nov-25", totalAmount: 194.25, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0641", invoiceDate: "12-Nov-25", totalAmount: 1785.00, salesPerson: "REENA", description: "Invitation card and Envelope" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0642", invoiceDate: "13-Nov-25", totalAmount: 11550.00, salesPerson: "REENA", description: "Gift Box" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0643", invoiceDate: "13-Nov-25", totalAmount: 2079.00, salesPerson: "REENA", description: "Paper Bags" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0644", invoiceDate: "14-Nov-25", totalAmount: 787.50, salesPerson: "REENA", description: "Ground Floor Branding" },
-  { client: "BNI Polaris", invoiceNo: "25-0645", invoiceDate: "15-Nov-25", totalAmount: 388.50, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Investmenter Real Estate LLC", invoiceNo: "25-0646", invoiceDate: "17-Nov-25", totalAmount: 2071.13, salesPerson: "REENA", description: "T-shirts" },
-  { client: "Huxley Associates Global Limited", invoiceNo: "25-0647", invoiceDate: "17-Nov-25", totalAmount: 236.25, salesPerson: "REENA", description: "Dummy Cheque" },
-  { client: "Investmenter Real Estate LLC", invoiceNo: "25-0648", invoiceDate: "17-Nov-25", totalAmount: 146.37, salesPerson: "REENA", description: "Gift Packaging Box" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0649", invoiceDate: "18-Nov-25", totalAmount: 2268.00, salesPerson: "REENA", description: "Metal Pen" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0650", invoiceDate: "18-Nov-25", totalAmount: 3638.25, salesPerson: "REENA", description: "Roll Up Banner and Table Flag" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0651", invoiceDate: "18-Nov-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0652", invoiceDate: "18-Nov-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0653", invoiceDate: "18-Nov-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "IDP Education LLC", invoiceNo: "25-0654", invoiceDate: "18-Nov-25", totalAmount: 2499.00, salesPerson: "REENA", description: "Gift box" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0655", invoiceDate: "18-Nov-25", totalAmount: 1330.88, salesPerson: "REENA", description: "Polo Shirt" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0656", invoiceDate: "20-Nov-25", totalAmount: 1046.85, salesPerson: "REENA", description: "Round neck T-shirts" },
-  { client: "4C Integrated Communicators", invoiceNo: "25-0657", invoiceDate: "20-Nov-25", totalAmount: 141.75, salesPerson: "REENA", description: "Polo shirt" },
-  { client: "St Mary's Konkani Community", invoiceNo: "25-0658", invoiceDate: "20-Nov-25", totalAmount: 350.01, salesPerson: "ANAND", description: "Roll Up Banner" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0659", invoiceDate: "20-Nov-25", totalAmount: 971.25, salesPerson: "REENA", description: "Invitation card and Envelope" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0660", invoiceDate: "20-Nov-25", totalAmount: 89.25, salesPerson: "REENA", description: "UAE Table Flag" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0661", invoiceDate: "20-Nov-25", totalAmount: 1890.00, salesPerson: "REENA", description: "Crystal Trophy MIP Award" },
-  { client: "BNI Polaris", invoiceNo: "25-0662", invoiceDate: "24-Nov-25", totalAmount: 370.65, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Al Afnan Steel Ind. Co. LLC", invoiceNo: "25-0663", invoiceDate: "22-Nov-25", totalAmount: 640.50, salesPerson: "BNI", description: "Business cards" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0664", invoiceDate: "24-Nov-25", totalAmount: 194.25, salesPerson: "REENA", description: "Business Card" },
-  { client: "Ingersoll-Rand Technical and Services S A R L (Dubai Branch)", invoiceNo: "25-0665", invoiceDate: "25-Nov-25", totalAmount: 299.25, salesPerson: "REENA", description: "Business Card" },
-  { client: "Arametal Oil Field Equipment Industry LLC", invoiceNo: "25-0667", invoiceDate: "25-Nov-25", totalAmount: 488.25, salesPerson: "REENA", description: "Business card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0668", invoiceDate: "25-Nov-25", totalAmount: 115.50, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0669", invoiceDate: "25-Nov-25", totalAmount: 315.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Continental Middle East DMCC", invoiceNo: "25-0670", invoiceDate: "25-Nov-25", totalAmount: 246.75, salesPerson: "REENA", description: "Business cards" },
-  { client: "IDP Education LLC", invoiceNo: "25-0671", invoiceDate: "25-Nov-25", totalAmount: 18444.30, salesPerson: "REENA", description: "Flyer, Checklist, Rollup" },
-  { client: "IDP Education LLC", invoiceNo: "25-0672", invoiceDate: "25-Nov-25", totalAmount: 7475.21, salesPerson: "REENA", description: "Certificate, Agenda card" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0673", invoiceDate: "26-Nov-25", totalAmount: 262.50, salesPerson: "REENA", description: "Printing Option 2" },
-  { client: "Dahya Yachts Repairing Services L.L.C", invoiceNo: "25-0674", invoiceDate: "8-Dec-25", totalAmount: 5176.50, salesPerson: "MELVIN", description: "Polo shirts, Shorts, chef coats" },
-  { client: "SR Resources FZC", invoiceNo: "25-0675", invoiceDate: "27-Nov-25", totalAmount: 2635.50, salesPerson: "REENA", description: "Brochure" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0676", invoiceDate: "27-Nov-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Legal Square", invoiceNo: "25-0677", invoiceDate: "29-Nov-25", totalAmount: 105.00, salesPerson: "REENA", description: "Sample cost for drinking glass" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0678", invoiceDate: "27-Nov-25", totalAmount: 504.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0679", invoiceDate: "27-Nov-25", totalAmount: 315.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0680", invoiceDate: "27-Nov-25", totalAmount: 246.75, salesPerson: "REENA", description: "Business Card" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0681", invoiceDate: "28-Nov-25", totalAmount: 498.75, salesPerson: "REENA", description: "Brochure for University of Alberta" },
-  { client: "BNI Polaris", invoiceNo: "25-0682", invoiceDate: "29-Nov-25", totalAmount: 215.78, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Unique World Business Centre LLC -(Br.)", invoiceNo: "25-0683", invoiceDate: "29-Nov-25", totalAmount: 47.25, salesPerson: "REENA", description: "Supplies" },
-  { client: "Unique World Business Centre LLC -(HO)", invoiceNo: "25-0684", invoiceDate: "29-Nov-25", totalAmount: 267.75, salesPerson: "REENA", description: "Supplies" },
-  { client: "Momentum Logistics LLC", invoiceNo: "25-0685", invoiceDate: "3-Dec-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Momentum Logistics LLC", invoiceNo: "25-0686", invoiceDate: "3-Dec-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Momentum Logistics LLC", invoiceNo: "25-0687", invoiceDate: "3-Dec-25", totalAmount: 115.50, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0688", invoiceDate: "3-Dec-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0689", invoiceDate: "3-Dec-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0690", invoiceDate: "11-Dec-25", totalAmount: 504.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0691", invoiceDate: "3-Dec-25", totalAmount: 183.75, salesPerson: "REENA", description: "Wooden Plaque" },
-  { client: "Trane BVBA (Abu Dhabi)", invoiceNo: "25-0692", invoiceDate: "5-Dec-25", totalAmount: 493.50, salesPerson: "REENA", description: "Business Card" },
-  { client: "Trane BVBA (Abu Dhabi)", invoiceNo: "25-0693", invoiceDate: "5-Dec-25", totalAmount: 1312.50, salesPerson: "REENA", description: "A4 Envelope" },
-  { client: "Bloomsbury Lane", invoiceNo: "25-0694", invoiceDate: "29-Nov-25", totalAmount: 829.24, salesPerson: "BNI", description: "Polo shirt and Aprons" },
-  { client: "Ms. Karishma Joshi", invoiceNo: "25-0695", invoiceDate: "3-Dec-25", totalAmount: 1764.00, salesPerson: "REENA", description: "Tote Bag and A4 Book" },
-  { client: "Oculus Middle East Contracting LLC", invoiceNo: "25-0696", invoiceDate: "3-Dec-25", totalAmount: 1470.00, salesPerson: "REENA", description: "Letter Head and business card" },
-  { client: "Alef Education Consultancy L.L.C.", invoiceNo: "25-0697", invoiceDate: "3-Dec-25", totalAmount: 1302.00, salesPerson: "REENA", description: "Polo Shirt and Pants" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0698", invoiceDate: "3-Dec-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Aurantius Real Estate Broker", invoiceNo: "25-0699", invoiceDate: "3-Dec-25", totalAmount: 194.25, salesPerson: "REENA", description: "Business Card" },
-  { client: "DEAKIN University", invoiceNo: "25-0700", invoiceDate: "14-Nov-25", totalAmount: 25095.00, salesPerson: "REENA", description: "Brochure, Course Guide" },
-  { client: "IDP EDUCATION L.L.C", invoiceNo: "25-0701", invoiceDate: "4-Dec-25", totalAmount: 107.63, salesPerson: "REENA", description: "Business Cards and Certificate" },
-  { client: "Olympus MEA FZ-LLC", invoiceNo: "25-0702", invoiceDate: "6-Dec-25", totalAmount: 1181.25, salesPerson: "SREERAJ", description: "Metal Name Signage" },
-  { client: "Olympus MEA FZ-LLC", invoiceNo: "25-0703", invoiceDate: "6-Dec-25", totalAmount: 357.00, salesPerson: "SREERAJ", description: "Metal Trophy" },
-  { client: "IDP Education LLC", invoiceNo: "25-0704", invoiceDate: "5-Dec-25", totalAmount: 180.60, salesPerson: "REENA", description: "Rollup and Posters" },
-  { client: "BNI Polaris", invoiceNo: "25-0705", invoiceDate: "5-Dec-25", totalAmount: 307.13, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "SWISS BUSINESS COUNCIL (DMCC BRANCH)", invoiceNo: "25-0706", invoiceDate: "8-Dec-25", totalAmount: 210.00, salesPerson: "REENA", description: "Logo creation" },
-  { client: "Mr. Edwin", invoiceNo: "25-0707", invoiceDate: "9-Dec-25", totalAmount: 245.70, salesPerson: "SREERAJ", description: "Polo shirts" },
-  { client: "Ms. Karine Leonian", invoiceNo: "25-0708", invoiceDate: "8-Dec-25", totalAmount: 2178.75, salesPerson: "ANAND", description: "Greeting Cards and Envelope" },
-  { client: "Royal Page Co FZE", invoiceNo: "25-0709", invoiceDate: "10-Dec-25", totalAmount: 2268.00, salesPerson: "REENA", description: "Iceberg Design Crystal Awards" },
-  { client: "Al Suhail Ship Maintenance Services", invoiceNo: "25-0710", invoiceDate: "12-Dec-25", totalAmount: 4147.50, salesPerson: "REENA", description: "Arabian dhow" },
-  { client: "Investmenter Real Estate LLC", invoiceNo: "25-0711", invoiceDate: "11-Dec-25", totalAmount: 3664.50, salesPerson: "REENA", description: "Crystal Trophy" },
-  { client: "TAM TRADING FZ-LLC", invoiceNo: "25-0712", invoiceDate: "10-Dec-25", totalAmount: 1653.75, salesPerson: "REENA", description: "Brochure" },
-  { client: "Onboard Sky Freight Services L.L.C", invoiceNo: "25-0713", invoiceDate: "11-Dec-25", totalAmount: 2630.25, salesPerson: "BNI", description: "A5 PU Notebook, Metal Pen" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0714", invoiceDate: "11-Dec-25", totalAmount: 457.54, salesPerson: "REENA", description: "Business card and Epoxy Badges" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0715", invoiceDate: "11-Dec-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0716", invoiceDate: "11-Dec-25", totalAmount: 504.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0717", invoiceDate: "11-Dec-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Trane BVBA (Dubai Branch)", invoiceNo: "25-0718", invoiceDate: "11-Dec-25", totalAmount: 425.25, salesPerson: "REENA", description: "Business cards" },
-  { client: "Ms. Sally Souleman", invoiceNo: "25-0719", invoiceDate: "12-Dec-25", totalAmount: 856.80, salesPerson: "REENA", description: "Hoodies" },
-  { client: "Al Afnan Steel Ind. Co. LLC", invoiceNo: "25-0720", invoiceDate: "12-Dec-25", totalAmount: 603.75, salesPerson: "BNI", description: "Business cards" },
-  { client: "Dahya Yachts Repairing Services L.L.C", invoiceNo: "25-0721", invoiceDate: "15-Dec-25", totalAmount: 1587.60, salesPerson: "MELVIN", description: "Polo shirts" },
-  { client: "BNI Polaris", invoiceNo: "25-0722", invoiceDate: "15-Dec-25", totalAmount: 560.44, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Sea Centre Shipping Services LLC", invoiceNo: "25-0723", invoiceDate: "15-Dec-25", totalAmount: 5061.00, salesPerson: "BNI", description: "Business Card, Calendar, Notebook" },
-  { client: "BLS LAD CHARTERED ACCOUNTANTS LLC", invoiceNo: "25-0724", invoiceDate: "16-Dec-25", totalAmount: 351.75, salesPerson: "BNI", description: "Business cards" },
-  { client: "Huxley Associates Global Limited", invoiceNo: "25-0725", invoiceDate: "18-Dec-25", totalAmount: 2730.00, salesPerson: "REENA", description: "Blue and Clear Trophy" },
-  { client: "Career Tree", invoiceNo: "25-0726", invoiceDate: "18-Dec-25", totalAmount: 42.00, salesPerson: "BNI", description: "Certificate" },
-  { client: "BNI Polaris", invoiceNo: "25-0727", invoiceDate: "22-Dec-25", totalAmount: 222.34, salesPerson: "BNI", description: "Meeting Expenses" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0728", invoiceDate: "22-Dec-25", totalAmount: 17587.50, salesPerson: "REENA", description: "Desk Calendar 2026" },
-  { client: "ARK Creators", invoiceNo: "25-0729", invoiceDate: "23-Dec-25", totalAmount: 1680.00, salesPerson: "BNI", description: "Birthday Party Setup" },
-  { client: "Radiant Car Workshop", invoiceNo: "25-0730", invoiceDate: "24-Dec-25", totalAmount: 5210.10, salesPerson: "MELVIN", description: "Polo shirt, Cargo pant, Shoes" },
-  { client: "SUPERCAD TRADING L.L.C", invoiceNo: "25-0731", invoiceDate: "26-Dec-25", totalAmount: 94.50, salesPerson: "BNI", description: "Business cards" },
-  { client: "Al Afnan Steel Ind. Co. LLC", invoiceNo: "25-0732", invoiceDate: "26-Dec-25", totalAmount: 194.25, salesPerson: "BNI", description: "Paper sticker" },
-  { client: "ANB AUTOMOBILES L.L.C", invoiceNo: "25-0733", invoiceDate: "29-Dec-25", totalAmount: 4410.00, salesPerson: "REENA", description: "Kraft Paper Bag" },
-  { client: "Warm Glow Goods Wholesalers L.L.C", invoiceNo: "25-0734", invoiceDate: "29-Dec-25", totalAmount: 6465.38, salesPerson: "REENA", description: "Vehicle Branding" },
-  { client: "Al Tayer Insignia LLC", invoiceNo: "25-0735", invoiceDate: "30-Dec-25", totalAmount: 4173.75, salesPerson: "SREERAJ", description: "Trophy" },
-  { client: "Take Me Live", invoiceNo: "25-0736", invoiceDate: "31-Dec-25", totalAmount: 4016.25, salesPerson: "REENA", description: "Safety Vest" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0737", invoiceDate: "31-Dec-25", totalAmount: 13416.90, salesPerson: "REENA", description: "Cotton Bag, Bottle, Notebook" },
-  { client: "Navitas Middle East FZ - LLC", invoiceNo: "25-0738", invoiceDate: "31-Dec-25", totalAmount: 341.25, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0739", invoiceDate: "31-Dec-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0740", invoiceDate: "31-Dec-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Gulftainer Company Limited", invoiceNo: "25-0741", invoiceDate: "31-Dec-25", totalAmount: 168.00, salesPerson: "REENA", description: "Business Card" },
-  { client: "Hult Investments FZ-LLC", invoiceNo: "25-0742", invoiceDate: "31-Dec-25", totalAmount: 467.25, salesPerson: "REENA", description: "Business Card" },
-  { client: "Unique World Business Centre LLC -(HO)", invoiceNo: "25-0743", invoiceDate: "31-Dec-25", totalAmount: 267.75, salesPerson: "REENA", description: "Supplies" },
-  { client: "Unique World Business Centre LLC -(BR)", invoiceNo: "25-0744", invoiceDate: "31-Dec-25", totalAmount: 47.25, salesPerson: "REENA", description: "Supplies" },
-  { client: "Five Building Materials Trading LLC", invoiceNo: "25-0745", invoiceDate: "31-Dec-25", totalAmount: 7546.88, salesPerson: "BNI", description: "Bamboo Pen, Stylus, Desk Calendar" },
+// Premium Clients (4+ invoices)
+export const premiumClients: ClientSummary[] = [
+  { name: "IDP Education (Merged)", invoiceCount: 47, totalAmount: 382278, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Navitas / Murdoch University", invoiceCount: 65, totalAmount: 303558, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Gulftainer Company Limited", invoiceCount: 51, totalAmount: 112862, category: 'premium', salesPersons: ["REENA"] },
+  { name: "GrokGlobal Services", invoiceCount: 15, totalAmount: 83052, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Deakin University (Merged)", invoiceCount: 7, totalAmount: 78750, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Hult Investments (Merged)", invoiceCount: 13, totalAmount: 60144, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Trane BVBA (Merged)", invoiceCount: 44, totalAmount: 43184, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Continental Middle East DMCC", invoiceCount: 7, totalAmount: 39493, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Logic Utilities District Cooling", invoiceCount: 18, totalAmount: 37745, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Aurantius Real Estate Broker", invoiceCount: 23, totalAmount: 30457, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Tappy Toes Nursery DWC-LLC", invoiceCount: 10, totalAmount: 29722, category: 'premium', salesPersons: ["REENA"] },
+  { name: "BNI Polaris", invoiceCount: 47, totalAmount: 23453, category: 'premium', salesPersons: ["BNI"] },
+  { name: "ANB Automobiles L.L.C", invoiceCount: 6, totalAmount: 18233, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Styfect Furnitures", invoiceCount: 6, totalAmount: 15630, category: 'premium', salesPersons: ["BNI"] },
+  { name: "Sea Centre Shipping Services", invoiceCount: 8, totalAmount: 14664, category: 'premium', salesPersons: ["BNI"] },
+  { name: "Five Building Materials Trading", invoiceCount: 6, totalAmount: 10962, category: 'premium', salesPersons: ["BNI"] },
+  { name: "Huxley Associates Global", invoiceCount: 9, totalAmount: 9675, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Al Suhail Ship Maintenance", invoiceCount: 6, totalAmount: 8523, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Al Afnan Steel Ind. Co. LLC", invoiceCount: 7, totalAmount: 8343, category: 'premium', salesPersons: ["BNI"] },
+  { name: "Indo Tausch Trading (Merged)", invoiceCount: 6, totalAmount: 6066, category: 'premium', salesPersons: ["REENA"] },
+  { name: "M E A D Medical Supplies", invoiceCount: 7, totalAmount: 4303, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Unique World Business Centre", invoiceCount: 24, totalAmount: 2945, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Momentum Logistics LLC", invoiceCount: 10, totalAmount: 1947, category: 'premium', salesPersons: ["REENA"] },
+  { name: "Supercad Trading L.L.C", invoiceCount: 6, totalAmount: 1375, category: 'premium', salesPersons: ["BNI"] },
 ];
 
-// Client name consolidation mapping - group similar client names together
-const clientNameMapping: Record<string, string> = {
-  // IDP variations
-  "IDP EDUCATION L.L.C": "IDP Education",
-  "IDP Education LLC - Abu Dhabi Branch": "IDP Education",
-  "IDP Education LLC Abu Dhabi": "IDP Education",
-  "IDP Abu Dhabi": "IDP Education",
-  
-  // Trane variations
-  "Trane BVBA (Dubai Branch)": "Trane BVBA",
-  "Trane BVBA (Abu Dhabi)": "Trane BVBA",
-  "Trane Technologies": "Trane BVBA",
-  
-  // Navitas variations
-  "Navitas Middle East FZ - LLC": "Navitas Middle East",
-  "Navitas Middle East FZ-LLC": "Navitas Middle East",
-  
-  // Unique World Business Centre variations
-  "Unique World Business Centre LLC -(Br.)": "Unique World Business Centre",
-  "Unique World Business Centre LLC -(HO)": "Unique World Business Centre",
-  "Unique World Business Centre LLC -(BR)": "Unique World Business Centre",
-  
-  // Gulftainer variations
-  "Gulftainer Company Limited": "Gulftainer",
-  
-  // Thermo Fisher variations
-  "Thermo Fisher Scientific Middle East": "Thermo Fisher Scientific",
-  
-  // BNI variations
-  "BNI Polaris": "BNI Polaris",
-  
-  // Dubai Academic Health Corporation
-  "Dubai Academic Health Corporation (DAHC)": "Dubai Academic Health Corporation",
-  
-  // Locke Lifestyle
-  "Locke Lifestyle Properties": "Locke Lifestyle Properties",
-  
-  // Aurantius
-  "Aurantius Real Estate Broker": "Aurantius Real Estate",
-  
-  // Continental
-  "Continental Middle East DMCC": "Continental Middle East",
-  
-  // Sea Centre
-  "Sea Centre Shipping Services LLC": "Sea Centre Shipping Services",
-  
-  // GrokGlobal
-  "GrokGlobal Services": "GrokGlobal Services",
-  
-  // Al Tayer
-  "Al Tayer Insignia LLC": "Al Tayer Insignia",
-  
-  // Regent Institute
-  "Regent Institute Middle East FZ-LLC": "Regent Institute Middle East",
-  
-  // Hult
-  "Hult Investments FZ-LLC": "Hult Investments",
-  
-  // JCS
-  "J C S ARTIFICIAL FLOWERS & PLANTS TRADING L.L.C": "JCS Artificial Flowers & Plants",
-  
-  // Beckman Coulter
-  "Beckman Coulter International S A (Dubai Br)": "Beckman Coulter International",
-  
-  // DHR
-  "DHR MENA FZ-LLC": "DHR MENA",
-};
+// Normal/Regular Clients (2-3 invoices)
+export const normalClients: ClientSummary[] = [
+  { name: "CACOGES", invoiceCount: 3, totalAmount: 42729, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Stellar Advertising LLC", invoiceCount: 5, totalAmount: 30253, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Alef Education Consultancy", invoiceCount: 4, totalAmount: 19563, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Olympus MEA FZ-LLC", invoiceCount: 3, totalAmount: 19661, category: 'normal', salesPersons: ["SREERAJ"] },
+  { name: "DHR MENA FZ-LLC", invoiceCount: 3, totalAmount: 15165, category: 'normal', salesPersons: ["SREERAJ"] },
+  { name: "Thermo Fisher Scientific", invoiceCount: 4, totalAmount: 14532, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Radiometer Medical ApS", invoiceCount: 4, totalAmount: 14351, category: 'normal', salesPersons: ["REENA"] },
+  { name: "North Telecom LLC", invoiceCount: 3, totalAmount: 12985, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Emirates for Universal Tyres", invoiceCount: 4, totalAmount: 12848, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Paragon Properties", invoiceCount: 3, totalAmount: 11655, category: 'normal', salesPersons: ["MELVIN"] },
+  { name: "Bianca and Bianco Trading", invoiceCount: 4, totalAmount: 9208, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Stanford Marine Group", invoiceCount: 2, totalAmount: 7549, category: 'normal', salesPersons: ["REENA"] },
+  { name: "SECA GMBH & CO. KG", invoiceCount: 2, totalAmount: 7259, category: 'normal', salesPersons: ["ANAND"] },
+  { name: "Marafek Electromechanical", invoiceCount: 3, totalAmount: 7250, category: 'normal', salesPersons: ["BNI"] },
+  { name: "Ms. Karine Leonian", invoiceCount: 2, totalAmount: 7100, category: 'normal', salesPersons: ["ANAND"] },
+  { name: "Dahya Yachts Repairing", invoiceCount: 2, totalAmount: 6764, category: 'normal', salesPersons: ["MELVIN"] },
+  { name: "Al Tayer Insignia LLC", invoiceCount: 3, totalAmount: 6535, category: 'normal', salesPersons: ["REENA"] },
+  { name: "ARK Creators", invoiceCount: 4, totalAmount: 6357, category: 'normal', salesPersons: ["BNI"] },
+  { name: "J C S Artificial Flowers", invoiceCount: 5, totalAmount: 6329, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Dubai Academic Health", invoiceCount: 2, totalAmount: 6325, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Mega Com Media LLC", invoiceCount: 2, totalAmount: 6137, category: 'normal', salesPersons: ["BNI"] },
+  { name: "Investmenter Real Estate", invoiceCount: 3, totalAmount: 5881, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Avant FZ LLC", invoiceCount: 3, totalAmount: 5559, category: 'normal', salesPersons: ["BNI"] },
+  { name: "Swiss Business Council", invoiceCount: 2, totalAmount: 5407, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Expert United Marine", invoiceCount: 2, totalAmount: 5064, category: 'normal', salesPersons: ["REENA"] },
+  { name: "World Data Feasibility", invoiceCount: 3, totalAmount: 4509, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Al Rashed United DMCC", invoiceCount: 3, totalAmount: 4278, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Contitech Fluids Oil", invoiceCount: 3, totalAmount: 4141, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Emboss - FZCO", invoiceCount: 3, totalAmount: 4116, category: 'normal', salesPersons: ["REENA"] },
+  { name: "LIV Global Travel LLC", invoiceCount: 2, totalAmount: 4105, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Arametal Oil Field Equipment", invoiceCount: 3, totalAmount: 3722, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Locke Lifestyle Properties", invoiceCount: 3, totalAmount: 3521, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Onestep Global Ingress", invoiceCount: 2, totalAmount: 3433, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Taz Rajabali", invoiceCount: 3, totalAmount: 3211, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Bloomsbury Lane", invoiceCount: 3, totalAmount: 3207, category: 'normal', salesPersons: ["BNI"] },
+  { name: "Al Jalila Foundation", invoiceCount: 3, totalAmount: 3152, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Royex Technologies L.L.C", invoiceCount: 2, totalAmount: 3134, category: 'normal', salesPersons: ["BNI"] },
+  { name: "Onboard Sky Freight Services", invoiceCount: 3, totalAmount: 3087, category: 'normal', salesPersons: ["REENA"] },
+  { name: "ENH Marketing L.L.C", invoiceCount: 2, totalAmount: 2677, category: 'normal', salesPersons: ["BNI"] },
+  { name: "BLS LAD Chartered Accountants", invoiceCount: 4, totalAmount: 2436, category: 'normal', salesPersons: ["BNI"] },
+  { name: "Finhub Middle East", invoiceCount: 3, totalAmount: 2362, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Dhyana Digital Marketing", invoiceCount: 4, totalAmount: 2244, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Voxtel Communications", invoiceCount: 2, totalAmount: 2110, category: 'normal', salesPersons: ["REENA"] },
+  { name: "EDGE Technical Solution", invoiceCount: 3, totalAmount: 2048, category: 'normal', salesPersons: ["BNI"] },
+  { name: "Axis Workshop", invoiceCount: 3, totalAmount: 2022, category: 'normal', salesPersons: ["BNI"] },
+  { name: "Lloyds Energy DMCC", invoiceCount: 5, totalAmount: 1989, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Perfect Tools Moulds Factory", invoiceCount: 2, totalAmount: 1942, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Black Swan Business Setup", invoiceCount: 2, totalAmount: 1805, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Excelsior Escapes and Events", invoiceCount: 4, totalAmount: 1560, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Oculus Middle East Contracting", invoiceCount: 2, totalAmount: 1548, category: 'normal', salesPersons: ["BNI"] },
+  { name: "Narjis Printing and Publishing", invoiceCount: 2, totalAmount: 1475, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Melius Consulting", invoiceCount: 2, totalAmount: 1446, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Ingersoll-Rand", invoiceCount: 4, totalAmount: 1365, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Union Church", invoiceCount: 2, totalAmount: 1302, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Madhuri Narkar", invoiceCount: 2, totalAmount: 1193, category: 'normal', salesPersons: ["BNI"] },
+  { name: "Counselling Point Training", invoiceCount: 2, totalAmount: 1060, category: 'normal', salesPersons: ["ANAND"] },
+  { name: "Gardner Denver FZE", invoiceCount: 2, totalAmount: 987, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Kotug Middle East DMCC", invoiceCount: 2, totalAmount: 933, category: 'normal', salesPersons: ["REENA"] },
+  { name: "SPH Global Holdings LLC", invoiceCount: 2, totalAmount: 881, category: 'normal', salesPersons: ["REENA"] },
+  { name: "JNT Car Rental L.L.C", invoiceCount: 2, totalAmount: 719, category: 'normal', salesPersons: ["BNI"] },
+  { name: "Cambridge Education Group", invoiceCount: 2, totalAmount: 615, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Ms. Baiba Butler", invoiceCount: 2, totalAmount: 525, category: 'normal', salesPersons: ["BNI"] },
+  { name: "Muhammad Umer Tariq", invoiceCount: 2, totalAmount: 427, category: 'normal', salesPersons: ["BNI"] },
+  { name: "Netision Global Technologies", invoiceCount: 3, totalAmount: 393, category: 'normal', salesPersons: ["REENA"] },
+  { name: "RIMO Pharmaceuticals DMCC", invoiceCount: 2, totalAmount: 388, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Visionary Furniture Trading", invoiceCount: 2, totalAmount: 383, category: 'normal', salesPersons: ["REENA"] },
+  { name: "Career Tree", invoiceCount: 3, totalAmount: 194, category: 'normal', salesPersons: ["BNI"] },
+];
 
-// Normalize client name - consolidate similar names
-function normalizeClientName(name: string): string {
-  // Check direct mapping first
-  if (clientNameMapping[name]) {
-    return clientNameMapping[name];
-  }
-  
-  // Fuzzy matching for similar names
-  const lowerName = name.toLowerCase();
-  
-  // IDP variations
-  if (lowerName.includes('idp')) {
-    return "IDP Education";
-  }
-  
-  // Trane variations
-  if (lowerName.includes('trane')) {
-    return "Trane BVBA";
-  }
-  
-  // Navitas variations
-  if (lowerName.includes('navitas')) {
-    return "Navitas Middle East";
-  }
-  
-  // Unique World Business Centre
-  if (lowerName.includes('unique world business')) {
-    return "Unique World Business Centre";
-  }
-  
-  // Gulftainer
-  if (lowerName.includes('gulftainer')) {
-    return "Gulftainer";
-  }
-  
-  // Thermo Fisher
-  if (lowerName.includes('thermo fisher')) {
-    return "Thermo Fisher Scientific";
-  }
-  
-  // Dubai Academic Health
-  if (lowerName.includes('dubai academic health') || lowerName.includes('dahc')) {
-    return "Dubai Academic Health Corporation";
-  }
-  
-  // Continental Middle East
-  if (lowerName.includes('continental middle east') || lowerName.includes('contitech')) {
-    return "Continental Middle East";
-  }
-  
-  // Sea Centre
-  if (lowerName.includes('sea centre')) {
-    return "Sea Centre Shipping Services";
-  }
-  
-  // GrokGlobal
-  if (lowerName.includes('grokglobal') || lowerName.includes('grok global')) {
-    return "GrokGlobal Services";
-  }
-  
-  // Beckman Coulter
-  if (lowerName.includes('beckman coulter')) {
-    return "Beckman Coulter International";
-  }
-  
-  // Al Tayer
-  if (lowerName.includes('al tayer')) {
-    return "Al Tayer Insignia";
-  }
-  
-  // Hult
-  if (lowerName.includes('hult')) {
-    return "Hult Investments";
-  }
-  
-  // Regent Institute
-  if (lowerName.includes('regent institute')) {
-    return "Regent Institute Middle East";
-  }
-  
-  // JCS
-  if (lowerName.includes('j c s') || lowerName.includes('jcs')) {
-    return "JCS Artificial Flowers & Plants";
-  }
-  
-  // Aurantius
-  if (lowerName.includes('aurantius')) {
-    return "Aurantius Real Estate";
-  }
-  
-  // Locke Lifestyle
-  if (lowerName.includes('locke lifestyle')) {
-    return "Locke Lifestyle Properties";
-  }
-  
-  // Al Suhail
-  if (lowerName.includes('al suhail')) {
-    return "Al Suhail Ship Maintenance Services";
-  }
-  
-  // Taz Rajabali
-  if (lowerName.includes('taz rajabali')) {
-    return "Taz Rajabali";
-  }
-  
-  // Radiometer
-  if (lowerName.includes('radiometer')) {
-    return "Radiometer Medical";
-  }
-  
-  // Paragon Properties
-  if (lowerName.includes('paragon properties') || lowerName.includes('paragon prime')) {
-    return "Paragon Properties";
-  }
-  
-  // DHR
-  if (lowerName.includes('dhr mena')) {
-    return "DHR MENA";
-  }
-  
-  // GMR Indo Tausch
-  if (lowerName.includes('gmr') && lowerName.includes('tausch')) {
-    return "GMR-Indo Tausch Trading";
-  }
-  
-  // Buildmate
-  if (lowerName.includes('buildmate')) {
-    return "Buildmate Technical Services";
-  }
-  
-  // Momentum Logistics
-  if (lowerName.includes('momentum logistics')) {
-    return "Momentum Logistics";
-  }
-  
-  // North Telecom
-  if (lowerName.includes('north telecom')) {
-    return "North Telecom";
-  }
-  
-  // Gardner Denver
-  if (lowerName.includes('gardner denver')) {
-    return "Gardner Denver";
-  }
-  
-  // Logic Utilities
-  if (lowerName.includes('logic utilities')) {
-    return "Logic Utilities District Cooling";
-  }
-  
-  // Duplast
-  if (lowerName.includes('duplast')) {
-    return "Duplast Building Materials";
-  }
-  
-  // FMC
-  if (lowerName.includes('fmc corporation')) {
-    return "FMC Corporation";
-  }
-  
-  // Secured Medical
-  if (lowerName.includes('secured medical')) {
-    return "Secured Medical Direction MEA";
-  }
-  
-  // IBM
-  if (lowerName.includes('ibm global')) {
-    return "IBM Global Middle East";
-  }
-  
-  // Default: return as-is
-  return name;
-}
+// One-Time Clients (1 invoice)
+export const oneTimeClients: ClientSummary[] = [
+  { name: "Four Corners Printing Press", invoiceCount: 1, totalAmount: 19687, category: 'one-time', salesPersons: ["REENA"], description: "Ribbon with printing" },
+  { name: "Alfa Tonic LLC", invoiceCount: 1, totalAmount: 13807, category: 'one-time', salesPersons: ["ANAND"], description: "Box (2 Models)" },
+  { name: "Chint Middle East", invoiceCount: 1, totalAmount: 10447, category: 'one-time', salesPersons: ["REENA"], description: "Tshirt (round neck)" },
+  { name: "Adirondack Architectural", invoiceCount: 1, totalAmount: 10158, category: 'one-time', salesPersons: ["REENA"], description: "Vehicle branding" },
+  { name: "Mr. Mohamed Sinaj Sali", invoiceCount: 1, totalAmount: 9591, category: 'one-time', salesPersons: ["BNI"], description: "Notebook, PVC card, Plaques" },
+  { name: "GNX", invoiceCount: 1, totalAmount: 7481, category: 'one-time', salesPersons: ["SREERAJ"], description: "Bio Fresh Roundneck T shirt" },
+  { name: "Warm Glow Goods", invoiceCount: 1, totalAmount: 6465, category: 'one-time', salesPersons: ["REENA"], description: "Vehicle Branding" },
+  { name: "One World One Network", invoiceCount: 1, totalAmount: 6204, category: 'one-time', salesPersons: ["BNI"], description: "Teddy Bear Plush Toy" },
+  { name: "BC Academy International", invoiceCount: 1, totalAmount: 5460, category: 'one-time', salesPersons: ["REENA"], description: "Paper cups" },
+  { name: "Radiant Car Workshop", invoiceCount: 1, totalAmount: 5210, category: 'one-time', salesPersons: ["MELVIN"], description: "Polo shirt, Cargo pant" },
+  { name: "Maersk Logistics", invoiceCount: 1, totalAmount: 5040, category: 'one-time', salesPersons: ["SREERAJ"], description: "Polo shirt (Uniform)" },
+  { name: "Secured Medical Direction", invoiceCount: 1, totalAmount: 5002, category: 'one-time', salesPersons: ["REENA"], description: "Poster, Flyers" },
+  { name: "DAPTAVE", invoiceCount: 1, totalAmount: 4987, category: 'one-time', salesPersons: ["ANAND"], description: "Indoor Signage" },
+  { name: "ASK-CA Auditing of Accounts", invoiceCount: 1, totalAmount: 4725, category: 'one-time', salesPersons: ["REENA"], description: "Brochure, Rubber stamp" },
+  { name: "Sharaf Travel Services", invoiceCount: 1, totalAmount: 4281, category: 'one-time', salesPersons: ["REENA"], description: "T shirt, Acrylic Paint Set" },
+  { name: "Munich Motor Works", invoiceCount: 1, totalAmount: 4200, category: 'one-time', salesPersons: ["SREERAJ"], description: "Glass branding" },
+  { name: "Prazi Medical Devices", invoiceCount: 1, totalAmount: 4016, category: 'one-time', salesPersons: ["BNI"], description: "Booth branding" },
+  { name: "Take Me Live", invoiceCount: 1, totalAmount: 4016, category: 'one-time', salesPersons: ["REENA"], description: "Safety Vest" },
+  { name: "Church of South India", invoiceCount: 1, totalAmount: 4000, category: 'one-time', salesPersons: ["ANAND"], description: "Consultation Charges" },
+  { name: "Ms. Ling", invoiceCount: 1, totalAmount: 3937, category: 'one-time', salesPersons: ["REENA"], description: "Envelopes and Card" },
+  { name: "Applus RTD Gulf DMCC", invoiceCount: 1, totalAmount: 3858, category: 'one-time', salesPersons: ["REENA"], description: "Sunshade" },
+  { name: "Regent Institute Middle East", invoiceCount: 1, totalAmount: 3730, category: 'one-time', salesPersons: ["REENA"], description: "Bag, Bottle, Pen" },
+  { name: "Beautiful Horizons ELC", invoiceCount: 1, totalAmount: 3465, category: 'one-time', salesPersons: ["REENA"], description: "Workbook - A, B and C" },
+  { name: "Aishwarya Searing", invoiceCount: 1, totalAmount: 3412, category: 'one-time', salesPersons: ["REENA"], description: "Backdrop and Invitation Card" },
+  { name: "Jubaili Bros S.A.L.", invoiceCount: 1, totalAmount: 3346, category: 'one-time', salesPersons: ["REENA"], description: "GRS-Certified Backpack" },
+  { name: "SR Resources FZC", invoiceCount: 1, totalAmount: 2635, category: 'one-time', salesPersons: ["REENA"], description: "Brochure" },
+  { name: "Lane Community College", invoiceCount: 1, totalAmount: 2598, category: 'one-time', salesPersons: ["REENA"], description: "Postcards, Flyers, Banner" },
+  { name: "Vela Arc Real Estate", invoiceCount: 1, totalAmount: 2493, category: 'one-time', salesPersons: ["SREERAJ"], description: "Voucher Book" },
+  { name: "George Brown College", invoiceCount: 1, totalAmount: 2478, category: 'one-time', salesPersons: ["REENA"], description: "Brochure and Flyer" },
+  { name: "Jerin Jersey", invoiceCount: 1, totalAmount: 2310, category: 'one-time', salesPersons: ["REENA"], description: "Tshirt sets" },
+  { name: "Royal Page Co FZE", invoiceCount: 1, totalAmount: 2268, category: 'one-time', salesPersons: ["REENA"], description: "Crystal Awards" },
+  { name: "Linea Strong", invoiceCount: 1, totalAmount: 2168, category: 'one-time', salesPersons: ["REENA"], description: "Brochure - Huron University" },
+  { name: "Quattro Capital Investment", invoiceCount: 1, totalAmount: 1998, category: 'one-time', salesPersons: ["SREERAJ"], description: "Table Flags and Notebook" },
+  { name: "Orience Documents Clearance", invoiceCount: 1, totalAmount: 1867, category: 'one-time', salesPersons: ["SREERAJ"], description: "Table Flags and Big flag" },
+  { name: "Huron University at Western", invoiceCount: 1, totalAmount: 1863, category: 'one-time', salesPersons: ["REENA"], description: "Brochure and Transportation" },
+  { name: "Ms. Karishma Joshi", invoiceCount: 1, totalAmount: 1764, category: 'one-time', salesPersons: ["REENA"], description: "Tote Bag and A4 Book" },
+  { name: "IBM Global Middle East", invoiceCount: 1, totalAmount: 1722, category: 'one-time', salesPersons: ["REENA"], description: "Notepad and World Map" },
+  { name: "TAM Trading FZ-LLC", invoiceCount: 1, totalAmount: 1653, category: 'one-time', salesPersons: ["REENA"], description: "Brochure" },
+  { name: "BNI Terra", invoiceCount: 1, totalAmount: 1538, category: 'one-time', salesPersons: ["BNI"], description: "Handy Powerbank" },
+  { name: "Beckman Coulter", invoiceCount: 1, totalAmount: 1454, category: 'one-time', salesPersons: ["REENA"], description: "Customized Lanyard" },
+  { name: "Dandidor", invoiceCount: 1, totalAmount: 1443, category: 'one-time', salesPersons: ["REENA"], description: "Stress ball" },
+  { name: "Duplast Building Materials", invoiceCount: 1, totalAmount: 1375, category: 'one-time', salesPersons: ["BNI"], description: "PU NoteBook" },
+  { name: "At Your Service Productions", invoiceCount: 1, totalAmount: 1370, category: 'one-time', salesPersons: ["REENA"], description: "Polo Shirt" },
+  { name: "Mawarid Finance", invoiceCount: 1, totalAmount: 1338, category: 'one-time', salesPersons: ["REENA"], description: "Glass branding" },
+  { name: "Datagram Network", invoiceCount: 1, totalAmount: 1260, category: 'one-time', salesPersons: ["REENA"], description: "Business Card" },
+  { name: "Guardian International", invoiceCount: 1, totalAmount: 1050, category: 'one-time', salesPersons: ["ANAND"], description: "Designing Charges" },
+  { name: "Advantage Printing Services", invoiceCount: 1, totalAmount: 1008, category: 'one-time', salesPersons: ["REENA"], description: "Polo shirts" },
+  { name: "Power Lease Vehicle Rental", invoiceCount: 1, totalAmount: 1000, category: 'one-time', salesPersons: ["REENA"], description: "Backdrop Banner" },
+  { name: "Mobile Business Company", invoiceCount: 1, totalAmount: 937, category: 'one-time', salesPersons: ["REENA"], description: "Embroidery On Polo shirts" },
+  { name: "Ms. Latika Vieira", invoiceCount: 1, totalAmount: 918, category: 'one-time', salesPersons: ["BNI"], description: "Customised 2 tier Cake" },
+  { name: "Umesh C K", invoiceCount: 1, totalAmount: 907, category: 'one-time', salesPersons: ["BNI"], description: "Wooden Plaque" },
+  { name: "Ms. Sally Souleman", invoiceCount: 1, totalAmount: 856, category: 'one-time', salesPersons: ["REENA"], description: "Hoodies" },
+  { name: "ORIGA General Contracting", invoiceCount: 1, totalAmount: 787, category: 'one-time', salesPersons: ["BNI"], description: "Business Card" },
+  { name: "AARK Marketing Services", invoiceCount: 1, totalAmount: 771, category: 'one-time', salesPersons: ["BNI"], description: "Polo shirt" },
+  { name: "Event Lab FZ LLC", invoiceCount: 1, totalAmount: 729, category: 'one-time', salesPersons: ["REENA"], description: "Pin badge" },
+  { name: "Ramfoam Containers Mfg", invoiceCount: 1, totalAmount: 722, category: 'one-time', salesPersons: ["SREERAJ"], description: "Safety Vest" },
+  { name: "Saurabh General Trading", invoiceCount: 1, totalAmount: 672, category: 'one-time', salesPersons: ["BNI"], description: "Signage" },
+  { name: "Atelie Ice Cream Mfg", invoiceCount: 1, totalAmount: 611, category: 'one-time', salesPersons: ["REENA"], description: "Embroidery on Polo shirts" },
+  { name: "Ario Arteh Design Services", invoiceCount: 1, totalAmount: 588, category: 'one-time', salesPersons: ["BNI"], description: "3 fold flyer" },
+  { name: "Buildmate Technical Services", invoiceCount: 1, totalAmount: 588, category: 'one-time', salesPersons: ["REENA"], description: "Polo Shirt" },
+  { name: "Divi Digital Co LLC", invoiceCount: 1, totalAmount: 563, category: 'one-time', salesPersons: ["BNI"], description: "Polo Shirt" },
+  { name: "Lamsah Glass", invoiceCount: 1, totalAmount: 535, category: 'one-time', salesPersons: ["BNI"], description: "Business Card" },
+  { name: "Ms. Yasmine Nasr", invoiceCount: 1, totalAmount: 525, category: 'one-time', salesPersons: ["BNI"], description: "Birthday Balloon Prop" },
+  { name: "Ms. Sarah Btaddini", invoiceCount: 1, totalAmount: 525, category: 'one-time', salesPersons: ["BNI"], description: "Birthday Balloon Prop" },
+  { name: "V7 Electro World FZCO", invoiceCount: 1, totalAmount: 456, category: 'one-time', salesPersons: ["REENA"], description: "Business card" },
+  { name: "University of Manchester", invoiceCount: 1, totalAmount: 404, category: 'one-time', salesPersons: ["SREERAJ"], description: "Tyvek Wrist band" },
+  { name: "ARKA Ventures", invoiceCount: 1, totalAmount: 393, category: 'one-time', salesPersons: ["BNI"], description: "Business card" },
+  { name: "Trica Technical Works", invoiceCount: 1, totalAmount: 367, category: 'one-time', salesPersons: ["REENA"], description: "Designing Charges" },
+  { name: "Belen Electronics Trading", invoiceCount: 1, totalAmount: 350, category: 'one-time', salesPersons: ["DARSHAN"], description: "Flyer, stamp" },
+  { name: "St Mary's Konkani Community", invoiceCount: 1, totalAmount: 350, category: 'one-time', salesPersons: ["ANAND"], description: "Roll Up Banner" },
+  { name: "Accentia Consulting", invoiceCount: 1, totalAmount: 346, category: 'one-time', salesPersons: ["BNI"], description: "Business cards" },
+  { name: "Unique Pathfinders Trading", invoiceCount: 1, totalAmount: 329, category: 'one-time', salesPersons: ["REENA"], description: "Draw String Bag" },
+  { name: "Mini Royal Creative Metal", invoiceCount: 1, totalAmount: 325, category: 'one-time', salesPersons: ["REENA"], description: "Delivery Note" },
+  { name: "Adverve Marketing Management", invoiceCount: 1, totalAmount: 315, category: 'one-time', salesPersons: ["BNI"], description: "Sample Cost" },
+  { name: "Waisl Digital", invoiceCount: 1, totalAmount: 309, category: 'one-time', salesPersons: ["REENA"], description: "Business card" },
+  { name: "Ms. Lisa Brown", invoiceCount: 1, totalAmount: 304, category: 'one-time', salesPersons: ["REENA"], description: "Business Cards" },
+  { name: "Daniel Ferdinandusz", invoiceCount: 1, totalAmount: 299, category: 'one-time', salesPersons: ["REENA"], description: "Tote bag" },
+  { name: "Enara Properties", invoiceCount: 1, totalAmount: 294, category: 'one-time', salesPersons: ["REENA"], description: "Business card, Poster" },
+  { name: "Mr. Ajesh Mohan", invoiceCount: 1, totalAmount: 289, category: 'one-time', salesPersons: ["BNI"], description: "Business cards" },
+  { name: "Ms Krishma Gehani", invoiceCount: 1, totalAmount: 284, category: 'one-time', salesPersons: ["BNI"], description: "Ceramic mugs" },
+  { name: "Mr. Edwin", invoiceCount: 1, totalAmount: 245, category: 'one-time', salesPersons: ["SREERAJ"], description: "Polo shirts" },
+  { name: "Sarah for Food and Beverages", invoiceCount: 1, totalAmount: 237, category: 'one-time', salesPersons: ["SREERAJ"], description: "Polo shirt and Cap" },
+  { name: "Gamayun Consultancy", invoiceCount: 1, totalAmount: 236, category: 'one-time', salesPersons: ["REENA"], description: "Business card" },
+  { name: "Kaizen Business Consultants", invoiceCount: 1, totalAmount: 236, category: 'one-time', salesPersons: ["REENA"], description: "Business Card" },
+  { name: "Woolwich Institute FZ-LLC", invoiceCount: 1, totalAmount: 220, category: 'one-time', salesPersons: ["REENA"], description: "Receipt Voucher Book" },
+  { name: "Mr. Graham", invoiceCount: 1, totalAmount: 220, category: 'one-time', salesPersons: ["REENA"], description: "Printing of Birthday banner" },
+  { name: "BNI Visit Host team", invoiceCount: 1, totalAmount: 220, category: 'one-time', salesPersons: ["BNI"], description: "Sash" },
+  { name: "Medrich Care Dental", invoiceCount: 1, totalAmount: 219, category: 'one-time', salesPersons: ["BNI"], description: "Digital Business NFC Card" },
+  { name: "Mohamed Farouk Osman", invoiceCount: 1, totalAmount: 200, category: 'one-time', salesPersons: ["REENA"], description: "Poster" },
+  { name: "FMCG FZCO", invoiceCount: 1, totalAmount: 199, category: 'one-time', salesPersons: ["BNI"], description: "Rollup banner" },
+  { name: "Fusion Bites", invoiceCount: 1, totalAmount: 194, category: 'one-time', salesPersons: ["REENA"], description: "Discount Voucher" },
+  { name: "Mr. Raad Almobark", invoiceCount: 1, totalAmount: 194, category: 'one-time', salesPersons: ["REENA"], description: "Business card" },
+  { name: "Ecofuture General Trading", invoiceCount: 1, totalAmount: 183, category: 'one-time', salesPersons: ["BNI"], description: "Rollup Banner" },
+  { name: "Lynceus Management Consulting", invoiceCount: 1, totalAmount: 157, category: 'one-time', salesPersons: ["PROFORMA"], description: "Designing charges" },
+  { name: "ROI Management Consultancy", invoiceCount: 1, totalAmount: 157, category: 'one-time', salesPersons: ["REENA"], description: "Rollup Banner" },
+  { name: "Gloace Fintax Consultants", invoiceCount: 1, totalAmount: 152, category: 'one-time', salesPersons: ["REENA"], description: "Rollup Banner" },
+  { name: "Green Pasture Technical", invoiceCount: 1, totalAmount: 150, category: 'one-time', salesPersons: ["REENA"], description: "Polo Shirts" },
+  { name: "4C Integrated Communicators", invoiceCount: 1, totalAmount: 141, category: 'one-time', salesPersons: ["REENA"], description: "Polo shirt" },
+  { name: "VAM International FZE", invoiceCount: 1, totalAmount: 131, category: 'one-time', salesPersons: ["BNI"], description: "Flyers" },
+  { name: "Keystone Consulting FZE", invoiceCount: 1, totalAmount: 126, category: 'one-time', salesPersons: ["BNI"], description: "Rubber Stamp" },
+  { name: "Legal Square", invoiceCount: 1, totalAmount: 105, category: 'one-time', salesPersons: ["REENA"], description: "Sample cost" },
+  { name: "Mr. Sahendra Jaiswar", invoiceCount: 1, totalAmount: 99, category: 'one-time', salesPersons: ["BNI"], description: "Photo Frame" },
+  { name: "Mr. P V B P Sarma", invoiceCount: 1, totalAmount: 75, category: 'one-time', salesPersons: ["BNI"], description: "SKROSS Coffee Maker" },
+];
 
-// Process and categorize clients
-export function processClientData(): ClientSummary[] {
-  const clientMap = new Map<string, {
-    invoiceCount: number;
-    totalAmount: number;
-    salesPersons: Set<string>;
-    dates: string[];
-    originalNames: Set<string>;
-  }>();
-
-  // Aggregate data by normalized client name
-  invoiceData.forEach(invoice => {
-    const normalizedName = normalizeClientName(invoice.client);
-    const existing = clientMap.get(normalizedName);
-    if (existing) {
-      existing.invoiceCount++;
-      existing.totalAmount += invoice.totalAmount;
-      existing.salesPersons.add(invoice.salesPerson);
-      existing.dates.push(invoice.invoiceDate);
-      existing.originalNames.add(invoice.client);
-    } else {
-      clientMap.set(normalizedName, {
-        invoiceCount: 1,
-        totalAmount: invoice.totalAmount,
-        salesPersons: new Set([invoice.salesPerson]),
-        dates: [invoice.invoiceDate],
-        originalNames: new Set([invoice.client]),
-      });
-    }
-  });
-
-  // Convert to array and categorize
-  const summaries: ClientSummary[] = [];
-  clientMap.forEach((data, name) => {
-    // Categorize: Premium (4+ invoices), One-time (1 invoice), Normal (2-3 invoices)
-    let category: 'premium' | 'one-time' | 'normal';
-    
-    if (data.invoiceCount >= 4) {
-      category = 'premium';
-    } else if (data.invoiceCount === 1) {
-      category = 'one-time';
-    } else {
-      category = 'normal';
-    }
-
-    summaries.push({
-      name,
-      invoiceCount: data.invoiceCount,
-      totalAmount: data.totalAmount,
-      category,
-      salesPersons: Array.from(data.salesPersons),
-      firstInvoiceDate: data.dates[0],
-      lastInvoiceDate: data.dates[data.dates.length - 1],
-    });
-  });
-
-  // Sort by total amount descending
-  return summaries.sort((a, b) => b.totalAmount - a.totalAmount);
+// Get all clients combined
+export function getAllClients(): ClientSummary[] {
+  return [...premiumClients, ...normalClients, ...oneTimeClients].sort((a, b) => b.totalAmount - a.totalAmount);
 }
 
 // Get category stats
 export function getCategoryStats() {
-  const clients = processClientData();
-  
-  const premium = clients.filter(c => c.category === 'premium');
-  const oneTime = clients.filter(c => c.category === 'one-time');
-  const normal = clients.filter(c => c.category === 'normal');
-
-  return {
-    premium: {
-      count: premium.length,
-      totalAmount: premium.reduce((sum, c) => sum + c.totalAmount, 0),
-      totalInvoices: premium.reduce((sum, c) => sum + c.invoiceCount, 0),
-    },
-    oneTime: {
-      count: oneTime.length,
-      totalAmount: oneTime.reduce((sum, c) => sum + c.totalAmount, 0),
-      totalInvoices: oneTime.reduce((sum, c) => sum + c.invoiceCount, 0),
-    },
-    normal: {
-      count: normal.length,
-      totalAmount: normal.reduce((sum, c) => sum + c.totalAmount, 0),
-      totalInvoices: normal.reduce((sum, c) => sum + c.invoiceCount, 0),
-    },
-    total: {
-      count: clients.length,
-      totalAmount: clients.reduce((sum, c) => sum + c.totalAmount, 0),
-      totalInvoices: invoiceData.length,
-    }
+  const premium = {
+    count: premiumClients.length,
+    totalAmount: premiumClients.reduce((sum, c) => sum + c.totalAmount, 0),
+    totalInvoices: premiumClients.reduce((sum, c) => sum + c.invoiceCount, 0),
   };
+  
+  const oneTime = {
+    count: oneTimeClients.length,
+    totalAmount: oneTimeClients.reduce((sum, c) => sum + c.totalAmount, 0),
+    totalInvoices: oneTimeClients.reduce((sum, c) => sum + c.invoiceCount, 0),
+  };
+  
+  const normal = {
+    count: normalClients.length,
+    totalAmount: normalClients.reduce((sum, c) => sum + c.totalAmount, 0),
+    totalInvoices: normalClients.reduce((sum, c) => sum + c.invoiceCount, 0),
+  };
+
+  const total = {
+    count: premium.count + oneTime.count + normal.count,
+    totalAmount: premium.totalAmount + oneTime.totalAmount + normal.totalAmount,
+    totalInvoices: premium.totalInvoices + oneTime.totalInvoices + normal.totalInvoices,
+  };
+
+  return { premium, oneTime, normal, total };
 }
 
 // Get sales person stats
 export function getSalesPersonStats() {
-  const spMap = new Map<string, { invoiceCount: number; totalAmount: number }>();
+  const allClients = getAllClients();
+  const spMap = new Map<string, { invoiceCount: number; totalAmount: number; clientCount: number }>();
   
-  invoiceData.forEach(invoice => {
-    const existing = spMap.get(invoice.salesPerson);
-    if (existing) {
-      existing.invoiceCount++;
-      existing.totalAmount += invoice.totalAmount;
-    } else {
-      spMap.set(invoice.salesPerson, {
-        invoiceCount: 1,
-        totalAmount: invoice.totalAmount,
-      });
-    }
+  allClients.forEach(client => {
+    client.salesPersons.forEach(sp => {
+      const existing = spMap.get(sp);
+      if (existing) {
+        existing.invoiceCount += client.invoiceCount;
+        existing.totalAmount += client.totalAmount;
+        existing.clientCount += 1;
+      } else {
+        spMap.set(sp, {
+          invoiceCount: client.invoiceCount,
+          totalAmount: client.totalAmount,
+          clientCount: 1,
+        });
+      }
+    });
   });
 
   return Array.from(spMap.entries())
@@ -1115,24 +276,7 @@ export function getSalesPersonStats() {
     .sort((a, b) => b.totalAmount - a.totalAmount);
 }
 
-// Get monthly trends
-export function getMonthlyTrends() {
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const monthlyData = new Map<string, number>();
-  
-  months.forEach(m => monthlyData.set(m, 0));
-  
-  invoiceData.forEach(invoice => {
-    const monthMatch = invoice.invoiceDate.match(/-([A-Za-z]+)-/);
-    if (monthMatch) {
-      const month = monthMatch[1];
-      const current = monthlyData.get(month) || 0;
-      monthlyData.set(month, current + invoice.totalAmount);
-    }
-  });
-
-  return months.map(month => ({
-    month,
-    amount: monthlyData.get(month) || 0,
-  }));
+// Get top clients by revenue
+export function getTopClientsByRevenue(limit: number = 10): ClientSummary[] {
+  return getAllClients().slice(0, limit);
 }

@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { processClientData, getCategoryStats, invoiceData } from "@/data/clientData";
+import { getCategoryStats, premiumClients, normalClients, oneTimeClients } from "@/data/clientData";
 import { ClientTable } from "@/components/ClientTable";
 import { StatsCard } from "@/components/StatsCard";
 import { InsightsPanel } from "@/components/InsightsPanel";
+import { ChartsPanel } from "@/components/ChartsPanel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Crown, 
@@ -12,16 +12,12 @@ import {
   DollarSign,
   TrendingUp,
   BarChart3,
-  Lightbulb
+  Lightbulb,
+  PieChart
 } from "lucide-react";
 
 const Index = () => {
-  const clients = processClientData();
   const stats = getCategoryStats();
-
-  const premiumClients = clients.filter(c => c.category === 'premium');
-  const oneTimeClients = clients.filter(c => c.category === 'one-time');
-  const normalClients = clients.filter(c => c.category === 'normal');
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-AE', {
@@ -44,7 +40,7 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <FileText className="h-4 w-4" />
-              <span>{invoiceData.length} invoices analyzed</span>
+              <span>{stats.total.totalInvoices} invoices analyzed</span>
             </div>
           </div>
         </div>
@@ -56,7 +52,7 @@ const Index = () => {
           <StatsCard
             title="Total Clients"
             value={stats.total.count}
-            subtitle={`${invoiceData.length} total invoices`}
+            subtitle={`${stats.total.totalInvoices} total invoices`}
             icon={Users}
           />
           <StatsCard
@@ -137,6 +133,10 @@ const Index = () => {
               <BarChart3 className="h-4 w-4" />
               All Clients ({stats.total.count})
             </TabsTrigger>
+            <TabsTrigger value="charts" className="flex items-center gap-2 px-4 py-2.5">
+              <PieChart className="h-4 w-4" />
+              Charts
+            </TabsTrigger>
             <TabsTrigger value="insights" className="flex items-center gap-2 px-4 py-2.5">
               <Lightbulb className="h-4 w-4" />
               Insights
@@ -144,7 +144,7 @@ const Index = () => {
           </TabsList>
 
           <TabsContent value="all" className="mt-6">
-            <ClientTable clients={clients} title="All Clients" category="all" />
+            <ClientTable clients={[...premiumClients, ...normalClients, ...oneTimeClients]} title="All Clients" category="all" />
           </TabsContent>
 
           <TabsContent value="premium" className="mt-6">
@@ -186,6 +186,10 @@ const Index = () => {
             <ClientTable clients={oneTimeClients} title="One-Time Clients" category="one-time" />
           </TabsContent>
 
+          <TabsContent value="charts" className="mt-6">
+            <ChartsPanel />
+          </TabsContent>
+
           <TabsContent value="insights" className="mt-6">
             <InsightsPanel />
           </TabsContent>
@@ -217,7 +221,7 @@ const Index = () => {
             <div>
               <p className="text-sm text-muted-foreground">Total Revenue</p>
               <p className="text-2xl font-bold text-accent">{formatCurrency(stats.total.totalAmount)}</p>
-              <p className="text-xs text-muted-foreground">{invoiceData.length} total invoices</p>
+              <p className="text-xs text-muted-foreground">{stats.total.totalInvoices} total invoices</p>
             </div>
           </div>
         </div>
