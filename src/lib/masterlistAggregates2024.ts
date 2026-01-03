@@ -25,11 +25,25 @@ function toDate(value: unknown): Date | null {
     const js = new Date(d.y, d.m - 1, d.d);
     return isValid(js) ? js : null;
   }
+
   const s = String(value ?? "").trim();
   if (!s) return null;
 
-  const parsed = parse(s, "d-MMM-yy", new Date());
-  if (isValid(parsed)) return parsed;
+  // Masterlists often mix formats (e.g. 2-Jan-24, 2-Jan-2024, 02-Jan-2024).
+  const formats = [
+    "d-MMM-yy",
+    "dd-MMM-yy",
+    "d-MMM-yyyy",
+    "dd-MMM-yyyy",
+    "yyyy-MM-dd",
+    "M/d/yyyy",
+    "d/M/yyyy",
+  ];
+
+  for (const fmt of formats) {
+    const parsed = parse(s, fmt, new Date());
+    if (isValid(parsed)) return parsed;
+  }
 
   const fallback = new Date(s);
   return isValid(fallback) ? fallback : null;
@@ -112,9 +126,12 @@ export async function loadMasterlistAggregates2024(): Promise<MasterlistAggregat
       "invoice no",
       "total invoice amount",
       "invoice sub-total after rebate",
+      "invoice sub-total",
     ];
 
-    let best: { sheetName: string; headerRow: number; score: number } | null = null;
+    const mustHave = ["client", "invoice date"]; // avoid pivot/summary tabs
+
+    let best: { sheetName: string; headerRow: number; score: number; rows: number } | null = null;
 
     for (const name of wb.SheetNames) {
       const ws = wb.Sheets[name];
@@ -124,26 +141,30 @@ export async function loadMasterlistAggregates2024(): Promise<MasterlistAggregat
         blankrows: false,
       });
 
-      const maxRows = Math.min(matrix.length, 30);
-      for (let r = 0; r < maxRows; r++) {
+      const maxHeaderScan = Math.min(matrix.length, 50);
+      for (let r = 0; r < maxHeaderScan; r++) {
         const row = (matrix[r] ?? [])
           .map((v) => String(v ?? "").toLowerCase().replace(/\s+/g, " ").trim())
           .filter(Boolean);
 
         if (row.length < 3) continue;
-        const score = wanted.reduce(
-          (s, w) => (row.some((h) => h.includes(w)) ? s + 1 : s),
-          0
-        );
+        if (!mustHave.every((m) => row.some((h) => h.includes(m)))) continue;
 
-        if (!best || score > best.score) best = { sheetName: name, headerRow: r, score };
-        if (score >= 4) return { sheetName: name, headerRow: r };
+        const score = wanted.reduce((s, w) => (row.some((h) => h.includes(w)) ? s + 1 : s), 0);
+        if (score < 4) continue;
+
+        const approxRows = Math.max(0, matrix.length - (r + 1));
+        const candidate = { sheetName: name, headerRow: r, score, rows: approxRows };
+
+        if (!best || candidate.score > best.score || (candidate.score === best.score && candidate.rows > best.rows)) {
+          best = candidate;
+        }
+
+        if (score >= 5 && approxRows >= 200) return { sheetName: name, headerRow: r };
       }
     }
 
-    return best && best.score >= 3
-      ? { sheetName: best.sheetName, headerRow: best.headerRow }
-      : { sheetName: wb.SheetNames[0], headerRow: 0 };
+    return best ? { sheetName: best.sheetName, headerRow: best.headerRow } : { sheetName: wb.SheetNames[0], headerRow: 0 };
   };
 
   const { sheetName, headerRow } = detectRawSheet();
@@ -172,9 +193,22 @@ export async function loadMasterlistAggregates2024(): Promise<MasterlistAggregat
 
   for (const row of rows) {
     const client = normalizeClientName(rowGet(row, ["CLIENT", "Client"]));
+    const invoiceNo = String(
+      rowGet(row, ["INVOICE NO.", "INVOICE NO", "Invoice No", "INVOICE NUMBER", "INVOICE #"]) ?? ""
+    ).trim();
     const date = toDate(rowGet(row, ["INVOICE DATE", "Invoice Date", "DATE"]));
-    if (!client || !date) continue;
-    if (date.getFullYear() !== 2024) continue;
+
+    if (!client) continue;
+
+    const inferredYear = (() => {
+      const m = invoiceNo.match(/^(\d{2})-/);
+      if (!m) return null;
+      const yy = Number(m[1]);
+      return Number.isFinite(yy) ? 2000 + yy : null;
+    })();
+
+    const year = date?.getFullYear() ?? inferredYear;
+    if (year !== 2024 || !date) continue;
 
     debugRows2024 += 1;
 
