@@ -9,7 +9,7 @@ import { formatCurrency } from "@/lib/formatters";
 
 export function InsightsPanel2024() {
   const { data } = useQuery({
-    queryKey: ["masterlist-2024-client-data", "v3"],
+    queryKey: ["masterlist-2024-client-data", "v6"],
     queryFn: loadMasterlistClientData2024,
   });
 
@@ -97,7 +97,7 @@ export function InsightsPanel2024() {
 
       <MonthlyTrendsChart
         year={2024}
-        queryKey={["masterlist-2024-aggregates", "v3"]}
+        queryKey={["masterlist-2024-aggregates", "v6"]}
         loadFn={loadMasterlistAggregates2024}
         title="Monthly Revenue Trends"
         description="Revenue and client activity patterns by month"

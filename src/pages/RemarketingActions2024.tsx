@@ -30,7 +30,7 @@ import {
 
 const RemarketingActions2024 = () => {
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["masterlist-2024-client-data", "v3"],
+    queryKey: ["masterlist-2024-client-data", "v6"],
     queryFn: loadMasterlistClientData2024,
   });
 
@@ -244,7 +244,7 @@ const RemarketingActions2024 = () => {
           <CardContent className="pt-6">
             <MonthlyTrendsChart
               year={2024}
-              queryKey={["masterlist-2024-aggregates", "v3"]}
+              queryKey={["masterlist-2024-aggregates", "v6"]}
               loadFn={loadMasterlistAggregates2024}
               title="2024 Monthly Overview"
               description="Track revenue patterns and segment performance across months"
