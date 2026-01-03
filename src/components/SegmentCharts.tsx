@@ -75,14 +75,21 @@ export function SegmentCharts({
     });
   }, [masterlist, category]);
 
-  const categoryStats = useMemo(
-    () => ({
+  const categoryStats = useMemo(() => {
+    const totalAmountFromAggregates =
+      category === "premium"
+        ? masterlist?.totals.premiumTotal
+        : category === "normal"
+          ? masterlist?.totals.normalTotal
+          : masterlist?.totals.oneTimeTotal;
+
+    return {
       count: clients.length,
       totalInvoices: sumInvoices(clients),
-      totalAmount: sumAmount(clients),
-    }),
-    [clients]
-  );
+      // Use aggregates segment totals so the shares across Premium/Normal/One-Time add up correctly
+      totalAmount: totalAmountFromAggregates ?? sumAmount(clients),
+    };
+  }, [clients, masterlist, category]);
 
   const totalStats = useMemo(
     () => ({
