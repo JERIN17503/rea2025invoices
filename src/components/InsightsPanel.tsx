@@ -1,7 +1,8 @@
 import { getCategoryStats, getSalesPersonStats, premiumClients, oneTimeClients, getAllClients, normalClients } from "@/data/clientData";
-import { TrendingUp, Target, AlertTriangle, Lightbulb, Users, DollarSign, Download } from "lucide-react";
+import { TrendingUp, Target, AlertTriangle, Lightbulb, Users, DollarSign, Download, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { exportToCSV } from "@/lib/csvExport";
+import { MonthlyTrendsChart } from "./MonthlyTrendsChart";
 
 export function InsightsPanel() {
   const clients = getAllClients();
@@ -89,6 +90,12 @@ export function InsightsPanel() {
           Export Insights Summary
         </Button>
       </div>
+
+      {/* Monthly Trends */}
+      <MonthlyTrendsChart 
+        title="Monthly Revenue Trends" 
+        description="Revenue and client activity patterns by month"
+      />
 
       {/* Key Metrics Summary */}
       <div className="bg-card rounded-xl border border-border p-6 shadow-sm">

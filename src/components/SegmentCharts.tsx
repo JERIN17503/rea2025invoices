@@ -1,4 +1,4 @@
-import { getCategoryStats, getSalesPersonStats, ClientSummary } from "@/data/clientData";
+import { getCategoryStats, getSalesPersonStats, ClientSummary, getMonthlyDataByCategory } from "@/data/clientData";
 import { 
   PieChart, 
   Pie, 
@@ -16,6 +16,7 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { DollarSign, Users, TrendingUp, Target } from "lucide-react";
+import { SegmentMonthlyChart } from "./MonthlyTrendsChart";
 
 interface SegmentChartsProps {
   clients: ClientSummary[];
@@ -27,6 +28,7 @@ interface SegmentChartsProps {
 export function SegmentCharts({ clients, category, categoryColor, categoryLabel }: SegmentChartsProps) {
   const stats = getCategoryStats();
   const salesPersonStats = getSalesPersonStats();
+  const monthlyData = getMonthlyDataByCategory(category);
 
   // Get category-specific stats
   const categoryStats = category === "premium" ? stats.premium : 
@@ -296,6 +298,14 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
           </CardContent>
         </Card>
       </div>
+
+      {/* Monthly Trend Chart */}
+      <SegmentMonthlyChart 
+        category={category}
+        categoryColor={categoryColor}
+        categoryLabel={categoryLabel}
+        data={monthlyData}
+      />
     </div>
   );
 }
