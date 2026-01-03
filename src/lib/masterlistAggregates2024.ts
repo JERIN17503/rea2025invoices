@@ -165,11 +165,18 @@ export async function loadMasterlistAggregates2024(): Promise<MasterlistAggregat
 
   const invoices: InvoiceRow[] = [];
 
+  let debugRows2024 = 0;
+  let debugSumSubAfter = 0;
+  let debugSumSub = 0;
+  let debugSumTotalDerived = 0;
+
   for (const row of rows) {
     const client = normalizeClientName(rowGet(row, ["CLIENT", "Client"]));
     const date = toDate(rowGet(row, ["INVOICE DATE", "Invoice Date", "DATE"]));
     if (!client || !date) continue;
     if (date.getFullYear() !== 2024) continue;
+
+    debugRows2024 += 1;
 
     const subAfterRebate = toNumber(
       rowGet(row, [
@@ -178,16 +185,31 @@ export async function loadMasterlistAggregates2024(): Promise<MasterlistAggregat
         "SUB-TOTAL AFTER REBATE",
       ])
     );
+    const subTotal = toNumber(
+      rowGet(row, ["INVOICE SUB-TOTAL", "INVOICE SUBTOTAL", "SUB-TOTAL", "SUBTOTAL"])
+    );
     const totalInvoiceAmount = toNumber(rowGet(row, ["TOTAL INVOICE AMOUNT", "TOTAL AMOUNT", "INVOICE TOTAL"]));
 
-    // Pre-VAT revenue: prefer explicit subtotal-after-rebate (usually pre-VAT),
-    // otherwise derive from total by removing 5% UAE VAT.
-    const netRevenue = subAfterRebate > 0 ? subAfterRebate : totalInvoiceAmount / (1 + VAT_RATE);
+    debugSumSubAfter += subAfterRebate > 0 ? subAfterRebate : 0;
+    debugSumSub += subTotal > 0 ? subTotal : 0;
+    debugSumTotalDerived += totalInvoiceAmount > 0 ? totalInvoiceAmount / (1 + VAT_RATE) : 0;
+
+    // Pre-VAT revenue:
+    // 1) Prefer explicit pre-VAT columns from the sheet
+    // 2) Only fall back to total/1.05 if subtotals are missing
+    const netRevenue = subAfterRebate > 0 ? subAfterRebate : subTotal > 0 ? subTotal : totalInvoiceAmount / (1 + VAT_RATE);
     if (!Number.isFinite(netRevenue) || netRevenue <= 0) continue;
 
     invoices.push({ client, date, netRevenue });
     clientInvoiceCounts.set(client, (clientInvoiceCounts.get(client) ?? 0) + 1);
   }
+
+  // eslint-disable-next-line no-console
+  console.info("[2024 masterlist] sheet=", sheetName, "headerRow=", headerRow, "rows=", rows.length, "rows2024=", debugRows2024, "invoicesUsed=", invoices.length, {
+    sumSubAfterRebate: debugSumSubAfter,
+    sumSubTotal: debugSumSub,
+    sumTotalDerivedPreVat: debugSumTotalDerived,
+  });
 
   if (invoices.length === 0 && rows.length > 0) {
     console.warn("Masterlist 2024 parsed 0 invoices. Available headers:", Object.keys(rows[0] ?? {}));
