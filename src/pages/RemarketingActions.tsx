@@ -111,33 +111,35 @@ const RemarketingActions = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-card border-b border-border sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <img src={reaLogo} alt="REA Advertising" className="h-12 w-auto" />
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">Remarketing Actions</h1>
-                <p className="text-sm text-muted-foreground">Prioritized strategies for client growth</p>
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <img src={reaLogo} alt="REA Advertising" className="h-10 sm:h-12 w-auto" />
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-2xl font-bold text-foreground">Remarketing Actions</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">Prioritized strategies for client growth</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" onClick={exportAll} className="flex items-center gap-2">
-                <Download className="h-4 w-4" />
-                Export All
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Button variant="outline" size="sm" onClick={exportAll} className="flex items-center gap-1.5 text-xs sm:text-sm">
+                <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Export All</span>
+                <span className="sm:hidden">Export</span>
               </Button>
               <Link 
                 to="/" 
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors text-xs sm:text-sm font-medium whitespace-nowrap"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Dashboard
+                <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Back to Dashboard</span>
+                <span className="sm:hidden">Dashboard</span>
               </Link>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Revenue Opportunity Summary */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card className="bg-gradient-to-br from-green-500/10 to-green-500/5 border-green-500/20">
