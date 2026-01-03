@@ -116,157 +116,193 @@ function getCategory(invoiceCount: number): ClientCategory {
   return "one-time";
 }
 
-let cache: Promise<MasterlistClientData2024> | null = null;
-
 export async function loadMasterlistClientData2024(): Promise<MasterlistClientData2024> {
-  if (cache) return cache;
+  const res = await fetch("/data/masterlist2024.xlsx", { cache: "no-store" });
+  if (!res.ok) throw new Error(`Failed to load masterlist 2024 (HTTP ${res.status})`);
 
-  cache = (async () => {
-    const res = await fetch("/data/masterlist2024.xlsx", { cache: "no-store" });
-    if (!res.ok) throw new Error(`Failed to load masterlist 2024 (HTTP ${res.status})`);
+  const buf = await res.arrayBuffer();
+  const wb = XLSX.read(buf, { type: "array" });
 
-    const buf = await res.arrayBuffer();
-    const wb = XLSX.read(buf, { type: "array" });
-    const sheetName = wb.SheetNames[0];
-    const ws = wb.Sheets[sheetName];
+  const detectRawSheet = (): { sheetName: string; headerRow: number } => {
+    const wanted = [
+      "client",
+      "invoice date",
+      "invoice no",
+      "total invoice amount",
+      "invoice sub-total after rebate",
+    ];
 
-    const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, {
-      defval: "",
-      raw: true,
-    });
+    let best: { sheetName: string; headerRow: number; score: number } | null = null;
 
-    type Agg = {
-      name: string;
-      invoiceCount: number;
-      totalAmount: number;
-      salesPersons: Set<string>;
-      description?: string;
-    };
+    for (const name of wb.SheetNames) {
+      const ws = wb.Sheets[name];
+      const matrix = XLSX.utils.sheet_to_json<unknown[]>(ws, {
+        header: 1,
+        range: 0,
+        blankrows: false,
+      });
 
-    const byClient = new Map<string, Agg>();
+      const maxRows = Math.min(matrix.length, 30);
+      for (let r = 0; r < maxRows; r++) {
+        const row = (matrix[r] ?? [])
+          .map((v) => String(v ?? "").toLowerCase().replace(/\s+/g, " ").trim())
+          .filter(Boolean);
 
-    for (const row of rows) {
-      const client = normalizeClientName(rowGet(row, ["CLIENT", "Client"]));
-      const date = toDate(rowGet(row, ["INVOICE DATE", "Invoice Date", "DATE"]));
-      if (!client || !date) continue;
-      if (date.getFullYear() !== 2024) continue;
+        if (row.length < 3) continue;
+        const score = wanted.reduce(
+          (s, w) => (row.some((h) => h.includes(w)) ? s + 1 : s),
+          0
+        );
 
-      const subAfterRebate = toNumber(
-        rowGet(row, ["INVOICE SUB-TOTAL AFTER REBATE", "INVOICE SUBTOTAL AFTER REBATE", "SUB-TOTAL AFTER REBATE"])
-      );
-      const totalInvoiceAmount = toNumber(rowGet(row, ["TOTAL INVOICE AMOUNT", "TOTAL AMOUNT", "INVOICE TOTAL"]));
-      const netRevenue = subAfterRebate > 0 ? subAfterRebate : totalInvoiceAmount / (1 + VAT_RATE);
-      if (!Number.isFinite(netRevenue) || netRevenue <= 0) continue;
-
-      const salesPersonRaw = String(
-        rowGet(row, [
-          "SALES PERSON",
-          "SALES PERSON NAME",
-          "SALES PERSON / ACCOUNT MANAGER",
-          "ACCOUNT MANAGER",
-          "SALES",
-        ]) ??
-          ""
-      )
-        .trim()
-        .toUpperCase();
-
-      const descriptionRaw = String(
-        rowGet(row, ["DESCRIPTION", "ITEM DESCRIPTION", "DETAILS", "PROJECT", "PARTICULARS"]) ?? ""
-      ).trim();
-
-      const agg = byClient.get(client) ?? {
-        name: client,
-        invoiceCount: 0,
-        totalAmount: 0,
-        salesPersons: new Set<string>(),
-      };
-
-      agg.invoiceCount += 1;
-      agg.totalAmount += netRevenue;
-      if (salesPersonRaw) agg.salesPersons.add(salesPersonRaw);
-      if (!agg.description && descriptionRaw) agg.description = descriptionRaw;
-
-      byClient.set(client, agg);
-    }
-
-    if (byClient.size === 0 && rows.length > 0) {
-      // eslint-disable-next-line no-console
-      console.warn("Masterlist 2024 parsed 0 clients. Available headers:", Object.keys(rows[0] ?? {}));
-    }
-
-    const allClients: ClientSummary[] = Array.from(byClient.values()).map((c) => {
-      const category = getCategory(c.invoiceCount);
-      return {
-        name: c.name,
-        invoiceCount: c.invoiceCount,
-        totalAmount: c.totalAmount,
-        category,
-        salesPersons: Array.from(c.salesPersons).sort(),
-        description: c.description,
-      };
-    });
-
-    const premiumClients = allClients
-      .filter((c) => c.category === "premium")
-      .sort((a, b) => b.totalAmount - a.totalAmount);
-    const normalClients = allClients
-      .filter((c) => c.category === "normal")
-      .sort((a, b) => b.totalAmount - a.totalAmount);
-    const oneTimeClients = allClients
-      .filter((c) => c.category === "one-time")
-      .sort((a, b) => b.totalAmount - a.totalAmount);
-
-    const sumInvoices = (list: ClientSummary[]) => list.reduce((s, c) => s + c.invoiceCount, 0);
-    const sumAmount = (list: ClientSummary[]) => list.reduce((s, c) => s + c.totalAmount, 0);
-
-    const stats: OverallStats = {
-      total: {
-        count: allClients.length,
-        totalInvoices: sumInvoices(allClients),
-        totalAmount: sumAmount(allClients),
-      },
-      premium: {
-        count: premiumClients.length,
-        totalInvoices: sumInvoices(premiumClients),
-        totalAmount: sumAmount(premiumClients),
-      },
-      normal: {
-        count: normalClients.length,
-        totalInvoices: sumInvoices(normalClients),
-        totalAmount: sumAmount(normalClients),
-      },
-      oneTime: {
-        count: oneTimeClients.length,
-        totalInvoices: sumInvoices(oneTimeClients),
-        totalAmount: sumAmount(oneTimeClients),
-      },
-    };
-
-    const spMap = new Map<string, { totalAmount: number; invoiceCount: number }>();
-    for (const client of allClients) {
-      for (const sp of client.salesPersons) {
-        const prev = spMap.get(sp) ?? { totalAmount: 0, invoiceCount: 0 };
-        spMap.set(sp, {
-          totalAmount: prev.totalAmount + client.totalAmount,
-          invoiceCount: prev.invoiceCount + client.invoiceCount,
-        });
+        if (!best || score > best.score) best = { sheetName: name, headerRow: r, score };
+        if (score >= 4) return { sheetName: name, headerRow: r };
       }
     }
 
-    const salesPersonStats: SalesPersonStat[] = Array.from(spMap.entries())
-      .map(([name, v]) => ({ name, totalAmount: v.totalAmount, invoiceCount: v.invoiceCount }))
-      .sort((a, b) => b.totalAmount - a.totalAmount);
+    return best && best.score >= 3
+      ? { sheetName: best.sheetName, headerRow: best.headerRow }
+      : { sheetName: wb.SheetNames[0], headerRow: 0 };
+  };
 
-    return {
-      premiumClients,
-      normalClients,
-      oneTimeClients,
-      allClients,
-      stats,
-      salesPersonStats,
+  const { sheetName, headerRow } = detectRawSheet();
+  const ws = wb.Sheets[sheetName];
+
+  const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, {
+    defval: "",
+    raw: true,
+    range: headerRow,
+  });
+
+  type Agg = {
+    name: string;
+    invoiceCount: number;
+    totalAmount: number;
+    salesPersons: Set<string>;
+    description?: string;
+  };
+
+  const byClient = new Map<string, Agg>();
+
+  for (const row of rows) {
+    const client = normalizeClientName(rowGet(row, ["CLIENT", "Client"]));
+    const date = toDate(rowGet(row, ["INVOICE DATE", "Invoice Date", "DATE"]));
+    if (!client || !date) continue;
+    if (date.getFullYear() !== 2024) continue;
+
+    const subAfterRebate = toNumber(
+      rowGet(row, ["INVOICE SUB-TOTAL AFTER REBATE", "INVOICE SUBTOTAL AFTER REBATE", "SUB-TOTAL AFTER REBATE"])
+    );
+    const totalInvoiceAmount = toNumber(rowGet(row, ["TOTAL INVOICE AMOUNT", "TOTAL AMOUNT", "INVOICE TOTAL"]));
+    const netRevenue = subAfterRebate > 0 ? subAfterRebate : totalInvoiceAmount / (1 + VAT_RATE);
+    if (!Number.isFinite(netRevenue) || netRevenue <= 0) continue;
+
+    const salesPersonRaw = String(
+      rowGet(row, [
+        "SALES PERSON",
+        "SALES PERSON NAME",
+        "SALES PERSON / ACCOUNT MANAGER",
+        "ACCOUNT MANAGER",
+        "SALES",
+      ]) ??
+        ""
+    )
+      .trim()
+      .toUpperCase();
+
+    const descriptionRaw = String(
+      rowGet(row, ["DESCRIPTION", "ITEM DESCRIPTION", "DETAILS", "PROJECT", "PARTICULARS"]) ?? ""
+    ).trim();
+
+    const agg = byClient.get(client) ?? {
+      name: client,
+      invoiceCount: 0,
+      totalAmount: 0,
+      salesPersons: new Set<string>(),
     };
-  })();
 
-  return cache;
+    agg.invoiceCount += 1;
+    agg.totalAmount += netRevenue;
+    if (salesPersonRaw) agg.salesPersons.add(salesPersonRaw);
+    if (!agg.description && descriptionRaw) agg.description = descriptionRaw;
+
+    byClient.set(client, agg);
+  }
+
+  if (byClient.size === 0 && rows.length > 0) {
+    // eslint-disable-next-line no-console
+    console.warn("Masterlist 2024 parsed 0 clients. Available headers:", Object.keys(rows[0] ?? {}));
+  }
+
+  const allClients: ClientSummary[] = Array.from(byClient.values()).map((c) => {
+    const category = getCategory(c.invoiceCount);
+    return {
+      name: c.name,
+      invoiceCount: c.invoiceCount,
+      totalAmount: c.totalAmount,
+      category,
+      salesPersons: Array.from(c.salesPersons).sort(),
+      description: c.description,
+    };
+  });
+
+  const premiumClients = allClients
+    .filter((c) => c.category === "premium")
+    .sort((a, b) => b.totalAmount - a.totalAmount);
+  const normalClients = allClients
+    .filter((c) => c.category === "normal")
+    .sort((a, b) => b.totalAmount - a.totalAmount);
+  const oneTimeClients = allClients
+    .filter((c) => c.category === "one-time")
+    .sort((a, b) => b.totalAmount - a.totalAmount);
+
+  const sumInvoices = (list: ClientSummary[]) => list.reduce((s, c) => s + c.invoiceCount, 0);
+  const sumAmount = (list: ClientSummary[]) => list.reduce((s, c) => s + c.totalAmount, 0);
+
+  const stats: OverallStats = {
+    total: {
+      count: allClients.length,
+      totalInvoices: sumInvoices(allClients),
+      totalAmount: sumAmount(allClients),
+    },
+    premium: {
+      count: premiumClients.length,
+      totalInvoices: sumInvoices(premiumClients),
+      totalAmount: sumAmount(premiumClients),
+    },
+    normal: {
+      count: normalClients.length,
+      totalInvoices: sumInvoices(normalClients),
+      totalAmount: sumAmount(normalClients),
+    },
+    oneTime: {
+      count: oneTimeClients.length,
+      totalInvoices: sumInvoices(oneTimeClients),
+      totalAmount: sumAmount(oneTimeClients),
+    },
+  };
+
+  const spMap = new Map<string, { totalAmount: number; invoiceCount: number }>();
+  for (const client of allClients) {
+    for (const sp of client.salesPersons) {
+      const prev = spMap.get(sp) ?? { totalAmount: 0, invoiceCount: 0 };
+      spMap.set(sp, {
+        totalAmount: prev.totalAmount + client.totalAmount,
+        invoiceCount: prev.invoiceCount + client.invoiceCount,
+      });
+    }
+  }
+
+  const salesPersonStats: SalesPersonStat[] = Array.from(spMap.entries())
+    .map(([name, v]) => ({ name, totalAmount: v.totalAmount, invoiceCount: v.invoiceCount }))
+    .sort((a, b) => b.totalAmount - a.totalAmount);
+
+  return {
+    premiumClients,
+    normalClients,
+    oneTimeClients,
+    allClients,
+    stats,
+    salesPersonStats,
+  };
 }
+
