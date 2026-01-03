@@ -183,18 +183,27 @@ export async function loadMasterlistClientData2024(): Promise<MasterlistClientDa
 
   const byClient = new Map<string, Agg>();
 
+  let debugRows2024 = 0;
+  let debugSumNet = 0;
+
   for (const row of rows) {
     const client = normalizeClientName(rowGet(row, ["CLIENT", "Client"]));
     const date = toDate(rowGet(row, ["INVOICE DATE", "Invoice Date", "DATE"]));
     if (!client || !date) continue;
     if (date.getFullYear() !== 2024) continue;
 
+    debugRows2024 += 1;
+
     const subAfterRebate = toNumber(
       rowGet(row, ["INVOICE SUB-TOTAL AFTER REBATE", "INVOICE SUBTOTAL AFTER REBATE", "SUB-TOTAL AFTER REBATE"])
     );
+    const subTotal = toNumber(rowGet(row, ["INVOICE SUB-TOTAL", "INVOICE SUBTOTAL", "SUB-TOTAL", "SUBTOTAL"]));
     const totalInvoiceAmount = toNumber(rowGet(row, ["TOTAL INVOICE AMOUNT", "TOTAL AMOUNT", "INVOICE TOTAL"]));
-    const netRevenue = subAfterRebate > 0 ? subAfterRebate : totalInvoiceAmount / (1 + VAT_RATE);
+
+    const netRevenue = subAfterRebate > 0 ? subAfterRebate : subTotal > 0 ? subTotal : totalInvoiceAmount / (1 + VAT_RATE);
     if (!Number.isFinite(netRevenue) || netRevenue <= 0) continue;
+
+    debugSumNet += netRevenue;
 
     const salesPersonRaw = String(
       rowGet(row, [
@@ -227,6 +236,9 @@ export async function loadMasterlistClientData2024(): Promise<MasterlistClientDa
 
     byClient.set(client, agg);
   }
+
+  // eslint-disable-next-line no-console
+  console.info("[2024 masterlist clients] sheet=", sheetName, "headerRow=", headerRow, "rows=", rows.length, "rows2024=", debugRows2024, "sumNet=", debugSumNet, "clients=", byClient.size);
 
   if (byClient.size === 0 && rows.length > 0) {
     // eslint-disable-next-line no-console
