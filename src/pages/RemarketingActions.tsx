@@ -245,7 +245,7 @@ const RemarketingActions = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {upgradeCandidates.slice(0, 10).map((client, i) => (
+                    {upgradeCandidates.map((client, i) => (
                       <tr key={i} className="border-b border-border/50 hover:bg-muted/30">
                         <td className="py-2 font-medium">{client.name}</td>
                         <td className="py-2 text-center">
@@ -264,11 +264,6 @@ const RemarketingActions = () => {
                     ))}
                   </tbody>
                 </table>
-                {upgradeCandidates.length > 10 && (
-                  <p className="text-xs text-muted-foreground mt-2 text-center">
-                    +{upgradeCandidates.length - 10} more upgrade candidates
-                  </p>
-                )}
               </div>
             </CardContent>
           </Card>
