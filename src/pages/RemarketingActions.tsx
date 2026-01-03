@@ -44,7 +44,7 @@ const RemarketingActions = () => {
     .sort((a, b) => b.totalAmount - a.totalAmount);
 
   const upgradeCandidates = normalClients
-    .filter(c => c.invoiceCount === 3 && c.totalAmount >= 3000)
+    .filter(c => c.invoiceCount >= 3 && c.invoiceCount <= 5 && c.totalAmount >= 2000)
     .sort((a, b) => b.totalAmount - a.totalAmount);
 
   const quickWins = oneTimeClients
