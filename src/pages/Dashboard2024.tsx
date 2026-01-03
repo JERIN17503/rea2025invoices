@@ -85,6 +85,13 @@ const Dashboard2024 = () => {
                 View 2025
               </Link>
               <Link
+                to="/yoy"
+                className="flex items-center gap-2 px-4 py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/80 transition-colors text-sm font-medium"
+              >
+                <TrendingUp className="h-4 w-4" />
+                YoY Comparison
+              </Link>
+              <Link
                 to="/remarketing/2024"
                 className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
               >
@@ -93,7 +100,7 @@ const Dashboard2024 = () => {
               </Link>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <FileText className="h-4 w-4" />
-                <span>{stats.total.totalInvoices} invoices analyzed</span>
+                <span>{aggregates.totals.totalInvoices} invoices analyzed</span>
               </div>
             </div>
           </div>
