@@ -1,5 +1,7 @@
-import { getCategoryStats, getSalesPersonStats, premiumClients, oneTimeClients, getAllClients } from "@/data/clientData";
-import { TrendingUp, Target, AlertTriangle, Lightbulb, Users, DollarSign } from "lucide-react";
+import { getCategoryStats, getSalesPersonStats, premiumClients, oneTimeClients, getAllClients, normalClients } from "@/data/clientData";
+import { TrendingUp, Target, AlertTriangle, Lightbulb, Users, DollarSign, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { exportToCSV } from "@/lib/csvExport";
 
 export function InsightsPanel() {
   const clients = getAllClients();
@@ -25,8 +27,69 @@ export function InsightsPanel() {
     }).format(amount);
   };
 
+  const exportInsightsReport = () => {
+    const data = [
+      { 'Metric': 'Premium Client Average Value', 'Value (AED)': Math.round(avgPremiumValue), 'Count': stats.premium.count },
+      { 'Metric': 'Normal Client Average Value', 'Value (AED)': Math.round(stats.normal.totalAmount / stats.normal.count), 'Count': stats.normal.count },
+      { 'Metric': 'One-Time Client Average Value', 'Value (AED)': Math.round(avgOneTimeValue), 'Count': stats.oneTime.count },
+      { 'Metric': 'Total Revenue', 'Value (AED)': stats.total.totalAmount, 'Count': stats.total.count },
+    ];
+    exportToCSV(data, 'insights-summary');
+  };
+
+  const exportTopPremiumClients = () => {
+    const data = topPremiumClients.map((c, i) => ({
+      'Rank': i + 1,
+      'Client Name': c.name,
+      'Invoice Count': c.invoiceCount,
+      'Total Amount (AED)': c.totalAmount
+    }));
+    exportToCSV(data, 'top-premium-clients');
+  };
+
+  const exportHighValueOneTimeClients = () => {
+    const data = highValueOneTime.map((c, i) => ({
+      'Rank': i + 1,
+      'Client Name': c.name,
+      'Total Amount (AED)': c.totalAmount,
+      'Conversion Priority': 'High'
+    }));
+    exportToCSV(data, 'high-value-one-time-insights');
+  };
+
+  const exportSalesPerformance = () => {
+    const data = salesPersonStats.map((sp, i) => ({
+      'Rank': i + 1,
+      'Sales Person': sp.name,
+      'Total Revenue (AED)': sp.totalAmount,
+      'Invoice Count': sp.invoiceCount
+    }));
+    exportToCSV(data, 'sales-team-performance');
+  };
+
+  const exportAllClients = () => {
+    const allClients = [
+      ...premiumClients.map(c => ({ 'Client Name': c.name, 'Category': 'Premium', 'Invoice Count': c.invoiceCount, 'Total Amount (AED)': c.totalAmount, 'Sales Persons': c.salesPersons.join(', ') })),
+      ...normalClients.map(c => ({ 'Client Name': c.name, 'Category': 'Normal', 'Invoice Count': c.invoiceCount, 'Total Amount (AED)': c.totalAmount, 'Sales Persons': c.salesPersons.join(', ') })),
+      ...oneTimeClients.map(c => ({ 'Client Name': c.name, 'Category': 'One-Time', 'Invoice Count': c.invoiceCount, 'Total Amount (AED)': c.totalAmount, 'Sales Persons': c.salesPersons.join(', ') }))
+    ];
+    exportToCSV(allClients, 'all-clients-report');
+  };
+
   return (
     <div className="space-y-6">
+      {/* Export All Button */}
+      <div className="flex justify-end gap-2">
+        <Button variant="outline" size="sm" onClick={exportAllClients} className="flex items-center gap-2">
+          <Download className="h-4 w-4" />
+          Export All Clients
+        </Button>
+        <Button variant="outline" size="sm" onClick={exportInsightsReport} className="flex items-center gap-2">
+          <Download className="h-4 w-4" />
+          Export Insights Summary
+        </Button>
+      </div>
+
       {/* Key Metrics Summary */}
       <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
         <h3 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2">
@@ -125,10 +188,16 @@ export function InsightsPanel() {
 
       {/* Top Performers */}
       <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2">
-          <DollarSign className="h-5 w-5 text-accent" />
-          Top 5 Premium Clients to Prioritize
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-card-foreground flex items-center gap-2">
+            <DollarSign className="h-5 w-5 text-accent" />
+            Top 5 Premium Clients to Prioritize
+          </h3>
+          <Button variant="ghost" size="sm" onClick={exportTopPremiumClients} className="flex items-center gap-1">
+            <Download className="h-4 w-4" />
+            Export
+          </Button>
+        </div>
         
         <div className="space-y-3">
           {topPremiumClients.map((client, index) => (
@@ -152,10 +221,16 @@ export function InsightsPanel() {
 
       {/* High-Value One-Time Clients */}
       <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5 text-one-time" />
-          High-Value One-Time Clients (Re-engagement Priority)
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-card-foreground flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-one-time" />
+            High-Value One-Time Clients (Re-engagement Priority)
+          </h3>
+          <Button variant="ghost" size="sm" onClick={exportHighValueOneTimeClients} className="flex items-center gap-1">
+            <Download className="h-4 w-4" />
+            Export
+          </Button>
+        </div>
         
         <div className="space-y-2">
           {highValueOneTime.slice(0, 5).map((client, index) => (
@@ -179,10 +254,16 @@ export function InsightsPanel() {
 
       {/* Sales Person Performance */}
       <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2">
-          <Users className="h-5 w-5 text-primary" />
-          Sales Team Performance
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-card-foreground flex items-center gap-2">
+            <Users className="h-5 w-5 text-primary" />
+            Sales Team Performance
+          </h3>
+          <Button variant="ghost" size="sm" onClick={exportSalesPerformance} className="flex items-center gap-1">
+            <Download className="h-4 w-4" />
+            Export
+          </Button>
+        </div>
         
         <div className="space-y-3">
           {salesPersonStats.map((sp, index) => (
