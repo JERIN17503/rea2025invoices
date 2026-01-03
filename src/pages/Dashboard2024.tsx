@@ -28,7 +28,7 @@ import {
 
 const Dashboard2024 = () => {
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["masterlist-2024-client-data"],
+    queryKey: ["masterlist-2024-client-data", "v2"],
     queryFn: loadMasterlistClientData2024,
   });
 
@@ -219,7 +219,7 @@ const Dashboard2024 = () => {
               </h3>
               <p className="text-sm text-muted-foreground mt-1">Track revenue, client activity, and segment performance across all months of 2024.</p>
             </div>
-            <MonthlyTrendsChart year={2024} queryKey={["masterlist-2024-aggregates"]} loadFn={loadMasterlistAggregates2024} />
+            <MonthlyTrendsChart year={2024} queryKey={["masterlist-2024-aggregates", "v2"]} loadFn={loadMasterlistAggregates2024} />
           </TabsContent>
 
           <TabsContent value="all" className="mt-6">
@@ -242,7 +242,7 @@ const Dashboard2024 = () => {
               categoryColor="hsl(var(--premium))"
               categoryLabel="Premium"
               year={2024}
-              queryKey={["masterlist-2024-aggregates"]}
+              queryKey={["masterlist-2024-aggregates", "v2"]}
             />
             <ClientTable clients={premiumClients} title="Premium Clients" category="premium" />
           </TabsContent>
@@ -263,7 +263,7 @@ const Dashboard2024 = () => {
               categoryColor="hsl(var(--normal))"
               categoryLabel="Normal"
               year={2024}
-              queryKey={["masterlist-2024-aggregates"]}
+              queryKey={["masterlist-2024-aggregates", "v2"]}
             />
             <ClientTable clients={normalClients} title="Normal Clients" category="normal" />
           </TabsContent>
@@ -284,7 +284,7 @@ const Dashboard2024 = () => {
               categoryColor="hsl(var(--one-time))"
               categoryLabel="One-Time"
               year={2024}
-              queryKey={["masterlist-2024-aggregates"]}
+              queryKey={["masterlist-2024-aggregates", "v2"]}
             />
             <ClientTable clients={oneTimeClients} title="One-Time Clients" category="one-time" />
           </TabsContent>
