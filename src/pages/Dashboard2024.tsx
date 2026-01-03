@@ -57,6 +57,13 @@ const Dashboard2024 = () => {
 
   const { premiumClients, normalClients, oneTimeClients } = data;
 
+  const round1 = (n: number) => Math.round(n * 10) / 10;
+  const revenueDenom = aggregates.totals.totalRevenue || 1;
+  const premiumSharePct = round1((aggregates.totals.premiumTotal / revenueDenom) * 100);
+  const normalSharePct = round1((aggregates.totals.normalTotal / revenueDenom) * 100);
+  // Make the displayed shares sum to exactly 100.0%
+  const oneTimeSharePct = round1(100 - premiumSharePct - normalSharePct);
+
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b border-border sticky top-0 z-50">
@@ -154,9 +161,7 @@ const Dashboard2024 = () => {
               <ExportDialog clients={premiumClients} title="Premium Clients Report" category="Premium" stats={stats.premium} />
             </div>
             <p className="text-3xl font-bold text-card-foreground">{formatCurrency(aggregates.totals.premiumTotal)}</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              {((aggregates.totals.premiumTotal / aggregates.totals.totalRevenue) * 100).toFixed(1)}% of total
-            </p>
+            <p className="text-sm text-muted-foreground mt-1">{premiumSharePct.toFixed(1)}% of total</p>
           </div>
 
           <div className="bg-gradient-to-br from-normal/10 to-normal/5 rounded-xl border border-normal/20 p-6">
@@ -168,9 +173,7 @@ const Dashboard2024 = () => {
               <ExportDialog clients={normalClients} title="Normal Clients Report" category="Normal" stats={stats.normal} />
             </div>
             <p className="text-3xl font-bold text-card-foreground">{formatCurrency(aggregates.totals.normalTotal)}</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              {((aggregates.totals.normalTotal / aggregates.totals.totalRevenue) * 100).toFixed(1)}% of total
-            </p>
+            <p className="text-sm text-muted-foreground mt-1">{normalSharePct.toFixed(1)}% of total</p>
           </div>
 
           <div className="bg-gradient-to-br from-one-time/10 to-one-time/5 rounded-xl border border-one-time/20 p-6">
@@ -182,9 +185,7 @@ const Dashboard2024 = () => {
               <ExportDialog clients={oneTimeClients} title="One-Time Clients Report" category="One-Time" stats={stats.oneTime} />
             </div>
             <p className="text-3xl font-bold text-card-foreground">{formatCurrency(aggregates.totals.oneTimeTotal)}</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              {((aggregates.totals.oneTimeTotal / aggregates.totals.totalRevenue) * 100).toFixed(1)}% of total
-            </p>
+            <p className="text-sm text-muted-foreground mt-1">{oneTimeSharePct.toFixed(1)}% of total</p>
           </div>
         </div>
 
