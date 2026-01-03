@@ -32,9 +32,14 @@ const Dashboard2024 = () => {
     queryFn: loadMasterlistClientData2024,
   });
 
+  const { data: aggregates, isLoading: aggLoading } = useQuery({
+    queryKey: ["masterlist-2024-aggregates", "v6"],
+    queryFn: loadMasterlistAggregates2024,
+  });
+
   const stats = data?.stats;
 
-  if (isLoading) {
+  if (isLoading || aggLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-muted-foreground">Loading 2024 masterlist…</p>
@@ -42,7 +47,7 @@ const Dashboard2024 = () => {
     );
   }
 
-  if (isError || !data || !stats) {
+  if (isError || !data || !stats || !aggregates) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-muted-foreground">Could not load the 2024 masterlist.</p>
@@ -90,7 +95,7 @@ const Dashboard2024 = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-          <StatsCard title="Total Clients" value={stats.total.count} subtitle={`${stats.total.totalInvoices} total invoices`} icon={Users} />
+          <StatsCard title="Total Clients" value={aggregates.totals.totalClients} subtitle={`${aggregates.totals.totalInvoices} total invoices`} icon={Users} />
           <StatsCard
             title="Premium Clients"
             value={stats.premium.count}
@@ -114,7 +119,7 @@ const Dashboard2024 = () => {
           />
           <StatsCard
             title="Total Revenue"
-            value={formatCurrency(stats.total.totalAmount)}
+            value={formatCurrency(aggregates.totals.totalRevenue)}
             subtitle="2024 Full Year"
             icon={DollarSign}
             iconColor="text-accent"
@@ -148,9 +153,9 @@ const Dashboard2024 = () => {
               </div>
               <ExportDialog clients={premiumClients} title="Premium Clients Report" category="Premium" stats={stats.premium} />
             </div>
-            <p className="text-3xl font-bold text-card-foreground">{formatCurrency(stats.premium.totalAmount)}</p>
+            <p className="text-3xl font-bold text-card-foreground">{formatCurrency(aggregates.totals.premiumTotal)}</p>
             <p className="text-sm text-muted-foreground mt-1">
-              {((stats.premium.totalAmount / stats.total.totalAmount) * 100).toFixed(1)}% of total
+              {((aggregates.totals.premiumTotal / aggregates.totals.totalRevenue) * 100).toFixed(1)}% of total
             </p>
           </div>
 
@@ -162,9 +167,9 @@ const Dashboard2024 = () => {
               </div>
               <ExportDialog clients={normalClients} title="Normal Clients Report" category="Normal" stats={stats.normal} />
             </div>
-            <p className="text-3xl font-bold text-card-foreground">{formatCurrency(stats.normal.totalAmount)}</p>
+            <p className="text-3xl font-bold text-card-foreground">{formatCurrency(aggregates.totals.normalTotal)}</p>
             <p className="text-sm text-muted-foreground mt-1">
-              {((stats.normal.totalAmount / stats.total.totalAmount) * 100).toFixed(1)}% of total
+              {((aggregates.totals.normalTotal / aggregates.totals.totalRevenue) * 100).toFixed(1)}% of total
             </p>
           </div>
 
@@ -176,9 +181,9 @@ const Dashboard2024 = () => {
               </div>
               <ExportDialog clients={oneTimeClients} title="One-Time Clients Report" category="One-Time" stats={stats.oneTime} />
             </div>
-            <p className="text-3xl font-bold text-card-foreground">{formatCurrency(stats.oneTime.totalAmount)}</p>
+            <p className="text-3xl font-bold text-card-foreground">{formatCurrency(aggregates.totals.oneTimeTotal)}</p>
             <p className="text-sm text-muted-foreground mt-1">
-              {((stats.oneTime.totalAmount / stats.total.totalAmount) * 100).toFixed(1)}% of total
+              {((aggregates.totals.oneTimeTotal / aggregates.totals.totalRevenue) * 100).toFixed(1)}% of total
             </p>
           </div>
         </div>
@@ -318,8 +323,8 @@ const Dashboard2024 = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Total Revenue</p>
-              <p className="text-2xl font-bold text-accent">{formatCurrency(stats.total.totalAmount)}</p>
-              <p className="text-xs text-muted-foreground">{stats.total.totalInvoices} total invoices</p>
+              <p className="text-2xl font-bold text-accent">{formatCurrency(aggregates.totals.totalRevenue)}</p>
+              <p className="text-xs text-muted-foreground">{aggregates.totals.totalInvoices} total invoices</p>
             </div>
           </div>
         </div>
