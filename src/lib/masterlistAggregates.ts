@@ -56,17 +56,41 @@ function rowGet(row: Record<string, unknown>, wanted: string[]): unknown {
 }
 
 function normalizeClientName(name: unknown): string {
-  // Basic normalization + merge common variants (can be extended as you confirm mappings)
+  // Robust normalization + merging for segmentation accuracy (month-wise premium/normal/one-time)
   const raw = String(name ?? "").trim();
   if (!raw) return "";
-  const collapsed = raw.replace(/\s+/g, " ").trim();
 
-  // Consolidations based on your project memory (examples)
-  const upper = collapsed.toUpperCase();
-  if (upper.startsWith("IDP")) return "IDP Education";
-  if (upper.startsWith("NAVITAS")) return "Navitas Middle East";
+  // Remove branch info like "(Dubai Branch)", "(Br.)", etc.
+  const withoutParens = raw.replace(/\([^)]*\)/g, " ");
 
-  return collapsed;
+  // Normalize punctuation/spaces
+  const cleaned = withoutParens
+    .replace(/&/g, " AND ")
+    .replace(/[\u00A0]/g, " ")
+    .replace(/[^A-Za-z0-9 ]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const upper = cleaned.toUpperCase();
+
+  // Strip common company suffixes that create variants
+  const suffixStripped = upper
+    .replace(/\b(L\s*L\s*C|LTD|LIMITED|FZE|FZCO|FZ\s*LLC|DMCC|LLC|L\.L\.C)\b/g, " ")
+    .replace(/\b(BRANCH|HO)\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  // Canonical mapping by keywords (extend here as needed)
+  if (suffixStripped.includes("IDP")) return "IDP Education";
+  if (suffixStripped.includes("NAVITAS") || suffixStripped.includes("MURDOCH")) return "Navitas / Murdoch";
+  if (suffixStripped.includes("TRANE")) return "Trane BVBA";
+  if (suffixStripped.includes("GULFTAINER")) return "Gulftainer Company Limited";
+  if (suffixStripped.includes("DEAKIN")) return "Deakin University";
+  if (suffixStripped.includes("HULT")) return "Hult Investments";
+  if (suffixStripped.includes("INDO TAUSCH") || suffixStripped.includes("GMR")) return "Indo Tausch Trading";
+
+  // Title-ish fallback (keep original casing but normalized)
+  return cleaned;
 }
 
 export interface MasterlistAggregates {
