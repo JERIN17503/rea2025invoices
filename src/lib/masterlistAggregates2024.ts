@@ -13,6 +13,48 @@ export interface MasterlistAggregates2024 {
   };
 }
 
+// Premium clients monthly revenue breakdown (from user spreadsheet)
+const PREMIUM_CLIENTS_MONTHLY = [
+  { name: "IDP Education", monthly: [5041, 165011, 585, 4197, 16716, 160, 6260, 20926, 103030, 11308, 15176, 12032], total: 360616 },
+  { name: "Stellar Advertising", monthly: [9650, 16016, 18431, 9871, 20166, 76628, 17208, 80215, 21644, 9762, 5328, 0], total: 284917 },
+  { name: "Navitas / Murdoch", monthly: [10803, 0, 12395, 4669, 18700, 35008, 3617, 23476, 63751, 6427, 41883, 9772], total: 230501 },
+  { name: "GrokGlobal Services", monthly: [4475, 0, 22178, 310, 975, 6445, 275, 15915, 11795, 12557, 550, 0], total: 75474 },
+  { name: "Continental Middle East", monthly: [0, 3835, 0, 0, 1266, 3086, 6209, 27440, 18375, 11172, 0, 0], total: 71383 },
+  { name: "Dubai Academic Health", monthly: [0, 0, 6920, 0, 12375, 24338, 0, 0, 0, 0, 22720, 0], total: 66354 },
+  { name: "Gulftainer Company", monthly: [10000, 0, 0, 0, 0, 0, 0, 0, 8452, 4435, 14292, 13400], total: 58080 },
+  { name: "Trane BVBA", monthly: [6380, 3000, 3370, 1250, 4864, 1731, 5129, 549, 2940, 1335, 7770, 1608], total: 39926 },
+  { name: "Dunecrest School", monthly: [19194, 0, 0, 0, 3831, 359, 14110, 0, 0, 0, 0, 0], total: 37494 },
+  { name: "Tappy Toes Nursery", monthly: [0, 989, 0, 0, 7425, 0, 0, 1080, 3665, 2475, 0, 9405], total: 25039 },
+  { name: "Aurantius Real Estate", monthly: [554, 2410, 792, 0, 869, 2138, 1000, 1778, 0, 2482, 4065, 7322], total: 23411 },
+  { name: "Lloyds Energy DMCC", monthly: [1250, 0, 9475, 1100, 0, 870, 3110, 0, 435, 365, 0, 1460], total: 18065 },
+  { name: "Byyu Gift Trading", monthly: [0, 0, 4225, 0, 350, 5935, 485, 5910, 0, 371, 0, 0], total: 17276 },
+  { name: "ANB Automobiles", monthly: [0, 1580, 1130, 0, 0, 390, 0, 2055, 0, 0, 1995, 8600], total: 15750 },
+  { name: "M E A D Medical", monthly: [475, 1348, 0, 0, 1060, 10070, 0, 730, 0, 517, 0, 0], total: 14200 },
+  { name: "Narjis Printing", monthly: [0, 0, 0, 380, 0, 460, 0, 11658, 0, 0, 0, 1570], total: 14067 },
+  { name: "Locke Lifestyle", monthly: [0, 0, 0, 0, 0, 0, 1450, 3045, 4184, 1054, 1877, 0], total: 11611 },
+  { name: "Huxley Associates", monthly: [1125, 225, 0, 375, 4355, 1234, 0, 0, 240, 0, 0, 3000], total: 10554 },
+  { name: "Bianca and Bianco", monthly: [825, 310, 0, 825, 0, 0, 3210, 0, 650, 1625, 0, 0], total: 7445 },
+  { name: "J C S Artificial Flowers", monthly: [0, 779, 0, 0, 770, 0, 2435, 0, 2875, 0, 0, 0], total: 6859 },
+  { name: "BNI Polaris", monthly: [0, 0, 0, 0, 0, 714, 1412, 0, 0, 125, 3569, 775], total: 6595 },
+  { name: "Ingersoll-Rand", monthly: [310, 0, 0, 0, 1010, 285, 0, 0, 2116, 520, 235, 0], total: 4476 },
+  { name: "Mighthouse Realty", monthly: [0, 0, 0, 0, 2195, 893, 700, 0, 0, 0, 400, 0], total: 4188 },
+  { name: "Unique World", monthly: [375, 195, 150, 270, 270, 90, 110, 315, 210, 360, 420, 270], total: 3035 },
+  { name: "Indo Tausch Trading", monthly: [0, 420, 185, 0, 420, 0, 125, 210, 0, 125, 0, 0], total: 1485 },
+];
+
+// Generate topClients for each month (all premium clients with revenue > 0)
+function getTopClientsForMonth(monthIndex: number) {
+  return PREMIUM_CLIENTS_MONTHLY
+    .filter(c => c.monthly[monthIndex] > 0)
+    .map(c => ({
+      name: c.name,
+      revenue: c.monthly[monthIndex],
+      invoices: Math.max(1, Math.round(c.monthly[monthIndex] / 2500)), // estimate
+      category: "premium" as const,
+    }))
+    .sort((a, b) => b.revenue - a.revenue);
+}
+
 // ========== EXACT 2024 MONTHLY DATA (from user-provided spreadsheets) ==========
 const MONTHLY_DATA_2024: MonthlyData[] = [
   {
@@ -31,13 +73,7 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 18,
     oneTimeClients: 11,
     avgInvoiceValue: 161513 / 75,
-    topClients: [
-      { name: "Dunecrest School", revenue: 19194, invoices: 2, category: "premium" as const },
-      { name: "Navitas / Murdoch", revenue: 10803, invoices: 3, category: "premium" as const },
-      { name: "Gulftainer Company", revenue: 10000, invoices: 1, category: "premium" as const },
-      { name: "Stellar Advertising", revenue: 9650, invoices: 8, category: "premium" as const },
-      { name: "Trane BVBA", revenue: 6380, invoices: 4, category: "premium" as const },
-    ],
+    topClients: getTopClientsForMonth(0),
   },
   {
     month: "February",
@@ -55,13 +91,7 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 12,
     oneTimeClients: 8,
     avgInvoiceValue: 267652 / 61,
-    topClients: [
-      { name: "IDP Education", revenue: 165011, invoices: 6, category: "premium" as const },
-      { name: "Stellar Advertising", revenue: 16016, invoices: 5, category: "premium" as const },
-      { name: "Continental Middle East", revenue: 3835, invoices: 2, category: "premium" as const },
-      { name: "Trane BVBA", revenue: 3000, invoices: 2, category: "premium" as const },
-      { name: "Aurantius Real Estate", revenue: 2410, invoices: 2, category: "premium" as const },
-    ],
+    topClients: getTopClientsForMonth(1),
   },
   {
     month: "March",
@@ -79,13 +109,7 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 8,
     oneTimeClients: 8,
     avgInvoiceValue: 124056 / 60,
-    topClients: [
-      { name: "GrokGlobal Services", revenue: 22178, invoices: 3, category: "premium" as const },
-      { name: "Stellar Advertising", revenue: 18431, invoices: 6, category: "premium" as const },
-      { name: "Navitas / Murdoch", revenue: 12395, invoices: 4, category: "premium" as const },
-      { name: "Lloyds Energy DMCC", revenue: 9475, invoices: 2, category: "premium" as const },
-      { name: "Dubai Academic Health", revenue: 6920, invoices: 2, category: "premium" as const },
-    ],
+    topClients: getTopClientsForMonth(2),
   },
   {
     month: "April",
@@ -103,13 +127,7 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 10,
     oneTimeClients: 5,
     avgInvoiceValue: 94044 / 43,
-    topClients: [
-      { name: "Stellar Advertising", revenue: 9871, invoices: 4, category: "premium" as const },
-      { name: "Navitas / Murdoch", revenue: 4669, invoices: 2, category: "premium" as const },
-      { name: "IDP Education", revenue: 4197, invoices: 2, category: "premium" as const },
-      { name: "Byyu Gift Trading", revenue: 4225, invoices: 2, category: "premium" as const },
-      { name: "Trane BVBA", revenue: 1250, invoices: 1, category: "premium" as const },
-    ],
+    topClients: getTopClientsForMonth(3),
   },
   {
     month: "May",
@@ -127,13 +145,7 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 14,
     oneTimeClients: 5,
     avgInvoiceValue: 132558 / 91,
-    topClients: [
-      { name: "Stellar Advertising", revenue: 20166, invoices: 8, category: "premium" as const },
-      { name: "Navitas / Murdoch", revenue: 18700, invoices: 5, category: "premium" as const },
-      { name: "IDP Education", revenue: 16716, invoices: 6, category: "premium" as const },
-      { name: "Dubai Academic Health", revenue: 12375, invoices: 3, category: "premium" as const },
-      { name: "Tappy Toes Nursery", revenue: 7425, invoices: 2, category: "premium" as const },
-    ],
+    topClients: getTopClientsForMonth(4),
   },
   {
     month: "June",
@@ -151,13 +163,7 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 10,
     oneTimeClients: 4,
     avgInvoiceValue: 278942 / 65,
-    topClients: [
-      { name: "Stellar Advertising", revenue: 76628, invoices: 12, category: "premium" as const },
-      { name: "Navitas / Murdoch", revenue: 35008, invoices: 6, category: "premium" as const },
-      { name: "Dubai Academic Health", revenue: 24338, invoices: 4, category: "premium" as const },
-      { name: "Dunecrest School", revenue: 14110, invoices: 2, category: "premium" as const },
-      { name: "M E A D Medical", revenue: 10070, invoices: 3, category: "premium" as const },
-    ],
+    topClients: getTopClientsForMonth(5),
   },
   {
     month: "July",
@@ -175,13 +181,7 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 10,
     oneTimeClients: 9,
     avgInvoiceValue: 115258 / 65,
-    topClients: [
-      { name: "Stellar Advertising", revenue: 17208, invoices: 6, category: "premium" as const },
-      { name: "IDP Education", revenue: 6260, invoices: 3, category: "premium" as const },
-      { name: "Continental Middle East", revenue: 6209, invoices: 2, category: "premium" as const },
-      { name: "Byyu Gift Trading", revenue: 5935, invoices: 2, category: "premium" as const },
-      { name: "Trane BVBA", revenue: 5129, invoices: 3, category: "premium" as const },
-    ],
+    topClients: getTopClientsForMonth(6),
   },
   {
     month: "August",
@@ -199,13 +199,7 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 12,
     oneTimeClients: 9,
     avgInvoiceValue: 256551 / 74,
-    topClients: [
-      { name: "Stellar Advertising", revenue: 80215, invoices: 10, category: "premium" as const },
-      { name: "Continental Middle East", revenue: 27440, invoices: 4, category: "premium" as const },
-      { name: "Navitas / Murdoch", revenue: 23476, invoices: 5, category: "premium" as const },
-      { name: "IDP Education", revenue: 20926, invoices: 4, category: "premium" as const },
-      { name: "GrokGlobal Services", revenue: 15915, invoices: 3, category: "premium" as const },
-    ],
+    topClients: getTopClientsForMonth(7),
   },
   {
     month: "September",
@@ -223,13 +217,7 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 14,
     oneTimeClients: 11,
     avgInvoiceValue: 305716 / 81,
-    topClients: [
-      { name: "IDP Education", revenue: 103030, invoices: 8, category: "premium" as const },
-      { name: "Navitas / Murdoch", revenue: 63751, invoices: 6, category: "premium" as const },
-      { name: "Stellar Advertising", revenue: 21644, invoices: 5, category: "premium" as const },
-      { name: "Continental Middle East", revenue: 18375, invoices: 3, category: "premium" as const },
-      { name: "GrokGlobal Services", revenue: 11795, invoices: 2, category: "premium" as const },
-    ],
+    topClients: getTopClientsForMonth(8),
   },
   {
     month: "October",
@@ -247,13 +235,7 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 14,
     oneTimeClients: 14,
     avgInvoiceValue: 144394 / 81,
-    topClients: [
-      { name: "GrokGlobal Services", revenue: 12557, invoices: 3, category: "premium" as const },
-      { name: "IDP Education", revenue: 11308, invoices: 4, category: "premium" as const },
-      { name: "Continental Middle East", revenue: 11172, invoices: 2, category: "premium" as const },
-      { name: "Stellar Advertising", revenue: 9762, invoices: 4, category: "premium" as const },
-      { name: "Navitas / Murdoch", revenue: 6427, invoices: 3, category: "premium" as const },
-    ],
+    topClients: getTopClientsForMonth(9),
   },
   {
     month: "November",
@@ -271,13 +253,7 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 14,
     oneTimeClients: 9,
     avgInvoiceValue: 188944 / 71,
-    topClients: [
-      { name: "Navitas / Murdoch", revenue: 41883, invoices: 6, category: "premium" as const },
-      { name: "Dubai Academic Health", revenue: 22720, invoices: 3, category: "premium" as const },
-      { name: "IDP Education", revenue: 15176, invoices: 4, category: "premium" as const },
-      { name: "Gulftainer Company", revenue: 14292, invoices: 2, category: "premium" as const },
-      { name: "Trane BVBA", revenue: 7770, invoices: 3, category: "premium" as const },
-    ],
+    topClients: getTopClientsForMonth(10),
   },
   {
     month: "December",
@@ -295,13 +271,7 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 12,
     oneTimeClients: 8,
     avgInvoiceValue: 143383 / 52,
-    topClients: [
-      { name: "Gulftainer Company", revenue: 13400, invoices: 2, category: "premium" as const },
-      { name: "IDP Education", revenue: 12032, invoices: 3, category: "premium" as const },
-      { name: "Navitas / Murdoch", revenue: 9772, invoices: 4, category: "premium" as const },
-      { name: "Tappy Toes Nursery", revenue: 9405, invoices: 2, category: "premium" as const },
-      { name: "ANB Automobiles", revenue: 8600, invoices: 2, category: "premium" as const },
-    ],
+    topClients: getTopClientsForMonth(11),
   },
 ];
 
@@ -314,6 +284,9 @@ const ONE_TIME_TOTAL = MONTHLY_DATA_2024.reduce((s, m) => s + m.oneTimeRevenue, 
 
 // 25 premium + 67 normal + 101 one-time = 193 clients
 const TOTAL_CLIENTS_2024 = 193;
+
+// Export premium clients monthly data for use in other components
+export const PREMIUM_CLIENTS_MONTHLY_2024 = PREMIUM_CLIENTS_MONTHLY;
 
 export async function loadMasterlistAggregates2024(): Promise<MasterlistAggregates2024> {
   return {
