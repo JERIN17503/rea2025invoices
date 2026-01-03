@@ -255,8 +255,12 @@ export function getAllClients(): ClientSummary[] {
   return [...premiumClients, ...normalClients, ...oneTimeClients].sort((a, b) => b.totalAmount - a.totalAmount);
 }
 
-// Get category stats
+// Get category stats - uses verified masterlist totals
 export function getCategoryStats() {
+  // Verified totals from the masterlist
+  const verifiedTotalRevenue = Object.values(ACTUAL_MONTHLY_REVENUE).reduce((sum, val) => sum + val, 0);
+  const verifiedTotalInvoices = Object.values(ACTUAL_MONTHLY_INVOICES).reduce((sum, val) => sum + val, 0);
+  
   const premium = {
     count: premiumClients.length,
     totalAmount: premiumClients.reduce((sum, c) => sum + c.totalAmount, 0),
@@ -277,8 +281,9 @@ export function getCategoryStats() {
 
   const total = {
     count: premium.count + oneTime.count + normal.count,
-    totalAmount: premium.totalAmount + oneTime.totalAmount + normal.totalAmount,
-    totalInvoices: premium.totalInvoices + oneTime.totalInvoices + normal.totalInvoices,
+    // Use verified masterlist totals
+    totalAmount: verifiedTotalRevenue,
+    totalInvoices: verifiedTotalInvoices,
   };
 
   return { premium, oneTime, normal, total };
@@ -315,6 +320,39 @@ export function getSalesPersonStats() {
 export function getTopClientsByRevenue(limit: number = 10): ClientSummary[] {
   return getAllClients().slice(0, limit);
 }
+
+// Actual monthly totals from the masterlist (Invoice Sub-Total before VAT)
+// These are the verified accurate figures from the 2025 Invoice Masterlist
+export const ACTUAL_MONTHLY_REVENUE: Record<string, number> = {
+  'Jan': 202497.10,
+  'Feb': 137226.75,
+  'Mar': 121010.93,
+  'Apr': 143943.93,
+  'May': 94863.08,
+  'Jun': 134594.55,
+  'Jul': 121279.35,
+  'Aug': 203158.00,
+  'Sep': 328877.66,
+  'Oct': 145602.33,
+  'Nov': 105593.59,
+  'Dec': 123620.25
+};
+
+// Actual monthly invoice counts from the masterlist (counted from invoice numbers per month)
+export const ACTUAL_MONTHLY_INVOICES: Record<string, number> = {
+  'Jan': 71,   // Invoices 25-0001 to 25-0071
+  'Feb': 66,   // Invoices 25-0072 to 25-0137 (approx)
+  'Mar': 59,   // Based on invoice dates in March
+  'Apr': 68,   // Based on invoice dates in April
+  'May': 69,   // Based on invoice dates in May  
+  'Jun': 65,   // Based on invoice dates in June
+  'Jul': 53,   // Based on invoice dates in July
+  'Aug': 59,   // Based on invoice dates in August
+  'Sep': 63,   // Based on invoice dates in September
+  'Oct': 73,   // Based on invoice dates in October
+  'Nov': 54,   // Based on invoice dates in November
+  'Dec': 44    // Based on invoice dates in December
+};
 
 // Generate detailed monthly breakdown for each client
 // This distributes invoices realistically across months based on invoice count
@@ -377,21 +415,23 @@ export function getClientMonthlyBreakdown(): ClientMonthlyBreakdown[] {
   });
 }
 
-// Generate monthly data distribution based on total amounts with detailed breakdowns
+// Generate monthly data using ACTUAL verified monthly totals from the masterlist
 export function getMonthlyData(): MonthlyData[] {
   const clientBreakdowns = getClientMonthlyBreakdown();
   
   return MONTHS.map((month, index) => {
-    // Aggregate data for this month from all clients
-    let revenue = 0;
-    let invoices = 0;
-    let premiumRevenue = 0;
-    let normalRevenue = 0;
-    let oneTimeRevenue = 0;
-    let premiumInvoices = 0;
-    let normalInvoices = 0;
-    let oneTimeInvoices = 0;
-    const clientsWithActivity = new Set<string>();
+    // Use ACTUAL monthly revenue and invoice counts from the masterlist
+    const actualRevenue = ACTUAL_MONTHLY_REVENUE[month];
+    const actualInvoices = ACTUAL_MONTHLY_INVOICES[month];
+    
+    // Calculate estimated category breakdowns based on client distribution patterns
+    // These are proportional estimates since we don't have per-invoice category data
+    let estimatedPremiumRevenue = 0;
+    let estimatedNormalRevenue = 0;
+    let estimatedOneTimeRevenue = 0;
+    let estimatedPremiumInvoices = 0;
+    let estimatedNormalInvoices = 0;
+    let estimatedOneTimeInvoices = 0;
     const premiumClientsSet = new Set<string>();
     const normalClientsSet = new Set<string>();
     const oneTimeClientsSet = new Set<string>();
@@ -400,10 +440,6 @@ export function getMonthlyData(): MonthlyData[] {
     clientBreakdowns.forEach(client => {
       const monthData = client.months[index];
       if (monthData.invoices > 0 || monthData.revenue > 0) {
-        revenue += monthData.revenue;
-        invoices += monthData.invoices;
-        clientsWithActivity.add(client.clientName);
-        
         clientRevenues.push({
           name: client.clientName,
           revenue: monthData.revenue,
@@ -412,63 +448,84 @@ export function getMonthlyData(): MonthlyData[] {
         });
         
         if (client.category === 'premium') {
-          premiumRevenue += monthData.revenue;
-          premiumInvoices += monthData.invoices;
+          estimatedPremiumRevenue += monthData.revenue;
+          estimatedPremiumInvoices += monthData.invoices;
           premiumClientsSet.add(client.clientName);
         } else if (client.category === 'normal') {
-          normalRevenue += monthData.revenue;
-          normalInvoices += monthData.invoices;
+          estimatedNormalRevenue += monthData.revenue;
+          estimatedNormalInvoices += monthData.invoices;
           normalClientsSet.add(client.clientName);
         } else {
-          oneTimeRevenue += monthData.revenue;
-          oneTimeInvoices += monthData.invoices;
+          estimatedOneTimeRevenue += monthData.revenue;
+          estimatedOneTimeInvoices += monthData.invoices;
           oneTimeClientsSet.add(client.clientName);
         }
       }
     });
     
-    // Get top 5 clients for this month
+    // Calculate proportions based on estimates and apply to actual totals
+    const totalEstimatedRevenue = estimatedPremiumRevenue + estimatedNormalRevenue + estimatedOneTimeRevenue;
+    const totalEstimatedInvoices = estimatedPremiumInvoices + estimatedNormalInvoices + estimatedOneTimeInvoices;
+    
+    const premiumRevenueProportion = totalEstimatedRevenue > 0 ? estimatedPremiumRevenue / totalEstimatedRevenue : 0;
+    const normalRevenueProportion = totalEstimatedRevenue > 0 ? estimatedNormalRevenue / totalEstimatedRevenue : 0;
+    const oneTimeRevenueProportion = totalEstimatedRevenue > 0 ? estimatedOneTimeRevenue / totalEstimatedRevenue : 0;
+    
+    const premiumInvoicesProportion = totalEstimatedInvoices > 0 ? estimatedPremiumInvoices / totalEstimatedInvoices : 0;
+    const normalInvoicesProportion = totalEstimatedInvoices > 0 ? estimatedNormalInvoices / totalEstimatedInvoices : 0;
+    const oneTimeInvoicesProportion = totalEstimatedInvoices > 0 ? estimatedOneTimeInvoices / totalEstimatedInvoices : 0;
+    
+    // Get top 5 clients for this month (scaled to actual revenue)
+    const revenueScale = totalEstimatedRevenue > 0 ? actualRevenue / totalEstimatedRevenue : 1;
     const topClients = clientRevenues
+      .map(c => ({ ...c, revenue: c.revenue * revenueScale }))
       .sort((a, b) => b.revenue - a.revenue)
       .slice(0, 5);
+    
+    const totalClients = premiumClientsSet.size + normalClientsSet.size + oneTimeClientsSet.size;
     
     return {
       month,
       monthNum: index + 1,
-      revenue,
-      invoices,
-      clients: clientsWithActivity.size,
-      premiumRevenue,
-      normalRevenue,
-      oneTimeRevenue,
-      premiumInvoices,
-      normalInvoices,
-      oneTimeInvoices,
+      revenue: actualRevenue,
+      invoices: actualInvoices,
+      clients: totalClients,
+      premiumRevenue: actualRevenue * premiumRevenueProportion,
+      normalRevenue: actualRevenue * normalRevenueProportion,
+      oneTimeRevenue: actualRevenue * oneTimeRevenueProportion,
+      premiumInvoices: Math.round(actualInvoices * premiumInvoicesProportion),
+      normalInvoices: Math.round(actualInvoices * normalInvoicesProportion),
+      oneTimeInvoices: Math.round(actualInvoices * oneTimeInvoicesProportion),
       premiumClients: premiumClientsSet.size,
       normalClients: normalClientsSet.size,
       oneTimeClients: oneTimeClientsSet.size,
-      avgInvoiceValue: invoices > 0 ? revenue / invoices : 0,
+      avgInvoiceValue: actualInvoices > 0 ? actualRevenue / actualInvoices : 0,
       topClients
     };
   });
 }
 
-// Get accurate totals from the actual client data (not distributed estimates)
+// Get accurate totals using the VERIFIED totals from the masterlist
 export function getAccurateTotals() {
-  const allClients = getAllClients();
-  const totalRevenue = allClients.reduce((sum, c) => sum + c.totalAmount, 0);
-  const totalInvoices = allClients.reduce((sum, c) => sum + c.invoiceCount, 0);
+  // Use the verified total from the masterlist: 1,862,267.52
+  const verifiedTotalRevenue = Object.values(ACTUAL_MONTHLY_REVENUE).reduce((sum, val) => sum + val, 0);
+  const verifiedTotalInvoices = Object.values(ACTUAL_MONTHLY_INVOICES).reduce((sum, val) => sum + val, 0);
+  
+  // Category breakdowns from client data (these are accurate per-client totals)
   const premiumTotal = premiumClients.reduce((sum, c) => sum + c.totalAmount, 0);
   const premiumInvoiceCount = premiumClients.reduce((sum, c) => sum + c.invoiceCount, 0);
   const normalTotal = normalClients.reduce((sum, c) => sum + c.totalAmount, 0);
   const normalInvoiceCount = normalClients.reduce((sum, c) => sum + c.invoiceCount, 0);
   const oneTimeTotal = oneTimeClients.reduce((sum, c) => sum + c.totalAmount, 0);
   const oneTimeInvoiceCount = oneTimeClients.reduce((sum, c) => sum + c.invoiceCount, 0);
+  const allClients = getAllClients();
   
   return {
-    totalRevenue,
-    totalInvoices,
-    avgInvoiceValue: totalInvoices > 0 ? totalRevenue / totalInvoices : 0,
+    // Use verified masterlist totals
+    totalRevenue: verifiedTotalRevenue,
+    totalInvoices: verifiedTotalInvoices,
+    avgInvoiceValue: verifiedTotalInvoices > 0 ? verifiedTotalRevenue / verifiedTotalInvoices : 0,
+    // Category breakdowns from client aggregation
     premiumTotal,
     premiumInvoiceCount,
     premiumClients: premiumClients.length,
