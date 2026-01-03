@@ -149,44 +149,44 @@ export function MonthlyTrendsChart({
   return (
     <div className="space-y-6">
       {/* Summary Cards - Using accurate totals from actual client data */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
         <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-primary" />
+          <CardContent className="p-3 sm:pt-4 sm:px-4">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <DollarSign className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
               <p className="text-xs text-muted-foreground">Total Revenue</p>
             </div>
-            <p className="text-lg font-bold mt-1">{formatCurrency(accurateTotals.totalRevenue)}</p>
+            <p className="text-base sm:text-lg font-bold mt-1">{formatCurrency(accurateTotals.totalRevenue)}</p>
             <p className="text-xs text-muted-foreground">Jan - Dec {year} (Actual)</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-primary" />
+          <CardContent className="p-3 sm:pt-4 sm:px-4">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
               <p className="text-xs text-muted-foreground">Total Invoices</p>
             </div>
-            <p className="text-lg font-bold mt-1">{formatInteger(accurateTotals.totalInvoices)}</p>
+            <p className="text-base sm:text-lg font-bold mt-1">{formatInteger(accurateTotals.totalInvoices)}</p>
             <p className="text-xs text-muted-foreground">Across all clients</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-primary" />
+          <CardContent className="p-3 sm:pt-4 sm:px-4">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
               <p className="text-xs text-muted-foreground">Avg Invoice Value</p>
             </div>
-            <p className="text-lg font-bold mt-1">{formatCurrency(accurateTotals.avgInvoiceValue)}</p>
+            <p className="text-base sm:text-lg font-bold mt-1">{formatCurrency(accurateTotals.avgInvoiceValue)}</p>
             <p className="text-xs text-muted-foreground">Per invoice</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-primary" />
+          <CardContent className="p-3 sm:pt-4 sm:px-4">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
               <p className="text-xs text-muted-foreground">Total Clients</p>
             </div>
-            <p className="text-lg font-bold mt-1">{formatInteger(accurateTotals.totalClients)}</p>
+            <p className="text-base sm:text-lg font-bold mt-1">{formatInteger(accurateTotals.totalClients)}</p>
             <p className="text-xs text-muted-foreground">All categories</p>
           </CardContent>
         </Card>
@@ -194,19 +194,21 @@ export function MonthlyTrendsChart({
 
       {/* Charts */}
       <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base">{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
+        <CardHeader className="p-3 sm:p-6 pb-2">
+          <CardTitle className="text-sm sm:text-base">{year} Monthly Overview</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">Track revenue patterns and segment performance across months</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-2 sm:p-6 pt-0">
           <Tabs defaultValue="overview" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="invoices">Invoices</TabsTrigger>
-              <TabsTrigger value="segments">Segments</TabsTrigger>
-              <TabsTrigger value="clients">Clients</TabsTrigger>
-              <TabsTrigger value="table">Data Table</TabsTrigger>
-            </TabsList>
+            <div className="overflow-x-auto -mx-2 px-2">
+              <TabsList className="inline-flex h-auto p-1 gap-1 min-w-max">
+                <TabsTrigger value="overview" className="text-xs sm:text-sm px-2.5 sm:px-3 py-1.5">Overview</TabsTrigger>
+                <TabsTrigger value="invoices" className="text-xs sm:text-sm px-2.5 sm:px-3 py-1.5">Invoices</TabsTrigger>
+                <TabsTrigger value="segments" className="text-xs sm:text-sm px-2.5 sm:px-3 py-1.5">Segments</TabsTrigger>
+                <TabsTrigger value="clients" className="text-xs sm:text-sm px-2.5 sm:px-3 py-1.5">Clients</TabsTrigger>
+                <TabsTrigger value="table" className="text-xs sm:text-sm px-2.5 sm:px-3 py-1.5">Data</TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="overview">
               <ResponsiveContainer width="100%" height={300}>
