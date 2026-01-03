@@ -1,4 +1,5 @@
-import { getCategoryStats, getSalesPersonStats, ClientSummary, getMonthlyDataByCategory, MonthlyData } from "@/data/clientData";
+import type { ClientSummary, MonthlyData } from "@/data/clientData";
+import { getMonthlyDataByCategory } from "@/data/clientData";
 import {
   PieChart,
   Pie,
@@ -17,37 +18,51 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { DollarSign, Users, TrendingUp, Target } from "lucide-react";
 import { SegmentMonthlyChart } from "./MonthlyTrendsChart";
-import { formatCurrency, formatInteger, formatAxisValue } from "@/lib/formatters";
+import { formatCurrency, formatAxisValue } from "@/lib/formatters";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { loadMasterlistAggregates } from "@/lib/masterlistAggregates";
+import { loadMasterlistAggregates2024 } from "@/lib/masterlistAggregates2024";
 
 interface SegmentChartsProps {
   clients: ClientSummary[];
   category: "premium" | "normal" | "one-time";
   categoryColor: string;
   categoryLabel: string;
+  year?: number;
+  queryKey?: any[];
 }
 
-export function SegmentCharts({ clients, category, categoryColor, categoryLabel }: SegmentChartsProps) {
-  const stats = getCategoryStats();
-  const salesPersonStats = getSalesPersonStats();
+function sumInvoices(list: ClientSummary[]) {
+  return list.reduce((s, c) => s + c.invoiceCount, 0);
+}
+
+function sumAmount(list: ClientSummary[]) {
+  return list.reduce((s, c) => s + c.totalAmount, 0);
+}
+
+export function SegmentCharts({
+  clients,
+  category,
+  categoryColor,
+  categoryLabel,
+  year = 2025,
+  queryKey,
+}: SegmentChartsProps) {
+  const queryFn = year === 2024 ? loadMasterlistAggregates2024 : loadMasterlistAggregates;
 
   const { data: masterlist } = useQuery({
-    queryKey: ["masterlist-2025-aggregates"],
-    queryFn: loadMasterlistAggregates,
+    queryKey: queryKey ?? [year === 2024 ? "masterlist-2024-aggregates" : "masterlist-2025-aggregates"],
+    queryFn,
   });
 
   const monthlyData: MonthlyData[] = useMemo(() => {
     if (!masterlist?.monthlyData) return getMonthlyDataByCategory(category);
 
     return masterlist.monthlyData.map((m) => {
-      const revenue =
-        category === "premium" ? m.premiumRevenue : category === "normal" ? m.normalRevenue : m.oneTimeRevenue;
-      const invoices =
-        category === "premium" ? m.premiumInvoices : category === "normal" ? m.normalInvoices : m.oneTimeInvoices;
-      const clientsCount =
-        category === "premium" ? m.premiumClients : category === "normal" ? m.normalClients : m.oneTimeClients;
+      const revenue = category === "premium" ? m.premiumRevenue : category === "normal" ? m.normalRevenue : m.oneTimeRevenue;
+      const invoices = category === "premium" ? m.premiumInvoices : category === "normal" ? m.normalInvoices : m.oneTimeInvoices;
+      const clientsCount = category === "premium" ? m.premiumClients : category === "normal" ? m.normalClients : m.oneTimeClients;
 
       return {
         ...m,
@@ -60,20 +75,32 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
     });
   }, [masterlist, category]);
 
-  // Get category-specific stats
-  const categoryStats = category === "premium" ? stats.premium : 
-                        category === "normal" ? stats.normal : stats.oneTime;
+  const categoryStats = useMemo(
+    () => ({
+      count: clients.length,
+      totalInvoices: sumInvoices(clients),
+      totalAmount: sumAmount(clients),
+    }),
+    [clients]
+  );
 
-  // Revenue distribution within this segment (top 10 clients)
-  const topClientsData = clients.slice(0, 10).map(c => ({
+  const totalStats = useMemo(
+    () => ({
+      totalAmount: masterlist?.totals.totalRevenue ?? sumAmount(clients),
+      totalInvoices: masterlist?.totals.totalInvoices ?? sumInvoices(clients),
+      totalClients: masterlist?.totals.totalClients ?? clients.length,
+    }),
+    [masterlist, clients]
+  );
+
+  const topClientsData = clients.slice(0, 10).map((c) => ({
     name: c.name.length > 15 ? c.name.slice(0, 15) + "..." : c.name,
     fullName: c.name,
     revenue: c.totalAmount,
     invoices: c.invoiceCount,
   }));
 
-  // Revenue ranges for this segment
-  const getRevenueRanges = () => {
+  const revenueRanges = useMemo(() => {
     const ranges = [
       { name: "< 1K", min: 0, max: 1000, count: 0, revenue: 0 },
       { name: "1K-5K", min: 1000, max: 5000, count: 0, revenue: 0 },
@@ -82,45 +109,41 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
       { name: "25K-50K", min: 25000, max: 50000, count: 0, revenue: 0 },
       { name: "50K+", min: 50000, max: Infinity, count: 0, revenue: 0 },
     ];
-    
-    clients.forEach(client => {
-      const range = ranges.find(r => client.totalAmount >= r.min && client.totalAmount < r.max);
+
+    for (const client of clients) {
+      const range = ranges.find((r) => client.totalAmount >= r.min && client.totalAmount < r.max);
       if (range) {
         range.count++;
         range.revenue += client.totalAmount;
       }
-    });
-    
-    return ranges.filter(r => r.count > 0);
-  };
-  const revenueRanges = getRevenueRanges();
+    }
 
-  // Salesperson performance for this segment
-  const salesPersonData = salesPersonStats
-    .filter(sp => {
-      const spClients = clients.filter(c => c.salesPersons.includes(sp.name));
-      return spClients.length > 0;
-    })
-    .map(sp => {
-      const spClients = clients.filter(c => c.salesPersons.includes(sp.name));
-      const spRevenue = spClients.reduce((sum, c) => sum + c.totalAmount, 0);
-      const spInvoices = spClients.reduce((sum, c) => sum + c.invoiceCount, 0);
-      return {
-        name: sp.name,
-        revenue: spRevenue,
-        clients: spClients.length,
-        invoices: spInvoices,
-      };
-    })
-    .sort((a, b) => b.revenue - a.revenue);
+    return ranges.filter((r) => r.count > 0);
+  }, [clients]);
 
-  // Category comparison pie data
+  const salesPersonData = useMemo(() => {
+    const map = new Map<string, { revenue: number; invoices: number; clients: number }>();
+
+    for (const client of clients) {
+      for (const sp of client.salesPersons) {
+        const prev = map.get(sp) ?? { revenue: 0, invoices: 0, clients: 0 };
+        map.set(sp, {
+          revenue: prev.revenue + client.totalAmount,
+          invoices: prev.invoices + client.invoiceCount,
+          clients: prev.clients + 1,
+        });
+      }
+    }
+
+    return Array.from(map.entries())
+      .map(([name, v]) => ({ name, revenue: v.revenue, clients: v.clients, invoices: v.invoices }))
+      .sort((a, b) => b.revenue - a.revenue);
+  }, [clients]);
+
   const categoryComparison = [
     { name: categoryLabel, value: categoryStats.totalAmount, color: categoryColor },
-    { name: "Others", value: stats.total.totalAmount - categoryStats.totalAmount, color: "hsl(var(--muted))" },
+    { name: "Others", value: Math.max(0, totalStats.totalAmount - categoryStats.totalAmount), color: "hsl(var(--muted))" },
   ];
-
-  // Use imported formatters from @/lib/formatters
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -129,7 +152,7 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
           <p className="font-semibold text-card-foreground">{payload[0]?.payload?.fullName || label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} style={{ color: entry.color }} className="text-sm">
-              {entry.name}: {entry.name === 'revenue' || entry.name === 'Revenue' ? formatCurrency(entry.value) : entry.value}
+              {entry.name}: {entry.name === "revenue" || entry.name === "Revenue" ? formatCurrency(entry.value) : entry.value}
             </p>
           ))}
         </div>
@@ -145,7 +168,14 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
     return (
-      <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" className="text-xs font-medium">
+      <text
+        x={x}
+        y={y}
+        fill="white"
+        textAnchor={x > cx ? "start" : "end"}
+        dominantBaseline="central"
+        className="text-xs font-medium"
+      >
         {`${(percent * 100).toFixed(0)}%`}
       </text>
     );
@@ -155,7 +185,6 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
 
   return (
     <div className="space-y-6">
-      {/* Key Metrics for this segment */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="bg-card border">
           <CardContent className="pt-4">
@@ -165,7 +194,7 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
             </div>
             <p className="text-lg font-bold mt-1">{formatCurrency(categoryStats.totalAmount)}</p>
             <p className="text-xs text-muted-foreground">
-              {((categoryStats.totalAmount / stats.total.totalAmount) * 100).toFixed(1)}% of total
+              {totalStats.totalAmount > 0 ? ((categoryStats.totalAmount / totalStats.totalAmount) * 100).toFixed(1) : "0.0"}% of total
             </p>
           </CardContent>
         </Card>
@@ -177,7 +206,7 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
             </div>
             <p className="text-xl font-bold mt-1">{categoryStats.count}</p>
             <p className="text-xs text-muted-foreground">
-              {((categoryStats.count / stats.total.count) * 100).toFixed(1)}% of total
+              {totalStats.totalClients > 0 ? ((categoryStats.count / totalStats.totalClients) * 100).toFixed(1) : "0.0"}% of total
             </p>
           </CardContent>
         </Card>
@@ -199,15 +228,13 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
             </div>
             <p className="text-xl font-bold mt-1">{categoryStats.totalInvoices}</p>
             <p className="text-xs text-muted-foreground">
-              {((categoryStats.totalInvoices / stats.total.totalInvoices) * 100).toFixed(1)}% of total
+              {totalStats.totalInvoices > 0 ? ((categoryStats.totalInvoices / totalStats.totalInvoices) * 100).toFixed(1) : "0.0"}% of total
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Charts Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Revenue Share Pie */}
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Revenue Share</CardTitle>
@@ -236,7 +263,6 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
           </CardContent>
         </Card>
 
-        {/* Client Distribution by Revenue Range */}
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Revenue Distribution</CardTitle>
@@ -248,29 +274,20 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 11 }} />
-                <Tooltip 
+                <Tooltip
                   formatter={(value: number, name: string) => [
-                    name === 'revenue' ? formatCurrency(value) : value,
-                    name === 'revenue' ? 'Revenue' : 'Clients'
+                    name === "revenue" ? formatCurrency(value) : value,
+                    name === "revenue" ? "Revenue" : "Clients",
                   ]}
                 />
-                <Area 
-                  type="monotone" 
-                  dataKey="count" 
-                  name="Clients"
-                  stroke={categoryColor}
-                  fill={categoryColor}
-                  fillOpacity={0.3} 
-                />
+                <Area type="monotone" dataKey="count" name="Clients" stroke={categoryColor} fill={categoryColor} fillOpacity={0.3} />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>
 
-      {/* Top Clients & Sales Performance */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Top 10 Clients */}
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Top 10 {categoryLabel} Clients</CardTitle>
@@ -289,7 +306,6 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
           </CardContent>
         </Card>
 
-        {/* Sales Person Performance */}
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Sales Performance</CardTitle>
@@ -301,11 +317,8 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} />
                 <YAxis tickFormatter={formatAxisValue} tick={{ fontSize: 10 }} />
-                <Tooltip 
-                  formatter={(value: number, name: string) => [
-                    name === 'revenue' ? formatCurrency(value) : value,
-                    name === 'revenue' ? 'Revenue' : name
-                  ]}
+                <Tooltip
+                  formatter={(value: number, name: string) => [name === "revenue" ? formatCurrency(value) : value, name === "revenue" ? "Revenue" : name]}
                 />
                 <Legend />
                 <Bar dataKey="revenue" name="Revenue" fill={categoryColor} radius={[4, 4, 0, 0]} />
@@ -316,13 +329,7 @@ export function SegmentCharts({ clients, category, categoryColor, categoryLabel 
         </Card>
       </div>
 
-      {/* Monthly Trend Chart */}
-      <SegmentMonthlyChart 
-        category={category}
-        categoryColor={categoryColor}
-        categoryLabel={categoryLabel}
-        data={monthlyData}
-      />
+      <SegmentMonthlyChart category={category} categoryColor={categoryColor} categoryLabel={categoryLabel} data={monthlyData} />
     </div>
   );
 }
