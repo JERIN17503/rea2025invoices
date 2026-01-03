@@ -119,25 +119,25 @@ const Index = () => {
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="all" className="space-y-6">
-          <TabsList className="bg-muted p-1 rounded-lg">
-            <TabsTrigger value="all" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              All Clients ({stats.total.count})
-            </TabsTrigger>
-            <TabsTrigger value="premium" className="flex items-center gap-2">
+        <Tabs defaultValue="premium" className="space-y-6">
+          <TabsList className="bg-muted p-1.5 rounded-xl w-full flex flex-wrap justify-start gap-1">
+            <TabsTrigger value="premium" className="flex items-center gap-2 data-[state=active]:bg-premium/20 data-[state=active]:text-premium px-4 py-2.5">
               <Crown className="h-4 w-4" />
               Premium ({stats.premium.count})
             </TabsTrigger>
-            <TabsTrigger value="normal" className="flex items-center gap-2">
+            <TabsTrigger value="normal" className="flex items-center gap-2 data-[state=active]:bg-normal/20 data-[state=active]:text-normal px-4 py-2.5">
               <Users className="h-4 w-4" />
               Normal ({stats.normal.count})
             </TabsTrigger>
-            <TabsTrigger value="one-time" className="flex items-center gap-2">
+            <TabsTrigger value="one-time" className="flex items-center gap-2 data-[state=active]:bg-one-time/20 data-[state=active]:text-one-time px-4 py-2.5">
               <User className="h-4 w-4" />
               One-Time ({stats.oneTime.count})
             </TabsTrigger>
-            <TabsTrigger value="insights" className="flex items-center gap-2">
+            <TabsTrigger value="all" className="flex items-center gap-2 px-4 py-2.5">
+              <BarChart3 className="h-4 w-4" />
+              All Clients ({stats.total.count})
+            </TabsTrigger>
+            <TabsTrigger value="insights" className="flex items-center gap-2 px-4 py-2.5">
               <Lightbulb className="h-4 w-4" />
               Insights
             </TabsTrigger>
