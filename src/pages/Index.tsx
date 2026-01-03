@@ -15,6 +15,7 @@ import {
   Lightbulb,
   PieChart
 } from "lucide-react";
+import reaLogo from "@/assets/rea_logo.jpg";
 
 const Index = () => {
   const stats = getCategoryStats();
@@ -34,9 +35,12 @@ const Index = () => {
       <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Client Remarketing Dashboard</h1>
-              <p className="text-sm text-muted-foreground">Invoice Masterlist 2025 Analysis</p>
+            <div className="flex items-center gap-4">
+              <img src={reaLogo} alt="REA Advertising" className="h-12 w-auto" />
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">Client Remarketing Dashboard</h1>
+                <p className="text-sm text-muted-foreground">Invoice Masterlist 2025 Analysis</p>
+              </div>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <FileText className="h-4 w-4" />
