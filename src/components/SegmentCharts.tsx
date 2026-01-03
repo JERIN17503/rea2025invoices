@@ -1,23 +1,26 @@
-import { getCategoryStats, getSalesPersonStats, ClientSummary, getMonthlyDataByCategory } from "@/data/clientData";
-import { 
-  PieChart, 
-  Pie, 
-  Cell, 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
+import { getCategoryStats, getSalesPersonStats, ClientSummary, getMonthlyDataByCategory, MonthlyData } from "@/data/clientData";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   ResponsiveContainer,
   AreaChart,
-  Area
+  Area,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { DollarSign, Users, TrendingUp, Target } from "lucide-react";
 import { SegmentMonthlyChart } from "./MonthlyTrendsChart";
 import { formatCurrency, formatInteger, formatAxisValue } from "@/lib/formatters";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { loadMasterlistAggregates } from "@/lib/masterlistAggregates";
 
 interface SegmentChartsProps {
   clients: ClientSummary[];
@@ -29,7 +32,33 @@ interface SegmentChartsProps {
 export function SegmentCharts({ clients, category, categoryColor, categoryLabel }: SegmentChartsProps) {
   const stats = getCategoryStats();
   const salesPersonStats = getSalesPersonStats();
-  const monthlyData = getMonthlyDataByCategory(category);
+
+  const { data: masterlist } = useQuery({
+    queryKey: ["masterlist-2025-aggregates"],
+    queryFn: loadMasterlistAggregates,
+  });
+
+  const monthlyData: MonthlyData[] = useMemo(() => {
+    if (!masterlist?.monthlyData) return getMonthlyDataByCategory(category);
+
+    return masterlist.monthlyData.map((m) => {
+      const revenue =
+        category === "premium" ? m.premiumRevenue : category === "normal" ? m.normalRevenue : m.oneTimeRevenue;
+      const invoices =
+        category === "premium" ? m.premiumInvoices : category === "normal" ? m.normalInvoices : m.oneTimeInvoices;
+      const clientsCount =
+        category === "premium" ? m.premiumClients : category === "normal" ? m.normalClients : m.oneTimeClients;
+
+      return {
+        ...m,
+        revenue,
+        invoices,
+        clients: clientsCount,
+        avgInvoiceValue: invoices > 0 ? revenue / invoices : 0,
+        topClients: (m.topClients ?? []).filter((c: any) => c.category === category),
+      };
+    });
+  }, [masterlist, category]);
 
   // Get category-specific stats
   const categoryStats = category === "premium" ? stats.premium : 
