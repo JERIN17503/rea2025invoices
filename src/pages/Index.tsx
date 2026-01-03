@@ -1,8 +1,9 @@
+import { Link } from "react-router-dom";
 import { getCategoryStats, premiumClients, normalClients, oneTimeClients } from "@/data/clientData";
 import { ClientTable } from "@/components/ClientTable";
 import { StatsCard } from "@/components/StatsCard";
 import { InsightsPanel } from "@/components/InsightsPanel";
-import { ChartsPanel } from "@/components/ChartsPanel";
+import { SegmentCharts } from "@/components/SegmentCharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Crown, 
@@ -13,7 +14,7 @@ import {
   TrendingUp,
   BarChart3,
   Lightbulb,
-  PieChart
+  Target
 } from "lucide-react";
 import reaLogo from "@/assets/rea_logo.jpg";
 
@@ -42,9 +43,18 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground">Invoice Masterlist 2025 Analysis</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <FileText className="h-4 w-4" />
-              <span>{stats.total.totalInvoices} invoices analyzed</span>
+            <div className="flex items-center gap-4">
+              <Link 
+                to="/remarketing" 
+                className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+              >
+                <Target className="h-4 w-4" />
+                Remarketing Actions
+              </Link>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <FileText className="h-4 w-4" />
+                <span>{stats.total.totalInvoices} invoices analyzed</span>
+              </div>
             </div>
           </div>
         </div>
@@ -137,10 +147,6 @@ const Index = () => {
               <BarChart3 className="h-4 w-4" />
               All Clients ({stats.total.count})
             </TabsTrigger>
-            <TabsTrigger value="charts" className="flex items-center gap-2 px-4 py-2.5">
-              <PieChart className="h-4 w-4" />
-              Charts
-            </TabsTrigger>
             <TabsTrigger value="insights" className="flex items-center gap-2 px-4 py-2.5">
               <Lightbulb className="h-4 w-4" />
               Insights
@@ -151,8 +157,8 @@ const Index = () => {
             <ClientTable clients={[...premiumClients, ...normalClients, ...oneTimeClients]} title="All Clients" category="all" />
           </TabsContent>
 
-          <TabsContent value="premium" className="mt-6">
-            <div className="mb-4 p-4 bg-premium/5 border border-premium/20 rounded-lg">
+          <TabsContent value="premium" className="mt-6 space-y-6">
+            <div className="p-4 bg-premium/5 border border-premium/20 rounded-lg">
               <h3 className="font-semibold text-card-foreground flex items-center gap-2">
                 <Crown className="h-5 w-5 text-premium" />
                 Premium Clients (4+ invoices)
@@ -161,11 +167,17 @@ const Index = () => {
                 These are your most valuable repeat customers. Prioritize retention campaigns and personalized service.
               </p>
             </div>
+            <SegmentCharts 
+              clients={premiumClients} 
+              category="premium" 
+              categoryColor="hsl(var(--premium))" 
+              categoryLabel="Premium" 
+            />
             <ClientTable clients={premiumClients} title="Premium Clients" category="premium" />
           </TabsContent>
 
-          <TabsContent value="normal" className="mt-6">
-            <div className="mb-4 p-4 bg-normal/5 border border-normal/20 rounded-lg">
+          <TabsContent value="normal" className="mt-6 space-y-6">
+            <div className="p-4 bg-normal/5 border border-normal/20 rounded-lg">
               <h3 className="font-semibold text-card-foreground flex items-center gap-2">
                 <Users className="h-5 w-5 text-normal" />
                 Normal Clients (2-3 invoices)
@@ -174,11 +186,17 @@ const Index = () => {
                 These clients show interest but haven't reached premium status. Target them with loyalty incentives.
               </p>
             </div>
+            <SegmentCharts 
+              clients={normalClients} 
+              category="normal" 
+              categoryColor="hsl(var(--normal))" 
+              categoryLabel="Normal" 
+            />
             <ClientTable clients={normalClients} title="Normal Clients" category="normal" />
           </TabsContent>
 
-          <TabsContent value="one-time" className="mt-6">
-            <div className="mb-4 p-4 bg-one-time/5 border border-one-time/20 rounded-lg">
+          <TabsContent value="one-time" className="mt-6 space-y-6">
+            <div className="p-4 bg-one-time/5 border border-one-time/20 rounded-lg">
               <h3 className="font-semibold text-card-foreground flex items-center gap-2">
                 <User className="h-5 w-5 text-one-time" />
                 One-Time Clients (1 invoice)
@@ -187,11 +205,13 @@ const Index = () => {
                 Focus on re-engagement campaigns. High-value one-time clients should be prioritized for conversion.
               </p>
             </div>
+            <SegmentCharts 
+              clients={oneTimeClients} 
+              category="one-time" 
+              categoryColor="hsl(var(--one-time))" 
+              categoryLabel="One-Time" 
+            />
             <ClientTable clients={oneTimeClients} title="One-Time Clients" category="one-time" />
-          </TabsContent>
-
-          <TabsContent value="charts" className="mt-6">
-            <ChartsPanel />
           </TabsContent>
 
           <TabsContent value="insights" className="mt-6">
