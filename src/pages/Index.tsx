@@ -5,6 +5,7 @@ import { StatsCard } from "@/components/StatsCard";
 import { InsightsPanel } from "@/components/InsightsPanel";
 import { SegmentCharts } from "@/components/SegmentCharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { 
   Crown, 
   User, 
@@ -14,9 +15,11 @@ import {
   TrendingUp,
   BarChart3,
   Lightbulb,
-  Target
+  Target,
+  FileDown
 } from "lucide-react";
 import reaLogo from "@/assets/rea_logo.jpg";
+import { exportClientsPDF, exportAllClientsPDF } from "@/lib/pdfExport";
 
 const Index = () => {
   const stats = getCategoryStats();
@@ -62,7 +65,7 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         {/* Overview Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
           <StatsCard
             title="Total Clients"
             value={stats.total.count}
@@ -75,6 +78,13 @@ const Index = () => {
             subtitle={`${stats.premium.totalInvoices} invoices`}
             icon={Crown}
             iconColor="text-premium"
+          />
+          <StatsCard
+            title="Normal Clients"
+            value={stats.normal.count}
+            subtitle={`${stats.normal.totalInvoices} invoices`}
+            icon={Users}
+            iconColor="text-normal"
           />
           <StatsCard
             title="One-Time Clients"
@@ -92,12 +102,34 @@ const Index = () => {
           />
         </div>
 
-        {/* Revenue Breakdown */}
+        {/* Revenue Breakdown with PDF Export */}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-foreground">Revenue Breakdown</h2>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => exportAllClientsPDF(premiumClients, normalClients, oneTimeClients, stats.premium, stats.normal, stats.oneTime)}
+            className="flex items-center gap-2"
+          >
+            <FileDown className="h-4 w-4" />
+            Export All to PDF
+          </Button>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-gradient-to-br from-premium/10 to-premium/5 rounded-xl border border-premium/20 p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <Crown className="h-5 w-5 text-premium" />
-              <h3 className="font-semibold text-card-foreground">Premium Revenue</h3>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Crown className="h-5 w-5 text-premium" />
+                <h3 className="font-semibold text-card-foreground">Premium Revenue</h3>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => exportClientsPDF(premiumClients, 'Premium Clients Report', stats.premium)}
+                className="h-8 w-8 p-0"
+              >
+                <FileDown className="h-4 w-4" />
+              </Button>
             </div>
             <p className="text-3xl font-bold text-card-foreground">{formatCurrency(stats.premium.totalAmount)}</p>
             <p className="text-sm text-muted-foreground mt-1">
@@ -105,25 +137,45 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="bg-gradient-to-br from-one-time/10 to-one-time/5 rounded-xl border border-one-time/20 p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <User className="h-5 w-5 text-one-time" />
-              <h3 className="font-semibold text-card-foreground">One-Time Revenue</h3>
-            </div>
-            <p className="text-3xl font-bold text-card-foreground">{formatCurrency(stats.oneTime.totalAmount)}</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              {((stats.oneTime.totalAmount / stats.total.totalAmount) * 100).toFixed(1)}% of total
-            </p>
-          </div>
-          
           <div className="bg-gradient-to-br from-normal/10 to-normal/5 rounded-xl border border-normal/20 p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <Users className="h-5 w-5 text-normal" />
-              <h3 className="font-semibold text-card-foreground">Normal Clients Revenue</h3>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-normal" />
+                <h3 className="font-semibold text-card-foreground">Normal Clients Revenue</h3>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => exportClientsPDF(normalClients, 'Normal Clients Report', stats.normal)}
+                className="h-8 w-8 p-0"
+              >
+                <FileDown className="h-4 w-4" />
+              </Button>
             </div>
             <p className="text-3xl font-bold text-card-foreground">{formatCurrency(stats.normal.totalAmount)}</p>
             <p className="text-sm text-muted-foreground mt-1">
               {((stats.normal.totalAmount / stats.total.totalAmount) * 100).toFixed(1)}% of total
+            </p>
+          </div>
+          
+          <div className="bg-gradient-to-br from-one-time/10 to-one-time/5 rounded-xl border border-one-time/20 p-6">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <User className="h-5 w-5 text-one-time" />
+                <h3 className="font-semibold text-card-foreground">One-Time Revenue</h3>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => exportClientsPDF(oneTimeClients, 'One-Time Clients Report', stats.oneTime)}
+                className="h-8 w-8 p-0"
+              >
+                <FileDown className="h-4 w-4" />
+              </Button>
+            </div>
+            <p className="text-3xl font-bold text-card-foreground">{formatCurrency(stats.oneTime.totalAmount)}</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              {((stats.oneTime.totalAmount / stats.total.totalAmount) * 100).toFixed(1)}% of total
             </p>
           </div>
         </div>
