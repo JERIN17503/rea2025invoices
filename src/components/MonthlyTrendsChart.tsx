@@ -1,27 +1,29 @@
-import { getMonthlyData, MonthlyData, MONTHS, getDetailedMonthlyClientData, ClientMonthlyBreakdown, getAccurateTotals } from "@/data/clientData";
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
+import { getMonthlyData, MonthlyData, getAccurateTotals } from "@/data/clientData";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   ResponsiveContainer,
   AreaChart,
   Area,
   BarChart,
   Bar,
-  ComposedChart
+  ComposedChart,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useState } from "react";
+import { forwardRef } from "react";
 import { formatCurrency, formatInteger, formatAxisValue } from "@/lib/formatters";
 import { FileText, DollarSign, Users, TrendingUp } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { loadMasterlistAggregates } from "@/lib/masterlistAggregates";
 
 interface MonthlyTrendsChartProps {
   data?: MonthlyData[];
@@ -30,35 +32,57 @@ interface MonthlyTrendsChartProps {
   showDetailedTable?: boolean;
 }
 
-export function MonthlyTrendsChart({ 
-  data, 
+export function MonthlyTrendsChart({
+  data,
   title = "Monthly Performance Analysis",
   description = "Detailed monthly breakdown of invoices, revenue, and clients",
-  showDetailedTable = true
+  showDetailedTable = true,
 }: MonthlyTrendsChartProps) {
-  const monthlyData = data || getMonthlyData();
-  
-  // Use accurate totals from actual client data (not distributed estimates)
-  const accurateTotals = getAccurateTotals();
+  const {
+    data: masterlist,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["masterlist-2025-aggregates"],
+    queryFn: loadMasterlistAggregates,
+  });
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const monthlyData: MonthlyData[] = masterlist?.monthlyData ?? data ?? getMonthlyData();
+
+  const accurateTotals = masterlist?.totals
+    ? {
+        totalRevenue: masterlist.totals.totalRevenue,
+        totalInvoices: masterlist.totals.totalInvoices,
+        avgInvoiceValue: masterlist.totals.avgInvoiceValue,
+        totalClients: masterlist.totals.totalClients,
+        premiumTotal: masterlist.totals.premiumTotal,
+        normalTotal: masterlist.totals.normalTotal,
+        oneTimeTotal: masterlist.totals.oneTimeTotal,
+      }
+    : getAccurateTotals();
+
+  const CustomTooltip = forwardRef<HTMLDivElement, any>(({ active, payload, label }, ref) => {
     if (active && payload && payload.length) {
-      const monthData = monthlyData.find(m => m.month === label);
+      const monthData = monthlyData.find((m) => m.month === label);
       return (
-        <div className="bg-card border border-border rounded-lg p-4 shadow-lg min-w-[280px]">
+        <div ref={ref} className="bg-card border border-border rounded-lg p-4 shadow-lg min-w-[280px]">
           <p className="font-semibold text-card-foreground mb-3 text-lg border-b border-border pb-2">{label} 2025</p>
           <div className="space-y-2">
             {payload.map((entry: any, index: number) => (
               <p key={index} style={{ color: entry.color }} className="text-sm flex justify-between">
                 <span>{entry.name}:</span>
-                <span className="font-medium">{entry.name.includes('Revenue') || entry.name.includes('Value') ? formatCurrency(entry.value) : formatInteger(entry.value)}</span>
+                <span className="font-medium">
+                  {entry.name.includes("Revenue") || entry.name.includes("Value")
+                    ? formatCurrency(entry.value)
+                    : formatInteger(entry.value)}
+                </span>
               </p>
             ))}
           </div>
           {monthData && (
             <div className="mt-3 pt-3 border-t border-border">
               <p className="text-xs text-muted-foreground">Top clients this month:</p>
-              {monthData.topClients.slice(0, 3).map((client, i) => (
+              {monthData.topClients.slice(0, 3).map((client: any, i: number) => (
                 <p key={i} className="text-xs text-muted-foreground truncate">
                   • {client.name}: {formatCurrency(client.revenue)}
                 </p>
@@ -69,7 +93,7 @@ export function MonthlyTrendsChart({
       );
     }
     return null;
-  };
+  });
 
   const getCategoryBadge = (category: string) => {
     switch (category) {
@@ -83,6 +107,34 @@ export function MonthlyTrendsChart({
         return null;
     }
   };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">{title}</CardTitle>
+          <CardDescription>Loading masterlist totals…</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-sm text-muted-foreground">Please wait while we tally monthly trends from the masterlist.</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">{title}</CardTitle>
+          <CardDescription>Could not load the masterlist file.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-sm text-muted-foreground">The monthly trends need the masterlist at /public/data/masterlist2025.xlsx.</div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -365,15 +417,15 @@ export function SegmentMonthlyChart({ category, categoryColor, categoryLabel, da
     clients: Math.max(acc.clients, month.clients)
   }), { revenue: 0, invoices: 0, clients: 0 });
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = forwardRef<HTMLDivElement, any>(({ active, payload, label }, ref) => {
     if (active && payload && payload.length) {
-      const monthData = data.find(m => m.month === label);
+      const monthData = data.find((m) => m.month === label);
       return (
-        <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
+        <div ref={ref} className="bg-card border border-border rounded-lg p-3 shadow-lg">
           <p className="font-semibold text-card-foreground mb-2">{label} 2025</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} style={{ color: entry.color }} className="text-sm">
-              {entry.name}: {entry.name.includes('Revenue') ? formatCurrency(entry.value) : formatInteger(entry.value)}
+              {entry.name}: {entry.name.includes("Revenue") ? formatCurrency(entry.value) : formatInteger(entry.value)}
             </p>
           ))}
           {monthData && (
@@ -386,7 +438,7 @@ export function SegmentMonthlyChart({ category, categoryColor, categoryLabel, da
       );
     }
     return null;
-  };
+  });
 
   return (
     <Card>
