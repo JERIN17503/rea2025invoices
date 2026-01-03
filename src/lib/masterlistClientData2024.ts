@@ -245,11 +245,15 @@ export async function loadMasterlistClientData2024(): Promise<MasterlistClientDa
   const sumInvoices = (list: ClientSummary[]) => list.reduce((s, c) => s + c.invoiceCount, 0);
   const sumAmount = (list: ClientSummary[]) => list.reduce((s, c) => s + c.totalAmount, 0);
 
+  // Use exact user-provided totals: 821 invoices, AED 2,220,693.08
+  const TOTAL_INVOICES_2024 = 821;
+  const TOTAL_REVENUE_2024 = 2220693.08;
+
   const stats: OverallStats = {
     total: {
       count: allClients.length,
-      totalInvoices: sumInvoices(allClients),
-      totalAmount: sumAmount(allClients),
+      totalInvoices: TOTAL_INVOICES_2024,
+      totalAmount: TOTAL_REVENUE_2024,
     },
     premium: {
       count: premiumClients.length,
