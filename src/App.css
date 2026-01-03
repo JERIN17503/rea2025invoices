@@ -36,7 +36,13 @@
 .card {
   padding: 2em;
 }
-
+/* Hide Lovable Badge */
+#lovable-badge, a[href*="lovable.dev"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
 .read-the-docs {
   color: #888;
 }
