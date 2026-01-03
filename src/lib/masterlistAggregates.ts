@@ -244,13 +244,14 @@ export async function loadMasterlistAggregates(): Promise<MasterlistAggregates> 
       return data;
     });
 
-    const totalRevenue = perMonth.reduce((s, m) => s + m.revenue, 0);
     const totalInvoices = perMonth.reduce((s, m) => s + m.invoices, 0);
     const totalClients = invoices.length ? new Set(invoices.map((i) => i.client)).size : 0;
 
+    // Use segment totals to ensure percentages add up to 100%
     const premiumTotal = perMonth.reduce((s, m) => s + m.premiumRevenue, 0);
     const normalTotal = perMonth.reduce((s, m) => s + m.normalRevenue, 0);
     const oneTimeTotal = perMonth.reduce((s, m) => s + m.oneTimeRevenue, 0);
+    const totalRevenue = premiumTotal + normalTotal + oneTimeTotal;
 
     return {
       monthlyData: perMonth,

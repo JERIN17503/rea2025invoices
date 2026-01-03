@@ -470,11 +470,12 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
 ];
 
 // Calculate totals from monthly data
-const TOTAL_REVENUE_2024 = MONTHLY_DATA_2024.reduce((s, m) => s + m.revenue, 0);
-const TOTAL_INVOICES_2024 = MONTHLY_DATA_2024.reduce((s, m) => s + m.invoices, 0);
+// Use segment totals to ensure percentages add up to 100%
 const PREMIUM_TOTAL = MONTHLY_DATA_2024.reduce((s, m) => s + m.premiumRevenue, 0);
 const NORMAL_TOTAL = MONTHLY_DATA_2024.reduce((s, m) => s + m.normalRevenue, 0);
 const ONE_TIME_TOTAL = MONTHLY_DATA_2024.reduce((s, m) => s + m.oneTimeRevenue, 0);
+const TOTAL_REVENUE_2024 = PREMIUM_TOTAL + NORMAL_TOTAL + ONE_TIME_TOTAL;
+const TOTAL_INVOICES_2024 = MONTHLY_DATA_2024.reduce((s, m) => s + m.invoices, 0);
 
 // 25 premium + 67 normal + 101 one-time = 193 clients
 const TOTAL_CLIENTS_2024 = 193;
