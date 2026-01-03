@@ -9,6 +9,7 @@ import { InsightsPanel2024 } from "@/components/InsightsPanel2024";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { loadMasterlistClientData2024 } from "@/lib/masterlistClientData2024";
+import { loadMasterlistAggregates2024 } from "@/lib/masterlistAggregates2024";
 import { formatCurrency } from "@/lib/formatters";
 import reaLogo from "@/assets/rea_logo.jpg";
 import {
@@ -218,7 +219,7 @@ const Dashboard2024 = () => {
               </h3>
               <p className="text-sm text-muted-foreground mt-1">Track revenue, client activity, and segment performance across all months of 2024.</p>
             </div>
-            <MonthlyTrendsChart year={2024} queryKey={["masterlist-2024-aggregates"]} />
+            <MonthlyTrendsChart year={2024} queryKey={["masterlist-2024-aggregates"]} loadFn={loadMasterlistAggregates2024} />
           </TabsContent>
 
           <TabsContent value="all" className="mt-6">
