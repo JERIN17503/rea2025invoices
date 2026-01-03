@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { loadMasterlistClientData2024 } from "@/lib/masterlistClientData2024";
+import { loadMasterlistAggregates2024 } from "@/lib/masterlistAggregates2024";
 import { MonthlyTrendsChart } from "@/components/MonthlyTrendsChart";
 import { TrendingUp, Target, AlertTriangle, Lightbulb, Users, DollarSign, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -97,6 +98,7 @@ export function InsightsPanel2024() {
       <MonthlyTrendsChart
         year={2024}
         queryKey={["masterlist-2024-aggregates"]}
+        loadFn={loadMasterlistAggregates2024}
         title="Monthly Revenue Trends"
         description="Revenue and client activity patterns by month"
       />
