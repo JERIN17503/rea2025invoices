@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
-import { getCategoryStats, premiumClients, normalClients, oneTimeClients, getSalesPersonStats } from "@/data/clientData";
+import { getCategoryStats, premiumClients, normalClients, oneTimeClients, getSalesPersonStats, getMonthlyData, MONTHS } from "@/data/clientData";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { exportToCSV } from "@/lib/csvExport";
+import { MonthlyTrendsChart } from "@/components/MonthlyTrendsChart";
 import { 
   Crown, 
   User, 
@@ -20,7 +21,8 @@ import {
   Clock,
   DollarSign,
   Zap,
-  Download
+  Download,
+  Calendar
 } from "lucide-react";
 import reaLogo from "@/assets/rea_logo.jpg";
 
@@ -187,6 +189,27 @@ const RemarketingActions = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Monthly Trends Overview */}
+        <Card className="mb-8">
+          <CardHeader className="border-b border-border">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/20 rounded-lg">
+                <Calendar className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <CardTitle>Monthly Performance Trends</CardTitle>
+                <CardDescription>Revenue and client activity breakdown by month</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <MonthlyTrendsChart 
+              title="2025 Monthly Overview" 
+              description="Track revenue patterns and segment performance across months"
+            />
+          </CardContent>
+        </Card>
 
         {/* Action Sections */}
         <div className="space-y-8">

@@ -4,6 +4,7 @@ import { ClientTable } from "@/components/ClientTable";
 import { StatsCard } from "@/components/StatsCard";
 import { InsightsPanel } from "@/components/InsightsPanel";
 import { SegmentCharts } from "@/components/SegmentCharts";
+import { MonthlyTrendsChart } from "@/components/MonthlyTrendsChart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { 
@@ -16,7 +17,8 @@ import {
   BarChart3,
   Lightbulb,
   Target,
-  FileDown
+  FileDown,
+  Calendar
 } from "lucide-react";
 import reaLogo from "@/assets/rea_logo.jpg";
 import { exportClientsPDF, exportAllClientsPDF } from "@/lib/pdfExport";
@@ -183,6 +185,10 @@ const Index = () => {
         {/* Main Content Tabs */}
         <Tabs defaultValue="premium" className="space-y-6">
           <TabsList className="bg-muted p-1.5 rounded-xl w-full flex flex-wrap justify-start gap-1">
+            <TabsTrigger value="monthly" className="flex items-center gap-2 px-4 py-2.5">
+              <Calendar className="h-4 w-4" />
+              Monthly Trends
+            </TabsTrigger>
             <TabsTrigger value="premium" className="flex items-center gap-2 data-[state=active]:bg-premium/20 data-[state=active]:text-premium px-4 py-2.5">
               <Crown className="h-4 w-4" />
               Premium ({stats.premium.count})
@@ -204,6 +210,19 @@ const Index = () => {
               Insights
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="monthly" className="mt-6 space-y-6">
+            <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
+              <h3 className="font-semibold text-card-foreground flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-primary" />
+                Monthly Performance Overview
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Track revenue, client activity, and segment performance across all months of 2025.
+              </p>
+            </div>
+            <MonthlyTrendsChart />
+          </TabsContent>
 
           <TabsContent value="all" className="mt-6">
             <ClientTable clients={[...premiumClients, ...normalClients, ...oneTimeClients]} title="All Clients" category="all" />
