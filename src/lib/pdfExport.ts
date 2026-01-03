@@ -333,3 +333,252 @@ export const exportAllClientsPDF = async (
 
   pdf.save(`all-clients-report-${new Date().toISOString().split('T')[0]}.pdf`);
 };
+
+interface YoYTotals {
+  totalRevenue: number;
+  totalInvoices: number;
+  totalClients: number;
+  avgInvoiceValue: number;
+  premiumTotal: number;
+  normalTotal: number;
+  oneTimeTotal: number;
+}
+
+interface MonthlyData {
+  month: string;
+  revenue: number;
+  invoices: number;
+  premiumRevenue: number;
+  normalRevenue: number;
+  oneTimeRevenue: number;
+}
+
+export const exportYoYComparisonPDF = async (
+  totals2024: YoYTotals,
+  totals2025: YoYTotals,
+  monthlyData2024: MonthlyData[],
+  monthlyData2025: MonthlyData[],
+  reportElementId?: string
+) => {
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const margin = 15;
+  let yPosition = 20;
+
+  const calcChange = (v2024: number, v2025: number) => {
+    if (v2024 === 0) return v2025 > 0 ? 100 : 0;
+    return ((v2025 - v2024) / v2024) * 100;
+  };
+
+  const formatChange = (change: number) => {
+    const sign = change > 0 ? "+" : "";
+    return `${sign}${change.toFixed(1)}%`;
+  };
+
+  // Title
+  pdf.setFontSize(22);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('Year-over-Year Comparison Report', margin, yPosition);
+  yPosition += 10;
+
+  pdf.setFontSize(12);
+  pdf.setFont('helvetica', 'normal');
+  pdf.setTextColor(100);
+  pdf.text('REA Advertising - 2024 vs 2025 Analysis', margin, yPosition);
+  yPosition += 6;
+  pdf.text(`Generated on: ${new Date().toLocaleDateString('en-GB')}`, margin, yPosition);
+  yPosition += 15;
+
+  // Key Metrics Section
+  pdf.setTextColor(0);
+  pdf.setFontSize(14);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('Key Metrics Comparison', margin, yPosition);
+  yPosition += 10;
+
+  // Table Header
+  pdf.setFontSize(10);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFillColor(30, 41, 59);
+  pdf.rect(margin, yPosition - 5, pageWidth - (margin * 2), 8, 'F');
+  pdf.setTextColor(255);
+  pdf.text('Metric', margin + 5, yPosition);
+  pdf.text('2024', margin + 70, yPosition);
+  pdf.text('2025', margin + 110, yPosition);
+  pdf.text('Change', margin + 150, yPosition);
+  yPosition += 8;
+
+  pdf.setTextColor(0);
+  pdf.setFont('helvetica', 'normal');
+
+  const metrics = [
+    { 
+      name: 'Total Revenue', 
+      v2024: formatCurrency(totals2024.totalRevenue), 
+      v2025: formatCurrency(totals2025.totalRevenue),
+      change: calcChange(totals2024.totalRevenue, totals2025.totalRevenue)
+    },
+    { 
+      name: 'Total Invoices', 
+      v2024: totals2024.totalInvoices.toString(), 
+      v2025: totals2025.totalInvoices.toString(),
+      change: calcChange(totals2024.totalInvoices, totals2025.totalInvoices)
+    },
+    { 
+      name: 'Total Clients', 
+      v2024: totals2024.totalClients.toString(), 
+      v2025: totals2025.totalClients.toString(),
+      change: calcChange(totals2024.totalClients, totals2025.totalClients)
+    },
+    { 
+      name: 'Avg Invoice Value', 
+      v2024: formatCurrency(totals2024.avgInvoiceValue), 
+      v2025: formatCurrency(totals2025.avgInvoiceValue),
+      change: calcChange(totals2024.avgInvoiceValue, totals2025.avgInvoiceValue)
+    },
+    { 
+      name: 'Premium Revenue', 
+      v2024: formatCurrency(totals2024.premiumTotal), 
+      v2025: formatCurrency(totals2025.premiumTotal),
+      change: calcChange(totals2024.premiumTotal, totals2025.premiumTotal)
+    },
+    { 
+      name: 'Normal Revenue', 
+      v2024: formatCurrency(totals2024.normalTotal), 
+      v2025: formatCurrency(totals2025.normalTotal),
+      change: calcChange(totals2024.normalTotal, totals2025.normalTotal)
+    },
+    { 
+      name: 'One-Time Revenue', 
+      v2024: formatCurrency(totals2024.oneTimeTotal), 
+      v2025: formatCurrency(totals2025.oneTimeTotal),
+      change: calcChange(totals2024.oneTimeTotal, totals2025.oneTimeTotal)
+    },
+  ];
+
+  metrics.forEach((metric, index) => {
+    if (index % 2 === 0) {
+      pdf.setFillColor(248, 250, 252);
+      pdf.rect(margin, yPosition - 4, pageWidth - (margin * 2), 7, 'F');
+    }
+    
+    pdf.setFont('helvetica', 'normal');
+    pdf.text(metric.name, margin + 5, yPosition);
+    pdf.text(metric.v2024, margin + 70, yPosition);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(metric.v2025, margin + 110, yPosition);
+    
+    // Color the change
+    if (metric.change > 0) {
+      pdf.setTextColor(34, 197, 94);
+    } else if (metric.change < 0) {
+      pdf.setTextColor(239, 68, 68);
+    } else {
+      pdf.setTextColor(100);
+    }
+    pdf.text(formatChange(metric.change), margin + 150, yPosition);
+    pdf.setTextColor(0);
+    
+    yPosition += 7;
+  });
+
+  yPosition += 10;
+
+  // Monthly Comparison Table
+  pdf.setFontSize(14);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text('Monthly Revenue Comparison', margin, yPosition);
+  yPosition += 10;
+
+  // Monthly Table Header
+  pdf.setFontSize(9);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFillColor(30, 41, 59);
+  pdf.rect(margin, yPosition - 5, pageWidth - (margin * 2), 8, 'F');
+  pdf.setTextColor(255);
+  pdf.text('Month', margin + 5, yPosition);
+  pdf.text('2024 Revenue', margin + 35, yPosition);
+  pdf.text('2025 Revenue', margin + 70, yPosition);
+  pdf.text('Change', margin + 105, yPosition);
+  pdf.text('2024 Invoices', margin + 130, yPosition);
+  pdf.text('2025 Invoices', margin + 160, yPosition);
+  yPosition += 8;
+
+  pdf.setTextColor(0);
+  pdf.setFont('helvetica', 'normal');
+
+  monthlyData2024.forEach((m2024, idx) => {
+    const m2025 = monthlyData2025[idx] || { revenue: 0, invoices: 0 };
+    const change = calcChange(m2024.revenue, m2025.revenue);
+    
+    if (idx % 2 === 0) {
+      pdf.setFillColor(248, 250, 252);
+      pdf.rect(margin, yPosition - 4, pageWidth - (margin * 2), 6, 'F');
+    }
+    
+    pdf.text(m2024.month.slice(0, 3), margin + 5, yPosition);
+    pdf.text(formatCurrency(m2024.revenue), margin + 35, yPosition);
+    pdf.text(formatCurrency(m2025.revenue), margin + 70, yPosition);
+    
+    if (change > 0) {
+      pdf.setTextColor(34, 197, 94);
+    } else if (change < 0) {
+      pdf.setTextColor(239, 68, 68);
+    } else {
+      pdf.setTextColor(100);
+    }
+    pdf.text(formatChange(change), margin + 105, yPosition);
+    pdf.setTextColor(0);
+    
+    pdf.text(m2024.invoices.toString(), margin + 130, yPosition);
+    pdf.text(m2025.invoices.toString(), margin + 160, yPosition);
+    
+    yPosition += 6;
+  });
+
+  // Capture charts if element exists
+  if (reportElementId) {
+    const reportElement = document.getElementById(reportElementId);
+    if (reportElement) {
+      try {
+        pdf.addPage();
+        yPosition = margin;
+        
+        pdf.setFontSize(14);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text('Visual Charts', margin, yPosition);
+        yPosition += 10;
+
+        const canvas = await html2canvas(reportElement, {
+          scale: 2,
+          backgroundColor: '#ffffff',
+          logging: false,
+          useCORS: true,
+        });
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = pageWidth - (margin * 2);
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        pdf.addImage(imgData, 'PNG', margin, yPosition, imgWidth, Math.min(imgHeight, 250));
+      } catch (error) {
+        console.error('Error capturing charts:', error);
+      }
+    }
+  }
+
+  // Footer on all pages
+  const pageCount = pdf.internal.pages.length - 1;
+  for (let i = 1; i <= pageCount; i++) {
+    pdf.setPage(i);
+    pdf.setFontSize(8);
+    pdf.setTextColor(150);
+    pdf.text(
+      `Page ${i} of ${pageCount} | REA Advertising YoY Comparison Report`,
+      pageWidth / 2,
+      pdf.internal.pageSize.getHeight() - 10,
+      { align: 'center' }
+    );
+  }
+
+  pdf.save(`yoy-comparison-report-${new Date().toISOString().split('T')[0]}.pdf`);
+};
