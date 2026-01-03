@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { loadMasterlistAggregates } from "@/lib/masterlistAggregates";
 import { loadMasterlistAggregates2024 } from "@/lib/masterlistAggregates2024";
 import { formatCurrency } from "@/lib/formatters";
+import { exportYoYComparisonPDF } from "@/lib/pdfExport";
 import reaLogo from "@/assets/rea_logo.jpg";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import {
   Crown,
   User,
@@ -16,6 +20,8 @@ import {
   DollarSign,
   FileText,
   BarChart3,
+  FileDown,
+  Loader2,
 } from "lucide-react";
 import {
   LineChart,
@@ -32,6 +38,9 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 const YoYComparison = () => {
+  const [isExporting, setIsExporting] = useState(false);
+  const { toast } = useToast();
+
   const { data: data2024, isLoading: loading2024 } = useQuery({
     queryKey: ["masterlist-2024-aggregates", "v6"],
     queryFn: loadMasterlistAggregates2024,
@@ -142,6 +151,31 @@ const YoYComparison = () => {
     return null;
   };
 
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      await exportYoYComparisonPDF(
+        t2024,
+        t2025,
+        data2024.monthlyData,
+        data2025.monthlyData,
+        'yoy-charts-section'
+      );
+      toast({
+        title: "PDF Exported",
+        description: "Year-over-Year comparison report has been downloaded.",
+      });
+    } catch (error) {
+      toast({
+        title: "Export Failed",
+        description: "Failed to generate PDF. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b border-border sticky top-0 z-50">
@@ -155,6 +189,21 @@ const YoYComparison = () => {
               </div>
             </div>
             <div className="flex items-center gap-2 sm:gap-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExportPDF}
+                disabled={isExporting}
+                className="flex items-center gap-1.5 text-xs sm:text-sm"
+              >
+                {isExporting ? (
+                  <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />
+                ) : (
+                  <FileDown className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                )}
+                <span className="hidden sm:inline">Export PDF</span>
+                <span className="sm:hidden">PDF</span>
+              </Button>
               <Link
                 to="/2024"
                 className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors text-xs sm:text-sm font-medium"
@@ -312,6 +361,7 @@ const YoYComparison = () => {
         </div>
 
         {/* Monthly Revenue Comparison Chart */}
+        <div id="yoy-charts-section">
         <Card className="mb-4 sm:mb-8">
           <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-2">
             <CardTitle className="text-base sm:text-lg">Monthly Revenue Comparison</CardTitle>
@@ -414,6 +464,7 @@ const YoYComparison = () => {
               </ResponsiveContainer>
             </CardContent>
           </Card>
+        </div>
         </div>
 
         {/* Summary Table */}
