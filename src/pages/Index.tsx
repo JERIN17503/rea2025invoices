@@ -5,6 +5,7 @@ import { StatsCard } from "@/components/StatsCard";
 import { InsightsPanel } from "@/components/InsightsPanel";
 import { SegmentCharts } from "@/components/SegmentCharts";
 import { MonthlyTrendsChart } from "@/components/MonthlyTrendsChart";
+import { ExportDialog, ExportAllDialog } from "@/components/ExportDialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { 
@@ -21,7 +22,6 @@ import {
   Calendar
 } from "lucide-react";
 import reaLogo from "@/assets/rea_logo.jpg";
-import { exportClientsPDF, exportAllClientsPDF } from "@/lib/pdfExport";
 
 const Index = () => {
   const stats = getCategoryStats();
@@ -104,18 +104,23 @@ const Index = () => {
           />
         </div>
 
-        {/* Revenue Breakdown with PDF Export */}
+        {/* Revenue Breakdown with Export Options */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-foreground">Revenue Breakdown</h2>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => exportAllClientsPDF(premiumClients, normalClients, oneTimeClients, stats.premium, stats.normal, stats.oneTime)}
-            className="flex items-center gap-2"
-          >
-            <FileDown className="h-4 w-4" />
-            Export All to PDF
-          </Button>
+          <ExportAllDialog
+            premiumClients={premiumClients}
+            normalClients={normalClients}
+            oneTimeClients={oneTimeClients}
+            premiumStats={stats.premium}
+            normalStats={stats.normal}
+            oneTimeStats={stats.oneTime}
+            trigger={
+              <Button variant="outline" size="sm" className="flex items-center gap-2">
+                <FileDown className="h-4 w-4" />
+                Export All
+              </Button>
+            }
+          />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-gradient-to-br from-premium/10 to-premium/5 rounded-xl border border-premium/20 p-6">
@@ -124,14 +129,12 @@ const Index = () => {
                 <Crown className="h-5 w-5 text-premium" />
                 <h3 className="font-semibold text-card-foreground">Premium Revenue</h3>
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => exportClientsPDF(premiumClients, 'Premium Clients Report', stats.premium)}
-                className="h-8 w-8 p-0"
-              >
-                <FileDown className="h-4 w-4" />
-              </Button>
+              <ExportDialog
+                clients={premiumClients}
+                title="Premium Clients Report"
+                category="Premium"
+                stats={stats.premium}
+              />
             </div>
             <p className="text-3xl font-bold text-card-foreground">{formatCurrency(stats.premium.totalAmount)}</p>
             <p className="text-sm text-muted-foreground mt-1">
@@ -145,14 +148,12 @@ const Index = () => {
                 <Users className="h-5 w-5 text-normal" />
                 <h3 className="font-semibold text-card-foreground">Normal Clients Revenue</h3>
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => exportClientsPDF(normalClients, 'Normal Clients Report', stats.normal)}
-                className="h-8 w-8 p-0"
-              >
-                <FileDown className="h-4 w-4" />
-              </Button>
+              <ExportDialog
+                clients={normalClients}
+                title="Normal Clients Report"
+                category="Normal"
+                stats={stats.normal}
+              />
             </div>
             <p className="text-3xl font-bold text-card-foreground">{formatCurrency(stats.normal.totalAmount)}</p>
             <p className="text-sm text-muted-foreground mt-1">
@@ -166,14 +167,12 @@ const Index = () => {
                 <User className="h-5 w-5 text-one-time" />
                 <h3 className="font-semibold text-card-foreground">One-Time Revenue</h3>
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => exportClientsPDF(oneTimeClients, 'One-Time Clients Report', stats.oneTime)}
-                className="h-8 w-8 p-0"
-              >
-                <FileDown className="h-4 w-4" />
-              </Button>
+              <ExportDialog
+                clients={oneTimeClients}
+                title="One-Time Clients Report"
+                category="One-Time"
+                stats={stats.oneTime}
+              />
             </div>
             <p className="text-3xl font-bold text-card-foreground">{formatCurrency(stats.oneTime.totalAmount)}</p>
             <p className="text-sm text-muted-foreground mt-1">
