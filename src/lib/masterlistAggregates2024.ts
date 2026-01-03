@@ -31,7 +31,13 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 18,
     oneTimeClients: 11,
     avgInvoiceValue: 161513 / 75,
-    topClients: [],
+    topClients: [
+      { name: "Dunecrest School", revenue: 19194, invoices: 2, category: "premium" as const },
+      { name: "Navitas / Murdoch", revenue: 10803, invoices: 3, category: "premium" as const },
+      { name: "Gulftainer Company", revenue: 10000, invoices: 1, category: "premium" as const },
+      { name: "Stellar Advertising", revenue: 9650, invoices: 8, category: "premium" as const },
+      { name: "Trane BVBA", revenue: 6380, invoices: 4, category: "premium" as const },
+    ],
   },
   {
     month: "February",
@@ -49,7 +55,13 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 12,
     oneTimeClients: 8,
     avgInvoiceValue: 267652 / 61,
-    topClients: [],
+    topClients: [
+      { name: "IDP Education", revenue: 165011, invoices: 6, category: "premium" as const },
+      { name: "Stellar Advertising", revenue: 16016, invoices: 5, category: "premium" as const },
+      { name: "Continental Middle East", revenue: 3835, invoices: 2, category: "premium" as const },
+      { name: "Trane BVBA", revenue: 3000, invoices: 2, category: "premium" as const },
+      { name: "Aurantius Real Estate", revenue: 2410, invoices: 2, category: "premium" as const },
+    ],
   },
   {
     month: "March",
@@ -67,7 +79,13 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 8,
     oneTimeClients: 8,
     avgInvoiceValue: 124056 / 60,
-    topClients: [],
+    topClients: [
+      { name: "GrokGlobal Services", revenue: 22178, invoices: 3, category: "premium" as const },
+      { name: "Stellar Advertising", revenue: 18431, invoices: 6, category: "premium" as const },
+      { name: "Navitas / Murdoch", revenue: 12395, invoices: 4, category: "premium" as const },
+      { name: "Lloyds Energy DMCC", revenue: 9475, invoices: 2, category: "premium" as const },
+      { name: "Dubai Academic Health", revenue: 6920, invoices: 2, category: "premium" as const },
+    ],
   },
   {
     month: "April",
@@ -85,7 +103,13 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 10,
     oneTimeClients: 5,
     avgInvoiceValue: 94044 / 43,
-    topClients: [],
+    topClients: [
+      { name: "Stellar Advertising", revenue: 9871, invoices: 4, category: "premium" as const },
+      { name: "Navitas / Murdoch", revenue: 4669, invoices: 2, category: "premium" as const },
+      { name: "IDP Education", revenue: 4197, invoices: 2, category: "premium" as const },
+      { name: "Byyu Gift Trading", revenue: 4225, invoices: 2, category: "premium" as const },
+      { name: "Trane BVBA", revenue: 1250, invoices: 1, category: "premium" as const },
+    ],
   },
   {
     month: "May",
@@ -103,7 +127,13 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 14,
     oneTimeClients: 5,
     avgInvoiceValue: 132558 / 91,
-    topClients: [],
+    topClients: [
+      { name: "Stellar Advertising", revenue: 20166, invoices: 8, category: "premium" as const },
+      { name: "Navitas / Murdoch", revenue: 18700, invoices: 5, category: "premium" as const },
+      { name: "IDP Education", revenue: 16716, invoices: 6, category: "premium" as const },
+      { name: "Dubai Academic Health", revenue: 12375, invoices: 3, category: "premium" as const },
+      { name: "Tappy Toes Nursery", revenue: 7425, invoices: 2, category: "premium" as const },
+    ],
   },
   {
     month: "June",
@@ -121,7 +151,13 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 10,
     oneTimeClients: 4,
     avgInvoiceValue: 278942 / 65,
-    topClients: [],
+    topClients: [
+      { name: "Stellar Advertising", revenue: 76628, invoices: 12, category: "premium" as const },
+      { name: "Navitas / Murdoch", revenue: 35008, invoices: 6, category: "premium" as const },
+      { name: "Dubai Academic Health", revenue: 24338, invoices: 4, category: "premium" as const },
+      { name: "Dunecrest School", revenue: 14110, invoices: 2, category: "premium" as const },
+      { name: "M E A D Medical", revenue: 10070, invoices: 3, category: "premium" as const },
+    ],
   },
   {
     month: "July",
@@ -139,7 +175,13 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 10,
     oneTimeClients: 9,
     avgInvoiceValue: 115258 / 65,
-    topClients: [],
+    topClients: [
+      { name: "Stellar Advertising", revenue: 17208, invoices: 6, category: "premium" as const },
+      { name: "IDP Education", revenue: 6260, invoices: 3, category: "premium" as const },
+      { name: "Continental Middle East", revenue: 6209, invoices: 2, category: "premium" as const },
+      { name: "Byyu Gift Trading", revenue: 5935, invoices: 2, category: "premium" as const },
+      { name: "Trane BVBA", revenue: 5129, invoices: 3, category: "premium" as const },
+    ],
   },
   {
     month: "August",
@@ -157,7 +199,13 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 12,
     oneTimeClients: 9,
     avgInvoiceValue: 256551 / 74,
-    topClients: [],
+    topClients: [
+      { name: "Stellar Advertising", revenue: 80215, invoices: 10, category: "premium" as const },
+      { name: "Continental Middle East", revenue: 27440, invoices: 4, category: "premium" as const },
+      { name: "Navitas / Murdoch", revenue: 23476, invoices: 5, category: "premium" as const },
+      { name: "IDP Education", revenue: 20926, invoices: 4, category: "premium" as const },
+      { name: "GrokGlobal Services", revenue: 15915, invoices: 3, category: "premium" as const },
+    ],
   },
   {
     month: "September",
@@ -175,7 +223,13 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 14,
     oneTimeClients: 11,
     avgInvoiceValue: 305716 / 81,
-    topClients: [],
+    topClients: [
+      { name: "IDP Education", revenue: 103030, invoices: 8, category: "premium" as const },
+      { name: "Navitas / Murdoch", revenue: 63751, invoices: 6, category: "premium" as const },
+      { name: "Stellar Advertising", revenue: 21644, invoices: 5, category: "premium" as const },
+      { name: "Continental Middle East", revenue: 18375, invoices: 3, category: "premium" as const },
+      { name: "GrokGlobal Services", revenue: 11795, invoices: 2, category: "premium" as const },
+    ],
   },
   {
     month: "October",
@@ -193,7 +247,13 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 14,
     oneTimeClients: 14,
     avgInvoiceValue: 144394 / 81,
-    topClients: [],
+    topClients: [
+      { name: "GrokGlobal Services", revenue: 12557, invoices: 3, category: "premium" as const },
+      { name: "IDP Education", revenue: 11308, invoices: 4, category: "premium" as const },
+      { name: "Continental Middle East", revenue: 11172, invoices: 2, category: "premium" as const },
+      { name: "Stellar Advertising", revenue: 9762, invoices: 4, category: "premium" as const },
+      { name: "Navitas / Murdoch", revenue: 6427, invoices: 3, category: "premium" as const },
+    ],
   },
   {
     month: "November",
@@ -211,7 +271,13 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 14,
     oneTimeClients: 9,
     avgInvoiceValue: 188944 / 71,
-    topClients: [],
+    topClients: [
+      { name: "Navitas / Murdoch", revenue: 41883, invoices: 6, category: "premium" as const },
+      { name: "Dubai Academic Health", revenue: 22720, invoices: 3, category: "premium" as const },
+      { name: "IDP Education", revenue: 15176, invoices: 4, category: "premium" as const },
+      { name: "Gulftainer Company", revenue: 14292, invoices: 2, category: "premium" as const },
+      { name: "Trane BVBA", revenue: 7770, invoices: 3, category: "premium" as const },
+    ],
   },
   {
     month: "December",
@@ -229,7 +295,13 @@ const MONTHLY_DATA_2024: MonthlyData[] = [
     normalClients: 12,
     oneTimeClients: 8,
     avgInvoiceValue: 143383 / 52,
-    topClients: [],
+    topClients: [
+      { name: "Gulftainer Company", revenue: 13400, invoices: 2, category: "premium" as const },
+      { name: "IDP Education", revenue: 12032, invoices: 3, category: "premium" as const },
+      { name: "Navitas / Murdoch", revenue: 9772, invoices: 4, category: "premium" as const },
+      { name: "Tappy Toes Nursery", revenue: 9405, invoices: 2, category: "premium" as const },
+      { name: "ANB Automobiles", revenue: 8600, invoices: 2, category: "premium" as const },
+    ],
   },
 ];
 
