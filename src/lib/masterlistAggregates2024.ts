@@ -42,17 +42,96 @@ const PREMIUM_CLIENTS_MONTHLY = [
   { name: "Indo Tausch Trading", monthly: [0, 420, 185, 0, 420, 0, 125, 210, 0, 125, 0, 0], total: 1485 },
 ];
 
+// Normal clients monthly revenue breakdown (from user spreadsheet)
+const NORMAL_CLIENTS_MONTHLY = [
+  { name: "Al Jalila Foundation", monthly: [0, 0, 0, 0, 0, 11142, 0, 13800, 0, 38890, 0, 0], total: 50032 },
+  { name: "MSB Private School", monthly: [0, 0, 0, 0, 0, 45667, 0, 0, 0, 2255, 0, 0], total: 47922 },
+  { name: "DHR MENA FZ-LLC", monthly: [0, 0, 0, 29332, 0, 0, 0, 0, 0, 0, 1348, 0], total: 30680 },
+  { name: "Ducon Industries", monthly: [0, 0, 0, 0, 0, 0, 24876, 2250, 0, 0, 0, 0], total: 27126 },
+  { name: "PLUS971 CYBER", monthly: [0, 0, 0, 24100, 0, 0, 0, 0, 0, 0, 0, 0], total: 24100 },
+  { name: "Azalee Flower", monthly: [0, 0, 0, 0, 8385, 0, 0, 0, 0, 0, 0, 11540], total: 19925 },
+  { name: "CACOGES", monthly: [0, 0, 0, 2850, 0, 0, 0, 0, 3410, 0, 0, 12312], total: 18572 },
+  { name: "Al Tayer Insignia", monthly: [0, 10965, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7200], total: 18165 },
+  { name: "BorgRollsWarner", monthly: [14375, 0, 0, 0, 0, 0, 3737, 0, 0, 0, 0, 0], total: 18112 },
+  { name: "Radiometer Medical", monthly: [14678, 0, 0, 325, 0, 0, 0, 0, 0, 0, 0, 0], total: 15003 },
+  { name: "Regent Institute", monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 550, 684, 13590], total: 14824 },
+  { name: "Gulftainer (Iraq)", monthly: [0, 0, 12626, 0, 1240, 0, 0, 195, 0, 0, 0, 0], total: 14061 },
+  { name: "Krishna International", monthly: [0, 13000, 0, 0, 0, 0, 0, 0, 0, 570, 0, 0], total: 13570 },
+  { name: "Sea Centre Shipping", monthly: [3950, 0, 0, 1050, 190, 0, 0, 0, 0, 1748, 5520, 0], total: 12458 },
+  { name: "CHINT MIDDLE EAST", monthly: [0, 0, 0, 0, 0, 0, 2032, 0, 9950, 0, 0, 0], total: 11982 },
+  { name: "TETR College", monthly: [0, 0, 0, 0, 11490, 0, 0, 0, 0, 0, 0, 0], total: 11490 },
+  { name: "MAERSK LOGISTICS", monthly: [0, 0, 0, 1205, 0, 4000, 0, 0, 0, 0, 4400, 0], total: 9605 },
+  { name: "PMMUE Eduservices", monthly: [0, 0, 0, 0, 1183, 0, 0, 0, 8304, 0, 0, 0], total: 9487 },
+  { name: "GRAND STAR", monthly: [8360, 0, 0, 0, 0, 0, 0, 675, 0, 0, 0, 0], total: 9035 },
+  { name: "MAV Access LLC", monthly: [0, 0, 0, 0, 0, 0, 2750, 0, 0, 4290, 1543, 0], total: 8583 },
+  { name: "JUBAILI BROS", monthly: [5975, 0, 0, 0, 1612, 0, 0, 0, 0, 0, 0, 0], total: 7588 },
+  { name: "Tristar Transport", monthly: [1140, 0, 0, 6000, 0, 0, 0, 0, 0, 0, 0, 0], total: 7140 },
+  { name: "AL RASHED UNITED", monthly: [0, 3490, 0, 0, 0, 0, 1395, 0, 0, 1785, 0, 0], total: 6670 },
+  { name: "Pacific Link", monthly: [0, 0, 6625, 0, 0, 0, 0, 0, 0, 0, 0, 0], total: 6625 },
+  { name: "Applus Technical", monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6460], total: 6460 },
+  { name: "BECKMAN COULTER", monthly: [0, 0, 0, 0, 2174, 0, 0, 0, 0, 0, 3884, 0], total: 6058 },
+  { name: "A-Technologies", monthly: [6050, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], total: 6050 },
+  { name: "VISIONARY FURNITURE", monthly: [5373, 0, 0, 0, 218, 0, 0, 0, 385, 0, 0, 0], total: 5976 },
+  { name: "E V OFFSHORE", monthly: [0, 1400, 0, 0, 944, 0, 0, 2796, 0, 675, 0, 0], total: 5814 },
+  { name: "PHARMAPAL DRUG", monthly: [5781, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], total: 5781 },
+  { name: "Logic Utilities", monthly: [4252, 0, 0, 0, 0, 0, 700, 0, 0, 0, 0, 0], total: 4952 },
+  { name: "Eternal Home", monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 150, 4445], total: 4595 },
+  { name: "Al Naser International", monthly: [0, 3150, 0, 0, 0, 485, 288, 650, 0, 0, 0, 0], total: 4572 },
+  { name: "Ecotag", monthly: [0, 0, 0, 0, 286, 0, 0, 0, 0, 3988, 0, 0], total: 4273 },
+  { name: "AUSTRAL INTERNATIONAL", monthly: [745, 3150, 0, 0, 0, 0, 288, 0, 0, 0, 0, 0], total: 4182 },
+  { name: "Momentum Logistics", monthly: [0, 0, 0, 0, 0, 0, 0, 0, 682, 118, 3150, 0], total: 3950 },
+  { name: "VL MEA Marketing", monthly: [0, 0, 0, 0, 0, 0, 0, 0, 2982, 0, 925, 0], total: 3908 },
+  { name: "Waterline Freight", monthly: [0, 0, 0, 0, 0, 0, 1195, 2368, 0, 0, 0, 0], total: 3562 },
+  { name: "Aram Precious Metals", monthly: [250, 3150, 0, 0, 85, 0, 0, 0, 0, 0, 0, 0], total: 3485 },
+  { name: "Shory Technology", monthly: [150, 915, 0, 0, 0, 0, 0, 0, 0, 1670, 564, 0], total: 3299 },
+  { name: "MIRA REAL ESTATE", monthly: [0, 3150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], total: 3150 },
+  { name: "IBM Global", monthly: [0, 0, 0, 0, 0, 0, 333, 0, 2150, 0, 550, 0], total: 3033 },
+  { name: "August Real Estate", monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2412, 0], total: 2412 },
+  { name: "Global Connect", monthly: [120, 190, 0, 0, 1145, 820, 0, 0, 0, 0, 0, 0], total: 2275 },
+  { name: "Crescent Real Estate", monthly: [0, 1920, 0, 0, 0, 0, 0, 0, 0, 288, 0, 0], total: 2208 },
+  { name: "Orthopro Clinic", monthly: [525, 0, 0, 0, 0, 0, 0, 0, 475, 1100, 0, 0], total: 2100 },
+  { name: "EMIRATES UNIVERSAL", monthly: [1315, 0, 0, 0, 450, 0, 0, 0, 0, 0, 0, 0], total: 1765 },
+  { name: "Axis Workshop", monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 710, 0, 1045], total: 1755 },
+  { name: "The Woolwich Institute", monthly: [0, 0, 405, 0, 0, 735, 0, 0, 0, 438, 0, 0], total: 1578 },
+  { name: "Symbiosis International", monthly: [0, 0, 0, 0, 0, 0, 0, 0, 1510, 0, 0, 0], total: 1510 },
+  { name: "Mr Sanup", monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1486], total: 1486 },
+  { name: "SPH Global", monthly: [1250, 0, 0, 0, 0, 210, 0, 0, 0, 0, 0, 0], total: 1460 },
+  { name: "KOTUG MIDDLE EAST", monthly: [0, 0, 0, 1167, 250, 0, 0, 0, 0, 0, 0, 0], total: 1417 },
+  { name: "Career Tree", monthly: [0, 0, 0, 0, 0, 0, 0, 175, 0, 0, 75, 1028], total: 1278 },
+  { name: "Enara Properties", monthly: [95, 0, 0, 0, 0, 0, 0, 785, 225, 0, 0, 0], total: 1105 },
+  { name: "One Blue Clover", monthly: [0, 525, 550, 0, 0, 0, 0, 0, 0, 0, 0, 0], total: 1075 },
+  { name: "RIF TRUST", monthly: [380, 0, 0, 0, 0, 0, 0, 0, 0, 0, 675, 0], total: 1055 },
+  { name: "Lane Community College", monthly: [0, 140, 0, 0, 0, 0, 0, 0, 0, 875, 0, 0], total: 1015 },
+  { name: "Kaizen Business", monthly: [0, 0, 0, 0, 0, 285, 0, 688, 0, 0, 0, 0], total: 972 },
+  { name: "The Luxury Real Estate", monthly: [0, 0, 0, 0, 0, 0, 0, 951, 0, 0, 0, 0], total: 951 },
+  { name: "Gardner Denver", monthly: [0, 0, 0, 0, 0, 235, 0, 0, 0, 0, 470, 0], total: 705 },
+  { name: "SPECIALISED SPORTS", monthly: [0, 625, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], total: 625 },
+  { name: "Aurantius Real Estate", monthly: [0, 0, 0, 0, 0, 0, 0, 0, 450, 0, 0, 0], total: 450 },
+  { name: "Aplus Global", monthly: [0, 0, 0, 203, 195, 0, 0, 0, 0, 0, 0, 0], total: 398 },
+  { name: "LAYAN TRADING", monthly: [200, 0, 0, 0, 85, 0, 0, 0, 0, 0, 0, 0], total: 285 },
+];
+
 // Generate topClients for each month (all premium clients with revenue > 0)
 function getTopClientsForMonth(monthIndex: number) {
-  return PREMIUM_CLIENTS_MONTHLY
+  const premiumClients = PREMIUM_CLIENTS_MONTHLY
     .filter(c => c.monthly[monthIndex] > 0)
     .map(c => ({
       name: c.name,
       revenue: c.monthly[monthIndex],
-      invoices: Math.max(1, Math.round(c.monthly[monthIndex] / 2500)), // estimate
+      invoices: Math.max(1, Math.round(c.monthly[monthIndex] / 2500)),
       category: "premium" as const,
-    }))
-    .sort((a, b) => b.revenue - a.revenue);
+    }));
+
+  const normalClients = NORMAL_CLIENTS_MONTHLY
+    .filter(c => c.monthly[monthIndex] > 0)
+    .map(c => ({
+      name: c.name,
+      revenue: c.monthly[monthIndex],
+      invoices: Math.max(1, Math.round(c.monthly[monthIndex] / 2500)),
+      category: "normal" as const,
+    }));
+
+  return [...premiumClients, ...normalClients].sort((a, b) => b.revenue - a.revenue);
 }
 
 // ========== EXACT 2024 MONTHLY DATA (from user-provided spreadsheets) ==========
@@ -285,8 +364,9 @@ const ONE_TIME_TOTAL = MONTHLY_DATA_2024.reduce((s, m) => s + m.oneTimeRevenue, 
 // 25 premium + 67 normal + 101 one-time = 193 clients
 const TOTAL_CLIENTS_2024 = 193;
 
-// Export premium clients monthly data for use in other components
+// Export clients monthly data for use in other components
 export const PREMIUM_CLIENTS_MONTHLY_2024 = PREMIUM_CLIENTS_MONTHLY;
+export const NORMAL_CLIENTS_MONTHLY_2024 = NORMAL_CLIENTS_MONTHLY;
 
 export async function loadMasterlistAggregates2024(): Promise<MasterlistAggregates2024> {
   return {
