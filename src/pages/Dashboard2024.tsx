@@ -85,6 +85,13 @@ const Dashboard2024 = () => {
                 2025
               </Link>
               <Link
+                to="/2023"
+                className="flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors text-xs sm:text-sm font-medium whitespace-nowrap"
+              >
+                <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                2023
+              </Link>
+              <Link
                 to="/yoy"
                 className="flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/80 transition-colors text-xs sm:text-sm font-medium whitespace-nowrap"
               >
