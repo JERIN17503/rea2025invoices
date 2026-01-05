@@ -358,13 +358,14 @@ const AllClientsOverview = () => {
                 <Crown className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-lg">Top H1 Business Contributors</CardTitle>
+                <CardTitle className="text-lg">Top 30 H1 Business Contributors</CardTitle>
                 <CardDescription className="text-sm">Clients who gave most business in Q1+Q2 (Jan-Jun) across all 4 years</CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="p-4 pt-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+            {/* Top 5 Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
               {data.clients
                 .filter((c) => c.h1Total > 0)
                 .sort((a, b) => b.h1Total - a.h1Total)
@@ -393,6 +394,43 @@ const AllClientsOverview = () => {
                   </div>
                 ))}
             </div>
+            
+            {/* Ranks 6-30 Table */}
+            <div className="border rounded-lg overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/50">
+                    <TableHead className="w-12 text-center">#</TableHead>
+                    <TableHead>Client Name</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead className="text-center">Years</TableHead>
+                    <TableHead className="text-right">H1 Revenue (Q1+Q2)</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data.clients
+                    .filter((c) => c.h1Total > 0)
+                    .sort((a, b) => b.h1Total - a.h1Total)
+                    .slice(5, 30)
+                    .map((client, idx) => (
+                      <TableRow key={client.name} className="hover:bg-muted/30">
+                        <TableCell className="text-center font-semibold text-muted-foreground">{idx + 6}</TableCell>
+                        <TableCell className="font-medium truncate max-w-[200px]">{client.name}</TableCell>
+                        <TableCell>{getCategoryBadge(client.latestCategory)}</TableCell>
+                        <TableCell className="text-center">
+                          <div className="flex gap-0.5 justify-center">
+                            {client.yearsActive.map((y) => (
+                              <Badge key={y} variant="outline" className="text-[9px] px-1 py-0">{y}</Badge>
+                            ))}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right font-semibold text-primary">{formatCurrency(client.h1Total)}</TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </div>
+            
             <div className="mt-4 pt-3 border-t flex items-center justify-between text-sm">
               <p className="text-muted-foreground">
                 These clients contributed the most during the first half of the year (January-June) across 2022-2025
@@ -400,13 +438,10 @@ const AllClientsOverview = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={() => {
-                  setSortField("h1Total");
-                  setSortDirection("desc");
-                  setQuarterFilter("h1-top");
-                }}
+                onClick={handleExport}
               >
-                View All H1 Rankings
+                <Download className="h-4 w-4 mr-2" />
+                Export All
               </Button>
             </div>
           </CardContent>
