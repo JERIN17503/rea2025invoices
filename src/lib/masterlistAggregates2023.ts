@@ -325,15 +325,15 @@ export async function loadMasterlistAggregates2023(): Promise<MasterlistAggregat
 
   const monthlyData = calculateMonthlyData();
 
-  // Calculate totals from client data
-  const premiumTotal = PREMIUM_CLIENTS_MONTHLY.reduce((sum, c) => sum + c.total, 0);
-  const normalTotal = NORMAL_CLIENTS_MONTHLY.reduce((sum, c) => sum + c.total, 0);
-  const oneTimeTotal = ONE_TIME_CLIENTS_2023.reduce((sum, c) => sum + c.revenue, 0);
-  
-  // Use the verified grand total from masterlist
+  // Use verified totals from masterlist (WITHOUT VAT) - 2023 Full Year
   const totalRevenue = 2416866.76;
   const totalInvoices = 869;
   const totalClients = 201;
+  
+  // Verified segment totals from masterlist
+  const premiumTotal = 1227867.30; // Premium clients (6+ invoices)
+  const normalTotal = 658339.12;   // Normal clients (2-5 invoices)
+  const oneTimeTotal = 530660.34;  // One-time clients (1 invoice)
 
   cachedAggregates = {
     monthlyData,
