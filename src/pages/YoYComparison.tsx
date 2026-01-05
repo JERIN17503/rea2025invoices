@@ -239,7 +239,7 @@ const YoYComparison = () => {
       </header>
 
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
-        {/* Key Metrics - Latest YoY (2024 vs 2025) */}
+        {/* Key Metrics - All Years (2022-2025) */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-8">
           <Card>
             <CardContent className="p-3 sm:pt-6 sm:px-6">
@@ -254,14 +254,12 @@ const YoYComparison = () => {
                 </div>
               </div>
               <div className="space-y-1">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">2024</span>
-                  <span className="text-sm sm:text-lg font-bold">{formatCurrency(yearData[2024].totalRevenue)}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">2025</span>
-                  <span className="text-sm sm:text-lg font-bold text-primary">{formatCurrency(yearData[2025].totalRevenue)}</span>
-                </div>
+                {YEARS.map((year) => (
+                  <div key={year} className="flex justify-between items-center">
+                    <span className="text-xs text-muted-foreground">{year}</span>
+                    <span className={`text-xs sm:text-base font-bold ${year === 2025 ? 'text-primary' : ''}`}>{formatCurrency(yearData[year].totalRevenue)}</span>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -279,14 +277,12 @@ const YoYComparison = () => {
                 </div>
               </div>
               <div className="space-y-1">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">2024</span>
-                  <span className="text-sm sm:text-lg font-bold">{yearData[2024].totalInvoices}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">2025</span>
-                  <span className="text-sm sm:text-lg font-bold text-primary">{yearData[2025].totalInvoices}</span>
-                </div>
+                {YEARS.map((year) => (
+                  <div key={year} className="flex justify-between items-center">
+                    <span className="text-xs text-muted-foreground">{year}</span>
+                    <span className={`text-xs sm:text-base font-bold ${year === 2025 ? 'text-primary' : ''}`}>{yearData[year].totalInvoices}</span>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -304,14 +300,12 @@ const YoYComparison = () => {
                 </div>
               </div>
               <div className="space-y-1">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">2024</span>
-                  <span className="text-sm sm:text-lg font-bold">{yearData[2024].totalClients}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">2025</span>
-                  <span className="text-sm sm:text-lg font-bold text-primary">{yearData[2025].totalClients}</span>
-                </div>
+                {YEARS.map((year) => (
+                  <div key={year} className="flex justify-between items-center">
+                    <span className="text-xs text-muted-foreground">{year}</span>
+                    <span className={`text-xs sm:text-base font-bold ${year === 2025 ? 'text-primary' : ''}`}>{yearData[year].totalClients}</span>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -329,14 +323,12 @@ const YoYComparison = () => {
                 </div>
               </div>
               <div className="space-y-1">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">2024</span>
-                  <span className="text-sm sm:text-lg font-bold">{formatCurrency(yearData[2024].avgInvoiceValue)}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">2025</span>
-                  <span className="text-sm sm:text-lg font-bold text-primary">{formatCurrency(yearData[2025].avgInvoiceValue)}</span>
-                </div>
+                {YEARS.map((year) => (
+                  <div key={year} className="flex justify-between items-center">
+                    <span className="text-xs text-muted-foreground">{year}</span>
+                    <span className={`text-xs sm:text-base font-bold ${year === 2025 ? 'text-primary' : ''}`}>{formatCurrency(yearData[year].avgInvoiceValue)}</span>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
