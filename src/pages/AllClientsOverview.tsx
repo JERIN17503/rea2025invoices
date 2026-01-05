@@ -350,6 +350,68 @@ const AllClientsOverview = () => {
           </Card>
         </div>
 
+        {/* TOP H1 CONTRIBUTORS - Most Prominent Section */}
+        <Card className="mb-6 border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-transparent">
+          <CardHeader className="p-4 pb-2">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Crown className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">Top H1 Business Contributors</CardTitle>
+                <CardDescription className="text-sm">Clients who gave most business in Q1+Q2 (Jan-Jun) across all 4 years</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-4 pt-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+              {data.clients
+                .filter((c) => c.h1Total > 0)
+                .sort((a, b) => b.h1Total - a.h1Total)
+                .slice(0, 5)
+                .map((client, idx) => (
+                  <div 
+                    key={client.name} 
+                    className="relative p-4 bg-card border rounded-lg hover:shadow-md transition-shadow"
+                  >
+                    <div className="absolute -top-2 -left-2 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold">
+                      {idx + 1}
+                    </div>
+                    <div className="pt-1">
+                      <p className="font-semibold text-sm truncate" title={client.name}>{client.name}</p>
+                      <div className="mt-1">{getCategoryBadge(client.latestCategory)}</div>
+                      <div className="mt-3 pt-2 border-t">
+                        <p className="text-xl font-bold text-primary">{formatCurrency(client.h1Total)}</p>
+                        <p className="text-[10px] text-muted-foreground">H1 Revenue (Q1+Q2)</p>
+                      </div>
+                      <div className="mt-2 flex gap-1 flex-wrap">
+                        {client.yearsActive.map((y) => (
+                          <Badge key={y} variant="outline" className="text-[9px] px-1 py-0">{y}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+            <div className="mt-4 pt-3 border-t flex items-center justify-between text-sm">
+              <p className="text-muted-foreground">
+                These clients contributed the most during the first half of the year (January-June) across 2022-2025
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => {
+                  setSortField("h1Total");
+                  setSortDirection("desc");
+                  setQuarterFilter("h1-top");
+                }}
+              >
+                View All H1 Rankings
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         <Tabs defaultValue="clients" className="space-y-4">
           <TabsList className="grid w-full grid-cols-2 sm:w-auto sm:inline-flex">
             <TabsTrigger value="clients">All Clients</TabsTrigger>
