@@ -27,7 +27,7 @@ const PREMIUM_CLIENTS_MONTHLY = [
   { name: "Theatre of Digital Art Laser Shows", monthly: [5725.00, 1755.00, 16090.00, 4700.00, 18820.00, 0, 0, 0, 0, 0, 0, 0], total: 47090.00, invoices: 18 },
   { name: "RIF TRUST INVESTMENTS LLC", monthly: [1443.75, 6702.00, 12050.00, 2055.00, 4465.00, 3225.00, 0, 2700.00, 0, 7250.00, 0, 5185.00], total: 45075.75, invoices: 21 },
   { name: "Art Indulgence", monthly: [0, 0, 0, 14100.00, 0, 0, 0, 0, 0, 27755.00, 0, 0], total: 41855.00, invoices: 2 },
-  { name: "Continental Middle East DMCC", monthly: [0, 265.00, 0, 0, 0, 0, 0, 0, 0, 320.00, 38969.75, 475.00], total: 40029.75, invoices: 9 },
+  { name: "Continental Middle East DMCC (Merged)", monthly: [0, 265.00, 0, 0, 0, 0, 0, 0, 0, 320.00, 38969.75, 13540.00], total: 53094.75, invoices: 10 },
   { name: "Trane BVBA (merged)", monthly: [80.00, 7435.00, 6990.00, 7736.50, 1290.00, 470.00, 405.00, 2720.00, 2560.50, 470.00, 3405.00, 1485.00], total: 35047.00, invoices: 36 },
   { name: "Mohammed Bin Rashid University", monthly: [0, 840.00, 0, 0, 0, 23400.00, 0, 0, 5887.50, 0, 0, 0], total: 30127.50, invoices: 5 },
   { name: "KCA Deutag Drilling GmbH", monthly: [0, 0, 0, 0, 0, 235.00, 0, 0, 1350.00, 6175.00, 19137.50, 0], total: 26897.50, invoices: 4 },
@@ -94,7 +94,7 @@ const PREMIUM_CLIENTS_MONTHLY = [
 // Normal clients (2-5 invoices)
 const NORMAL_CLIENTS_MONTHLY = [
   { name: "CCJF", monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16055.00], total: 16055.00, invoices: 2 },
-  { name: "Continental ME DMCC", monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13065.00], total: 13065.00, invoices: 1 },
+  // Continental ME DMCC merged into Continental Middle East DMCC in premium list
   { name: "Sesderma ME", monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10500.00], total: 10500.00, invoices: 1 },
   { name: "Times Management Consultancy", monthly: [0, 0, 4100.00, 5450.00, 0, 0, 0, 0, 0, 0, 0, 0], total: 9550.00, invoices: 2 },
   { name: "Equirus Wealth", monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9596.19], total: 9596.19, invoices: 1 },
