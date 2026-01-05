@@ -558,7 +558,7 @@ const AllClientsOverview = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredAndSortedClients.slice(0, 100).map((client) => (
+                      {filteredAndSortedClients.map((client) => (
                         <TableRow key={client.name}>
                           <TableCell className="font-medium max-w-[200px] truncate">{client.name}</TableCell>
                           <TableCell>{getCategoryBadge(client.latestCategory)}</TableCell>
@@ -589,7 +589,7 @@ const AllClientsOverview = () => {
                   </Table>
                 </div>
                 <div className="p-3 border-t text-sm text-muted-foreground">
-                  Showing {Math.min(filteredAndSortedClients.length, 100)} of {filteredAndSortedClients.length} clients
+                  Showing {filteredAndSortedClients.length} clients
                 </div>
               </CardContent>
             </Card>
