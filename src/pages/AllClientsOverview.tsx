@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { loadAllYearsClientData, MultiYearClient } from "@/lib/allYearsClientData";
+import ClientDetailSheet from "@/components/ClientDetailSheet";
 import { formatCurrency } from "@/lib/formatters";
 import { exportToCSV } from "@/lib/csvExport";
 import reaLogo from "@/assets/rea_logo.jpg";
@@ -84,6 +85,13 @@ const AllClientsOverview = () => {
   const [quarterFilter, setQuarterFilter] = useState<string>("all");
   const [sortField, setSortField] = useState<SortField>("totalRevenue");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [selectedClient, setSelectedClient] = useState<MultiYearClient | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const handleClientClick = (client: MultiYearClient) => {
+    setSelectedClient(client);
+    setSheetOpen(true);
+  };
 
   const { data, isLoading } = useQuery({
     queryKey: ["all-years-client-data"],
@@ -373,7 +381,8 @@ const AllClientsOverview = () => {
                 .map((client, idx) => (
                   <div 
                     key={client.name} 
-                    className="relative p-4 bg-card border rounded-lg hover:shadow-md transition-shadow"
+                    className="relative p-4 bg-card border rounded-lg hover:shadow-md transition-shadow cursor-pointer"
+                    onClick={() => handleClientClick(client)}
                   >
                     <div className="absolute -top-2 -left-2 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold">
                       {idx + 1}
@@ -413,7 +422,11 @@ const AllClientsOverview = () => {
                     .sort((a, b) => b.h1Total - a.h1Total)
                     .slice(5, 30)
                     .map((client, idx) => (
-                      <TableRow key={client.name} className="hover:bg-muted/30">
+                      <TableRow 
+                        key={client.name} 
+                        className="hover:bg-muted/30 cursor-pointer"
+                        onClick={() => handleClientClick(client)}
+                      >
                         <TableCell className="text-center font-semibold text-muted-foreground">{idx + 6}</TableCell>
                         <TableCell className="font-medium truncate max-w-[200px]">{client.name}</TableCell>
                         <TableCell>{getCategoryBadge(client.latestCategory)}</TableCell>
@@ -559,7 +572,11 @@ const AllClientsOverview = () => {
                     </TableHeader>
                     <TableBody>
                       {filteredAndSortedClients.map((client) => (
-                        <TableRow key={client.name}>
+                        <TableRow 
+                          key={client.name} 
+                          className="cursor-pointer hover:bg-muted/70"
+                          onClick={() => handleClientClick(client)}
+                        >
                           <TableCell className="font-medium max-w-[200px] truncate">{client.name}</TableCell>
                           <TableCell>{getCategoryBadge(client.latestCategory)}</TableCell>
                           <TableCell>
@@ -589,7 +606,7 @@ const AllClientsOverview = () => {
                   </Table>
                 </div>
                 <div className="p-3 border-t text-sm text-muted-foreground">
-                  Showing {filteredAndSortedClients.length} clients
+                  Showing {filteredAndSortedClients.length} clients — Click any row to view details
                 </div>
               </CardContent>
             </Card>
@@ -802,6 +819,13 @@ const AllClientsOverview = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Client Detail Sheet */}
+        <ClientDetailSheet 
+          client={selectedClient} 
+          open={sheetOpen} 
+          onOpenChange={setSheetOpen} 
+        />
       </main>
     </div>
   );
