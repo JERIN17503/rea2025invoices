@@ -10,6 +10,7 @@ import Dashboard2024 from "./pages/Dashboard2024";
 import YoYComparison from "./pages/YoYComparison";
 import RemarketingActions from "./pages/RemarketingActions";
 import RemarketingActions2024 from "./pages/RemarketingActions2024";
+import AllClientsOverview from "./pages/AllClientsOverview";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/yoy" element={<YoYComparison />} />
           <Route path="/remarketing" element={<RemarketingActions />} />
           <Route path="/remarketing/2024" element={<RemarketingActions2024 />} />
+          <Route path="/all-clients" element={<AllClientsOverview />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

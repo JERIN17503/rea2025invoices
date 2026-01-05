@@ -21,7 +21,8 @@ import {
   Lightbulb,
   Target,
   FileDown,
-  Calendar
+  Calendar,
+  List
 } from "lucide-react";
 import reaLogo from "@/assets/rea_logo.jpg";
 import { formatCurrency, formatInteger } from "@/lib/formatters";
@@ -89,6 +90,14 @@ const Index = () => {
               >
                 <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 YoY
+              </Link>
+              <Link 
+                to="/all-clients"
+                className="flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors text-xs sm:text-sm font-medium whitespace-nowrap"
+              >
+                <List className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">All Clients</span>
+                <span className="sm:hidden">All</span>
               </Link>
               <Link 
                 to="/remarketing" 
