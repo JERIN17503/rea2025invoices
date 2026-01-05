@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { loadAllYearsClientData, MultiYearClient } from "@/lib/allYearsClientData";
 import { formatCurrency } from "@/lib/formatters";
+import { exportToCSV } from "@/lib/csvExport";
 import reaLogo from "@/assets/rea_logo.jpg";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ import {
   ChevronDown,
   ChevronUp,
   Minus,
+  Download,
 } from "lucide-react";
 import {
   BarChart,
@@ -71,7 +73,7 @@ const getCategoryBadge = (category: string) => {
   }
 };
 
-type SortField = "name" | "totalRevenue" | "totalInvoices" | "yearsActive";
+type SortField = "name" | "totalRevenue" | "totalInvoices" | "yearsActive" | "h1Total";
 type SortDirection = "asc" | "desc";
 
 const AllClientsOverview = () => {
@@ -79,6 +81,7 @@ const AllClientsOverview = () => {
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [yearFilter, setYearFilter] = useState<string>("all");
   const [activityFilter, setActivityFilter] = useState<string>("all");
+  const [quarterFilter, setQuarterFilter] = useState<string>("all");
   const [sortField, setSortField] = useState<SortField>("totalRevenue");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
@@ -120,6 +123,11 @@ const AllClientsOverview = () => {
       filtered = filtered.filter((c) => c.yearsActive.length >= 3);
     }
 
+    // Quarter filter - filter by H1 contribution
+    if (quarterFilter === "h1-top") {
+      filtered = filtered.filter((c) => c.h1Total > 0);
+    }
+
     // Sorting
     filtered.sort((a, b) => {
       let comparison = 0;
@@ -136,12 +144,15 @@ const AllClientsOverview = () => {
         case "yearsActive":
           comparison = a.yearsActive.length - b.yearsActive.length;
           break;
+        case "h1Total":
+          comparison = a.h1Total - b.h1Total;
+          break;
       }
       return sortDirection === "desc" ? -comparison : comparison;
     });
 
     return filtered;
-  }, [data, search, categoryFilter, yearFilter, activityFilter, sortField, sortDirection]);
+  }, [data, search, categoryFilter, yearFilter, activityFilter, quarterFilter, sortField, sortDirection]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -155,6 +166,33 @@ const AllClientsOverview = () => {
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return <ChevronDown className="h-3 w-3 opacity-30" />;
     return sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />;
+  };
+
+  // Export functionality
+  const handleExport = () => {
+    const exportData = filteredAndSortedClients.map((client) => ({
+      "Client Name": client.name,
+      "Category": client.latestCategory,
+      "Years Active": client.yearsActive.join(", "),
+      "2022 Revenue": client.years[2022]?.totalAmount || 0,
+      "2023 Revenue": client.years[2023]?.totalAmount || 0,
+      "2024 Revenue": client.years[2024]?.totalAmount || 0,
+      "2025 Revenue": client.years[2025]?.totalAmount || 0,
+      "Q1 Total (Est.)": Math.round(client.q1Total),
+      "Q2 Total (Est.)": Math.round(client.q2Total),
+      "H1 Total (Est.)": Math.round(client.h1Total),
+      "Total Invoices": client.totalInvoices,
+      "Total Revenue": client.totalRevenue,
+    }));
+    
+    const filterLabel = [
+      categoryFilter !== "all" ? categoryFilter : "",
+      yearFilter !== "all" ? yearFilter : "",
+      activityFilter !== "all" ? activityFilter : "",
+      quarterFilter !== "all" ? "H1-focus" : "",
+    ].filter(Boolean).join("_") || "all";
+    
+    exportToCSV(exportData, `all-clients-${filterLabel}-${new Date().toISOString().split("T")[0]}`);
   };
 
   // Stats calculations
@@ -322,53 +360,74 @@ const AllClientsOverview = () => {
             {/* Filters */}
             <Card>
               <CardContent className="p-3 sm:p-4">
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search clients..."
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      className="pl-9"
-                    />
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="relative flex-1">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search clients..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="pl-9"
+                      />
+                    </div>
+                    <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                      <SelectTrigger className="w-full sm:w-[140px]">
+                        <Filter className="h-4 w-4 mr-2" />
+                        <SelectValue placeholder="Category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Categories</SelectItem>
+                        <SelectItem value="premium">Premium</SelectItem>
+                        <SelectItem value="normal">Normal</SelectItem>
+                        <SelectItem value="one-time">One-Time</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={yearFilter} onValueChange={setYearFilter}>
+                      <SelectTrigger className="w-full sm:w-[120px]">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        <SelectValue placeholder="Year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Years</SelectItem>
+                        {YEARS.map((y) => (
+                          <SelectItem key={y} value={y.toString()}>{y}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select value={activityFilter} onValueChange={setActivityFilter}>
+                      <SelectTrigger className="w-full sm:w-[140px]">
+                        <BarChart3 className="h-4 w-4 mr-2" />
+                        <SelectValue placeholder="Activity" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Activity</SelectItem>
+                        <SelectItem value="returning">Returning</SelectItem>
+                        <SelectItem value="loyal">Loyal (3+ yrs)</SelectItem>
+                        <SelectItem value="new-2025">New in 2025</SelectItem>
+                        <SelectItem value="churned">Churned (no 2025)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={quarterFilter} onValueChange={setQuarterFilter}>
+                      <SelectTrigger className="w-full sm:w-[140px]">
+                        <FileText className="h-4 w-4 mr-2" />
+                        <SelectValue placeholder="Quarter" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Quarters</SelectItem>
+                        <SelectItem value="h1-top">H1 (Q1+Q2) Focus</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                    <SelectTrigger className="w-full sm:w-[140px]">
-                      <Filter className="h-4 w-4 mr-2" />
-                      <SelectValue placeholder="Category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Categories</SelectItem>
-                      <SelectItem value="premium">Premium</SelectItem>
-                      <SelectItem value="normal">Normal</SelectItem>
-                      <SelectItem value="one-time">One-Time</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select value={yearFilter} onValueChange={setYearFilter}>
-                    <SelectTrigger className="w-full sm:w-[120px]">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      <SelectValue placeholder="Year" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Years</SelectItem>
-                      {YEARS.map((y) => (
-                        <SelectItem key={y} value={y.toString()}>{y}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Select value={activityFilter} onValueChange={setActivityFilter}>
-                    <SelectTrigger className="w-full sm:w-[140px]">
-                      <BarChart3 className="h-4 w-4 mr-2" />
-                      <SelectValue placeholder="Activity" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Activity</SelectItem>
-                      <SelectItem value="returning">Returning</SelectItem>
-                      <SelectItem value="loyal">Loyal (3+ yrs)</SelectItem>
-                      <SelectItem value="new-2025">New in 2025</SelectItem>
-                      <SelectItem value="churned">Churned (no 2025)</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex justify-between items-center">
+                    <p className="text-sm text-muted-foreground">
+                      {filteredAndSortedClients.length} clients match filters
+                    </p>
+                    <Button variant="outline" size="sm" onClick={handleExport}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Export CSV
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -390,6 +449,9 @@ const AllClientsOverview = () => {
                         {YEARS.map((year) => (
                           <TableHead key={year} className="text-center text-xs">{year}</TableHead>
                         ))}
+                        <TableHead className="cursor-pointer text-right" onClick={() => handleSort("h1Total")}>
+                          <div className="flex items-center justify-end gap-1">H1 (Est.) <SortIcon field="h1Total" /></div>
+                        </TableHead>
                         <TableHead className="cursor-pointer text-right" onClick={() => handleSort("totalInvoices")}>
                           <div className="flex items-center justify-end gap-1">Invoices <SortIcon field="totalInvoices" /></div>
                         </TableHead>
@@ -419,6 +481,9 @@ const AllClientsOverview = () => {
                               )}
                             </TableCell>
                           ))}
+                          <TableCell className="text-right text-xs text-muted-foreground">
+                            {client.h1Total > 0 ? formatCurrency(client.h1Total) : <Minus className="h-3 w-3 mx-auto" />}
+                          </TableCell>
                           <TableCell className="text-right">{client.totalInvoices}</TableCell>
                           <TableCell className="text-right font-semibold">{formatCurrency(client.totalRevenue)}</TableCell>
                         </TableRow>
@@ -504,6 +569,35 @@ const AllClientsOverview = () => {
                 </CardContent>
               </Card>
 
+              {/* Top H1 Contributors - First Half of Year */}
+              <Card>
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-base">Top H1 Contributors (Q1+Q2)</CardTitle>
+                  <CardDescription className="text-xs">Clients with highest first-half revenue across all years</CardDescription>
+                </CardHeader>
+                <CardContent className="p-4 pt-0">
+                  <div className="space-y-2">
+                    {data.clients
+                      .filter((c) => c.h1Total > 0)
+                      .sort((a, b) => b.h1Total - a.h1Total)
+                      .slice(0, 10)
+                      .map((client, idx) => (
+                        <div key={client.name} className="flex items-center justify-between p-2 bg-muted/50 rounded">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground w-5">{idx + 1}.</span>
+                            <span className="text-sm font-medium truncate max-w-[160px]">{client.name}</span>
+                            {getCategoryBadge(client.latestCategory)}
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm font-semibold">{formatCurrency(client.h1Total)}</p>
+                            <p className="text-[10px] text-muted-foreground">H1 Est.</p>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Top Loyal Clients */}
               <Card>
                 <CardHeader className="p-4 pb-2">
@@ -531,6 +625,49 @@ const AllClientsOverview = () => {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Quarterly Revenue Comparison */}
+            <Card>
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-base">Quarterly Revenue by Year</CardTitle>
+                <CardDescription className="text-xs">Q1 (Jan-Mar), Q2 (Apr-Jun), Q3 (Jul-Sep), Q4 (Oct-Dec)</CardDescription>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Year</TableHead>
+                        <TableHead className="text-right">Q1</TableHead>
+                        <TableHead className="text-right">Q2</TableHead>
+                        <TableHead className="text-right font-semibold">H1 Total</TableHead>
+                        <TableHead className="text-right">Q3</TableHead>
+                        <TableHead className="text-right">Q4</TableHead>
+                        <TableHead className="text-right font-semibold">H2 Total</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {YEARS.map((year) => {
+                        const yt = data.yearTotals[year];
+                        const h1 = (yt?.q1Revenue || 0) + (yt?.q2Revenue || 0);
+                        const h2 = (yt?.q3Revenue || 0) + (yt?.q4Revenue || 0);
+                        return (
+                          <TableRow key={year}>
+                            <TableCell className="font-medium">{year}</TableCell>
+                            <TableCell className="text-right">{formatCurrency(yt?.q1Revenue || 0)}</TableCell>
+                            <TableCell className="text-right">{formatCurrency(yt?.q2Revenue || 0)}</TableCell>
+                            <TableCell className="text-right font-semibold text-primary">{formatCurrency(h1)}</TableCell>
+                            <TableCell className="text-right">{formatCurrency(yt?.q3Revenue || 0)}</TableCell>
+                            <TableCell className="text-right">{formatCurrency(yt?.q4Revenue || 0)}</TableCell>
+                            <TableCell className="text-right font-semibold">{formatCurrency(h2)}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Year-over-Year Revenue Table */}
             <Card>
