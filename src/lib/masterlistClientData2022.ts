@@ -42,7 +42,7 @@ const ALL_RAW_CLIENTS_2022: ClientSummary[] = [
   { name: "Theatre of Digital Art Laser Shows", invoiceCount: 18, totalAmount: 47090.00, category: "premium", salesPersons: ["MARINELLE"] },
   { name: "RIF TRUST INVESTMENTS LLC", invoiceCount: 21, totalAmount: 45075.75, category: "premium", salesPersons: ["MARINELLE"] },
   { name: "Art Indulgence", invoiceCount: 2, totalAmount: 41855.00, category: "normal", salesPersons: ["MARINELLE"] },
-  { name: "Continental Middle East DMCC", invoiceCount: 9, totalAmount: 40029.75, category: "premium", salesPersons: ["REENA"] },
+  { name: "Continental Middle East DMCC (Merged)", invoiceCount: 10, totalAmount: 53094.75, category: "premium", salesPersons: ["REENA"] },
   { name: "Trane BVBA (merged)", invoiceCount: 36, totalAmount: 35047.00, category: "premium", salesPersons: ["REENA"] },
   { name: "Mohammed Bin Rashid University", invoiceCount: 5, totalAmount: 30127.50, category: "normal", salesPersons: ["MARINELLE"] },
   { name: "KCA Deutag Drilling GmbH", invoiceCount: 4, totalAmount: 26897.50, category: "normal", salesPersons: ["REENA"] },
@@ -97,7 +97,7 @@ const ALL_RAW_CLIENTS_2022: ClientSummary[] = [
   { name: "California Chiropractic Center", invoiceCount: 4, totalAmount: 1320.00, category: "normal", salesPersons: ["REENA"] },
   // From original normal list - properly recategorized
   { name: "CCJF", invoiceCount: 2, totalAmount: 16055.00, category: "normal", salesPersons: ["MARINELLE"] },
-  { name: "Continental ME DMCC", invoiceCount: 1, totalAmount: 13065.00, category: "one-time", salesPersons: ["REENA"] },
+  // Continental ME DMCC merged into Continental Middle East DMCC above
   { name: "Ibn Al Haj Chemicals LLC", invoiceCount: 1, totalAmount: 11300.00, category: "one-time", salesPersons: ["MARINELLE"] },
   { name: "Sesderma ME", invoiceCount: 1, totalAmount: 10500.00, category: "one-time", salesPersons: ["MARINELLE"] },
   { name: "Equirus Wealth", invoiceCount: 1, totalAmount: 9596.19, category: "one-time", salesPersons: ["REENA"] },
